@@ -1525,7 +1525,6 @@ function finishHiddenDrawReveal(color) {
   if (player.seat === session.ourSeat && player.exactHand) {
     player.exactHand[color] += 1;
   }
-  player.handCount += 1;
 
   session.drawPileCount = Math.max(0, session.drawPileCount - 1);
   addLogEntry(`${player.name} revealed hidden draw as ${color}.`);
@@ -1585,8 +1584,22 @@ function drawHiddenCard() {
   session.currentTurnDrawCount += 1;
   player.handCount += 1;
   addLogEntry(`${player.name} drew a hidden train card.`);
-  updateStatus("Reveal which hidden train card was drawn.");
-  requestHiddenDrawReveal(player.seat);
+
+  if (player.seat === session.ourSeat) {
+    updateStatus("Reveal which hidden train card was drawn.");
+    requestHiddenDrawReveal(player.seat);
+    return;
+  }
+
+  session.drawPileCount = Math.max(0, session.drawPileCount - 1);
+
+  if (session.currentTurnDrawCount >= 2) {
+    endTurn();
+  } else {
+    session.phase = "drawing-cards";
+  }
+
+  rerender();
 }
 
 function claimRoute(routeId) {
