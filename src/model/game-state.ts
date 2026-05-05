@@ -28,6 +28,7 @@ export interface PublicPlayerState {
   displayName: string;
   score: number;
   trainsRemaining: number;
+  handCount: number;
   claimedRouteIds: RouteId[];
   ticketsDrawnCount: number;
 }
@@ -86,6 +87,7 @@ export interface SolverAnnotations {
   securedTicketIds: TicketId[];
   atRiskTicketIds: TicketId[];
   bottleneckRouteIds: RouteId[];
+  knownOutOfDeckCounts?: Partial<Record<TrainColor, number>>;
 }
 
 export interface GameState {

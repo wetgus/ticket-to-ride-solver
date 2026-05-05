@@ -97,6 +97,7 @@ const contextTitle = document.getElementById("context-title");
 const contextPanel = document.getElementById("context-panel");
 const turnRecommendations = document.getElementById("turn-recommendations");
 const actionRecommendations = document.getElementById("action-recommendations");
+const blindDrawInsight = document.getElementById("blind-draw-insight");
 const actionLog = document.getElementById("action-log");
 const playWorkspace = document.getElementById("play-workspace");
 const metadataWorkspace = document.getElementById("metadata-workspace");
@@ -148,7 +149,8 @@ function createPlayer(playerIndex, ourSeat) {
     handCount: 4,
     exactHand: playerIndex === ourSeat ? createEmptyHand() : null,
     knownTicketIds: [],
-    publicTicketCount: 0
+    publicTicketCount: 0,
+    observedVisibleLowerBound: createEmptyHand()
   };
 }
 
@@ -170,6 +172,7 @@ function createEmptySession() {
     currentTurnDrawCount: 0,
     pendingReplacement: null,
     pendingHiddenDraw: null,
+    pendingClaimPayment: null,
     pendingOffer: null,
     pendingStartingPool: [],
     selectedPoolSlot: 0,
@@ -177,6 +180,7 @@ function createEmptySession() {
     stagedHand: createEmptyHand(),
     stagedHandCount: 0,
     setupQueue: [],
+    knownOutOfDeckCounts: createEmptyHand(),
     log: []
   };
 }
@@ -353,6 +357,7 @@ function initializeGame() {
     currentTurnDrawCount: 0,
     pendingReplacement: null,
     pendingHiddenDraw: null,
+    pendingClaimPayment: null,
     pendingOffer: {
       kind: "initial-self-choice",
       playerSeat: null,
@@ -365,6 +370,7 @@ function initializeGame() {
     stagedHand: createEmptyHand(),
     stagedHandCount: 0,
     setupQueue: Array.from({ length: playerCount }, (_, index) => index + 1),
+    knownOutOfDeckCounts: createEmptyHand(),
     log: ["New game initialized."]
   };
 
@@ -430,6 +436,7 @@ function buildSolverState() {
         displayName: player.name,
         score: player.score,
         trainsRemaining: player.trainsRemaining,
+        handCount: player.handCount,
         claimedRouteIds: [...player.claimedRouteIds],
         ticketsDrawnCount: player.publicTicketCount
       })),
@@ -452,8 +459,8 @@ function buildSolverState() {
       .filter((player) => player.id !== ourPlayerId)
       .map((player) => ({
         playerId: player.id,
-        handColorLowerBounds: {},
-        handColorExpectedCounts: {},
+        handColorLowerBounds: { ...player.observedVisibleLowerBound },
+        handColorExpectedCounts: { ...player.observedVisibleLowerBound },
         ticketFamilyPosterior: [],
         archetypePosterior: [],
         corridorInterest: []
@@ -463,9 +470,21 @@ function buildSolverState() {
       activePlanTags: [],
       securedTicketIds: [],
       atRiskTicketIds: [],
-      bottleneckRouteIds: []
+      bottleneckRouteIds: [],
+      knownOutOfDeckCounts: { ...session.knownOutOfDeckCounts }
     }
   };
+}
+
+function spendObservedColor(player, color, count) {
+  player.observedVisibleLowerBound[color] = Math.max(
+    0,
+    (player.observedVisibleLowerBound[color] ?? 0) - count
+  );
+}
+
+function addKnownOutOfDeckColor(color, count = 1) {
+  session.knownOutOfDeckCounts[color] = (session.knownOutOfDeckCounts[color] ?? 0) + count;
 }
 
 function requestRecommendations() {
@@ -500,7 +519,8 @@ function requestRecommendations() {
 }
 
 solverWorker.addEventListener("message", (event) => {
-  const { ok, requestId, turnEvaluation, actionEvaluation, error } = event.data ?? {};
+  const { ok, requestId, turnEvaluation, actionEvaluation, blindDrawInsight: insight, error } =
+    event.data ?? {};
 
   if (requestId !== pendingSolverRequestId) {
     return;
@@ -516,7 +536,8 @@ solverWorker.addEventListener("message", (event) => {
 
   solverSnapshot = {
     turnEvaluation,
-    actionEvaluation
+    actionEvaluation,
+    blindDrawInsight: insight
   };
   renderRecommendations();
 });
@@ -524,6 +545,7 @@ solverWorker.addEventListener("message", (event) => {
 function renderRecommendations() {
   turnRecommendations.innerHTML = "";
   actionRecommendations.innerHTML = "";
+  blindDrawInsight.innerHTML = "";
 
   if (!solverSnapshot) {
     turnRecommendations.innerHTML = "<div class='recommendation-card'>No self recommendation for this step.</div>";
@@ -535,6 +557,40 @@ function renderRecommendations() {
     turnRecommendations.innerHTML = `<div class='recommendation-card'>Solver error: ${solverSnapshot.error}</div>`;
     actionRecommendations.innerHTML = "";
     return;
+  }
+
+  const maybeBlindAction = solverSnapshot.actionEvaluation?.alternatives?.find(
+    (item) => item.action?.kind === "draw-blind"
+  );
+  const insight = solverSnapshot.blindDrawInsight;
+  if (insight && maybeBlindAction) {
+    const useful = insight.topUsefulColors
+      .map((entry) => {
+        const tickets = entry.usefulTickets.slice(0, 2).join(", ");
+        return `
+          <div class="blind-draw-chip">
+            <span class="blind-draw-swatch train-color-${entry.color}"></span>
+            <strong>${colorTitle(entry.color)}</strong>
+            <span>${Math.round(entry.probability * 100)}%</span>
+            <span class="subtle-chip">value ${entry.usefulness.toFixed(1)}</span>
+            ${tickets ? `<span class="subtle-chip">${tickets}</span>` : ""}
+          </div>
+        `;
+      })
+      .join("");
+
+    blindDrawInsight.innerHTML = `
+      <div class="blind-draw-panel">
+        <div class="blind-draw-title">Blind draw odds</div>
+        <div class="blind-draw-summary">
+          <span><strong>Locomotive:</strong> ${Math.round(
+            insight.locomotiveProbability * 100
+          )}%</span>
+          <span><strong>Best colors:</strong> weighted by probability and follow-up value</span>
+        </div>
+        <div class="blind-draw-chip-list">${useful}</div>
+      </div>
+    `;
   }
 
   const renderList = (target, recommendations, mode) => {
@@ -1058,6 +1114,50 @@ function renderContextPanel() {
     return;
   }
 
+  if (session.pendingClaimPayment) {
+    const player = session.players.find(
+      (candidate) => candidate.seat === session.pendingClaimPayment.playerSeat
+    );
+    const route = routeById(session.pendingClaimPayment.routeId);
+    contextTitle.textContent = "Claim Payment";
+    const colorOptions =
+      route?.color === "gray"
+        ? SORTED_TRAIN_COLORS.filter((color) => color !== "locomotive")
+        : [route?.color].filter(Boolean);
+    const selectedColor =
+      session.pendingClaimPayment.primaryColor ?? colorOptions[0] ?? "red";
+    contextPanel.innerHTML = `
+      <div class="setup-layout">
+        <div>Record which cards ${player?.name ?? "the active player"} spent to claim <strong>${route?.id ?? session.pendingClaimPayment.routeId}</strong>.</div>
+        <div class="meta-line">For colored routes, just set locomotives if any were mixed in.</div>
+        <div><strong>Primary color</strong></div>
+        <div class="pool-card-row" id="claim-payment-color-row"></div>
+        <label>
+          Locomotives used
+          <select id="claim-payment-locomotives">
+            ${Array.from({ length: (route?.length ?? 0) + 1 }, (_, index) => {
+              const selected = session.pendingClaimPayment.locomotives === index ? "selected" : "";
+              return `<option value="${index}" ${selected}>${index}</option>`;
+            }).join("")}
+          </select>
+        </label>
+        <div class="inline-buttons">
+          <button id="confirm-claim-payment" type="button">Confirm Claim Payment</button>
+        </div>
+      </div>
+    `;
+    const row = contextPanel.querySelector("#claim-payment-color-row");
+    colorOptions.forEach((color) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `pool-card ${selectedColor === color ? "active" : ""}`;
+      button.dataset.claimPaymentColor = color;
+      button.innerHTML = colorCardMarkup(color, "Claim color");
+      row.appendChild(button);
+    });
+    return;
+  }
+
   if (session.pendingReplacement) {
     contextTitle.textContent = "Reveal Replacement Card";
     const wrapper = document.createElement("div");
@@ -1229,7 +1329,8 @@ function render() {
     session.phase === "initial-opponent-choice" ||
     session.phase === "awaiting-initial-pool" ||
     Boolean(session.pendingReplacement) ||
-    Boolean(session.pendingHiddenDraw);
+    Boolean(session.pendingHiddenDraw) ||
+    Boolean(session.pendingClaimPayment);
   cancelModeButton.disabled = session.actionMode === null;
   setupOurSeat.disabled = true;
 }
@@ -1552,6 +1653,8 @@ function takeFaceUpCard(index) {
   pushHistory();
   if (player.seat === session.ourSeat && player.exactHand) {
     player.exactHand[color] += 1;
+  } else {
+    player.observedVisibleLowerBound[color] += 1;
   }
 
   session.currentTurnAction = "drawing";
@@ -1602,6 +1705,38 @@ function drawHiddenCard() {
   rerender();
 }
 
+function finalizeClaimRoute(player, routeId, payment) {
+  const route = routeById(routeId);
+  if (!player || !route) {
+    return;
+  }
+
+  if (player.seat === session.ourSeat) {
+    if (player.exactHand) {
+      player.exactHand[payment.primaryColor] -= payment.colorCards;
+      player.exactHand.locomotive -= payment.locomotives;
+    }
+  } else {
+    spendObservedColor(player, payment.primaryColor, payment.colorCards);
+    spendObservedColor(player, "locomotive", payment.locomotives);
+  }
+
+  addKnownOutOfDeckColor(payment.primaryColor, payment.colorCards);
+  if (payment.locomotives > 0) {
+    addKnownOutOfDeckColor("locomotive", payment.locomotives);
+  }
+
+  player.claimedRouteIds.push(routeId);
+  player.trainsRemaining -= route.length;
+  player.score += scoreRoutePoints[route.length];
+  player.handCount = Math.max(0, player.handCount - route.length);
+  session.claimedRoutes[routeId] = player.id;
+  addLogEntry(
+    `${player.name} claimed ${route.id} for ${scoreRoutePoints[route.length]} points.`
+  );
+  endTurn();
+}
+
 function claimRoute(routeId) {
   const player = currentPlayer();
   const route = routeById(routeId);
@@ -1614,8 +1749,8 @@ function claimRoute(routeId) {
     return;
   }
 
-  pushHistory();
   if (player.seat === session.ourSeat) {
+    pushHistory();
     const solverState = buildSolverState();
     const legalClaims = solverState
       ? getLegalClaimRouteActions(solverState, USA_BOARD.routes, buildParallelGroups())
@@ -1634,19 +1769,47 @@ function claimRoute(routeId) {
       return;
     }
 
-    if (player.exactHand) {
-      player.exactHand[matching.payment.primaryColor] -= matching.payment.colorCards;
-      player.exactHand.locomotive -= matching.payment.locomotives;
-    }
+    finalizeClaimRoute(player, routeId, matching.payment);
+    rerender();
+    return;
   }
 
-  player.claimedRouteIds.push(routeId);
-  player.trainsRemaining -= route.length;
-  player.score += scoreRoutePoints[route.length];
-  player.handCount = Math.max(0, player.handCount - route.length);
-  session.claimedRoutes[routeId] = player.id;
-  addLogEntry(`${player.name} claimed ${route.id} for ${scoreRoutePoints[route.length]} points.`);
-  endTurn();
+  pushHistory();
+  session.pendingClaimPayment = {
+    playerSeat: player.seat,
+    routeId,
+    primaryColor: route.color === "gray" ? null : route.color,
+    locomotives: 0
+  };
+  updateStatus("Record which cards the opponent spent for this claim.");
+  rerender();
+}
+
+function confirmPendingClaimPayment() {
+  if (!session.pendingClaimPayment) {
+    return;
+  }
+
+  const player = session.players.find(
+    (candidate) => candidate.seat === session.pendingClaimPayment.playerSeat
+  );
+  const route = routeById(session.pendingClaimPayment.routeId);
+  if (!player || !route) {
+    return;
+  }
+
+  const primaryColor =
+    session.pendingClaimPayment.primaryColor ??
+    (route.color === "gray" ? "red" : route.color);
+  const locomotives = Math.max(0, Math.min(route.length, session.pendingClaimPayment.locomotives));
+  const colorCards = Math.max(0, route.length - locomotives);
+
+  finalizeClaimRoute(player, route.id, {
+    primaryColor,
+    colorCards,
+    locomotives
+  });
+  session.pendingClaimPayment = null;
   rerender();
 }
 
@@ -1747,6 +1910,23 @@ function handleContextClick(event) {
 
   if (control.dataset.hiddenRevealColor) {
     finishHiddenDrawReveal(control.dataset.hiddenRevealColor);
+    return;
+  }
+
+  if (control.dataset.claimPaymentColor) {
+    if (session.pendingClaimPayment) {
+      session.pendingClaimPayment.primaryColor = control.dataset.claimPaymentColor;
+      queueUIRefresh(false);
+    }
+    return;
+  }
+
+  if (control.id === "confirm-claim-payment") {
+    const locomotivesSelect = document.getElementById("claim-payment-locomotives");
+    if (session.pendingClaimPayment && locomotivesSelect) {
+      session.pendingClaimPayment.locomotives = Number(locomotivesSelect.value || 0);
+    }
+    confirmPendingClaimPayment();
     return;
   }
 

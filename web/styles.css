@@ -853,3 +853,57 @@ select {
     grid-template-columns: 1fr;
   }
 }
+.blind-draw-insight {
+  margin-bottom: 10px;
+}
+
+.blind-draw-panel {
+  border: 1px solid #d8d1c4;
+  background: #fbf8f2;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.blind-draw-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.blind-draw-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  color: #584d40;
+  margin-bottom: 8px;
+}
+
+.blind-draw-chip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.blind-draw-chip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.blind-draw-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  display: inline-block;
+}
+
+.subtle-chip {
+  color: #756959;
+}

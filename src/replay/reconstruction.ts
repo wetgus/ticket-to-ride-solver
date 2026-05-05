@@ -1,7 +1,11 @@
 import { TRAIN_COLORS, type PlayerId, type RouteId, type TrainColor } from "../model/board.js";
 import type { BoardDefinition } from "../model/board.js";
 import type { ClaimRouteAction } from "../model/actions.js";
-import type { GameState, PublicPlayerState } from "../model/game-state.js";
+import type {
+  GameState,
+  OpponentBeliefState,
+  PublicPlayerState
+} from "../model/game-state.js";
 import { createBaseRulesConfig } from "../model/game-state.js";
 import { indexRoutesById, indexRoutesByParallelGroup } from "../engine/board-index.js";
 import { getLongestRouteLength } from "../engine/connectivity.js";
@@ -21,9 +25,11 @@ export interface ReplayPublicPlayerState {
   score: number;
   claimedRouteIds: RouteId[];
   trainsRemaining: number;
+  handCount: number;
   visibleDrawCount: number;
   hiddenDrawCount: number;
   destinationKeepEvents: number;
+  observedVisibleColorLowerBound: Record<TrainColor, number>;
 }
 
 export interface ReplaySelfKnownState {
@@ -39,6 +45,7 @@ export interface ReplayStateSnapshot {
   eventKinds: ReplayParsedEvent["kind"][];
   players: ReplayPublicPlayerState[];
   claimedRoutes: Record<RouteId, PlayerId>;
+  knownOutOfDeckCounts: Record<TrainColor, number>;
   finalTurnTriggeredBy?: string;
   selfKnownState?: ReplaySelfKnownState;
 }
@@ -122,6 +129,13 @@ const addKnownCardCode = (
   counts[color] += 1;
 };
 
+const addKnownCardColor = (
+  counts: Record<TrainColor, number>,
+  color: TrainColor
+): void => {
+  counts[color] += 1;
+};
+
 const spendKnownClaimCards = (
   counts: Record<TrainColor, number>,
   claim: NormalizedClaim
@@ -141,7 +155,12 @@ const decodeKnownCardCodes = (cardCodes: number[]): TrainColor[] =>
 
 const clonePlayers = (
   players: ReplayPublicPlayerState[]
-): ReplayPublicPlayerState[] => players.map((player) => ({ ...player, claimedRouteIds: [...player.claimedRouteIds] }));
+): ReplayPublicPlayerState[] =>
+  players.map((player) => ({
+    ...player,
+    claimedRouteIds: [...player.claimedRouteIds],
+    observedVisibleColorLowerBound: cloneCardCounts(player.observedVisibleColorLowerBound)
+  }));
 
 export const reconstructReplayState = (
   parsedReplay: ParsedReplayGame,
@@ -158,9 +177,11 @@ export const reconstructReplayState = (
         score: 0,
         claimedRouteIds: [],
         trainsRemaining: 45,
+        handCount: 4,
         visibleDrawCount: 0,
         hiddenDrawCount: 0,
-        destinationKeepEvents: 0
+        destinationKeepEvents: 0,
+        observedVisibleColorLowerBound: zeroCardCounts()
       }
     ])
   );
@@ -173,6 +194,7 @@ export const reconstructReplayState = (
         unknownHiddenDrawCount: 0
       }
     : undefined;
+  const knownOutOfDeckCounts = zeroCardCounts();
   let finalTurnTriggeredBy: string | undefined;
   const snapshots: ReplayStateSnapshot[] = [];
 
@@ -190,6 +212,8 @@ export const reconstructReplayState = (
           const player = playersState.get(event.playerName);
           if (player) {
             player.visibleDrawCount += 1;
+            player.handCount += 1;
+            addKnownCardCode(player.observedVisibleColorLowerBound, event.cardCode);
           }
 
           if (selfKnownState && event.playerName === selfKnownState.playerName) {
@@ -201,6 +225,7 @@ export const reconstructReplayState = (
           const player = playersState.get(event.playerName);
           if (player) {
             player.hiddenDrawCount += 1;
+            player.handCount += event.cardCodes.length;
           }
 
           if (selfKnownState && event.playerName === selfKnownState.playerName) {
@@ -230,9 +255,18 @@ export const reconstructReplayState = (
           if (player) {
             player.score += event.points;
             player.trainsRemaining -= event.trainCarsUsed;
+            player.handCount = Math.max(0, player.handCount - event.trainCarsUsed);
             if (matchedClaim?.routeId) {
               player.claimedRouteIds.push(matchedClaim.routeId);
               claimedRoutes[matchedClaim.routeId] = event.playerName;
+            }
+
+            for (const color of eventDecodedColors) {
+              if (player.observedVisibleColorLowerBound[color] > 0) {
+                player.observedVisibleColorLowerBound[color] -= 1;
+              }
+
+              addKnownCardColor(knownOutOfDeckCounts, color);
             }
           }
 
@@ -245,6 +279,11 @@ export const reconstructReplayState = (
           }
           break;
         }
+        case "deck-reshuffled":
+          for (const color of TRAIN_COLORS) {
+            knownOutOfDeckCounts[color] = 0;
+          }
+          break;
         case "reveal-destination": {
           if (event.deltaPoints !== 0) {
             const player = playersState.get(event.playerName);
@@ -277,6 +316,7 @@ export const reconstructReplayState = (
       eventKinds: move.events.map((event) => event.kind),
       players: clonePlayers([...playersState.values()]),
       claimedRoutes: { ...claimedRoutes },
+      knownOutOfDeckCounts: cloneCardCounts(knownOutOfDeckCounts),
       ...(finalTurnTriggeredBy ? { finalTurnTriggeredBy } : {}),
       ...(selfKnownState
         ? {
@@ -320,9 +360,25 @@ const toReplayPublicPlayer = (
     displayName: player.playerName,
     score: player.score,
     trainsRemaining: player.trainsRemaining,
+    handCount: player.handCount,
     claimedRouteIds: [...player.claimedRouteIds],
     ticketsDrawnCount: player.destinationKeepEvents
   }));
+
+const toReplayBeliefs = (
+  snapshot: ReplayStateSnapshot,
+  playerName: string
+): OpponentBeliefState[] =>
+  snapshot.players
+    .filter((player) => player.playerName !== playerName)
+    .map((player) => ({
+      playerId: player.playerName,
+      handColorLowerBounds: cloneCardCounts(player.observedVisibleColorLowerBound),
+      handColorExpectedCounts: cloneCardCounts(player.observedVisibleColorLowerBound),
+      ticketFamilyPosterior: [],
+      archetypePosterior: [],
+      corridorInterest: []
+    }));
 
 const toApproximateGameState = (
   snapshot: ReplayStateSnapshot,
@@ -358,12 +414,13 @@ const toApproximateGameState = (
       hand: { ...selfState.exactKnownCards },
       ticketIds: []
     },
-    beliefs: [],
+    beliefs: toReplayBeliefs(snapshot, playerName),
     annotations: {
       activePlanTags: [],
       securedTicketIds: [],
       atRiskTicketIds: [],
-      bottleneckRouteIds: []
+      bottleneckRouteIds: [],
+      knownOutOfDeckCounts: cloneCardCounts(snapshot.knownOutOfDeckCounts)
     }
   };
 };
@@ -550,11 +607,14 @@ export const extractDecisionSnapshots = (
               score: 0,
               claimedRouteIds: [],
               trainsRemaining: 45,
+              handCount: 4,
               visibleDrawCount: 0,
               hiddenDrawCount: 0,
-              destinationKeepEvents: 0
+              destinationKeepEvents: 0,
+              observedVisibleColorLowerBound: zeroCardCounts()
             })),
             claimedRoutes: {},
+            knownOutOfDeckCounts: zeroCardCounts(),
             ...(firstSnapshot.selfKnownState
               ? {
                   selfKnownState: {

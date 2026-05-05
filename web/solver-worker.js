@@ -1,4 +1,9 @@
-import { USA_BOARD, recommendActions, recommendTurns } from "../dist/browser.js";
+import {
+  USA_BOARD,
+  getBlindDrawInsight,
+  recommendActions,
+  recommendTurns
+} from "../dist/browser.js";
 
 self.addEventListener("message", (event) => {
   const { gameState, requestId } = event.data ?? {};
@@ -15,12 +20,14 @@ self.addEventListener("message", (event) => {
   try {
     const turnEvaluation = recommendTurns(gameState, USA_BOARD);
     const actionEvaluation = recommendActions(gameState, USA_BOARD);
+    const blindDrawInsight = getBlindDrawInsight(gameState, USA_BOARD);
 
     self.postMessage({
       ok: true,
       requestId,
       turnEvaluation,
-      actionEvaluation
+      actionEvaluation,
+      blindDrawInsight
     });
   } catch (error) {
     self.postMessage({

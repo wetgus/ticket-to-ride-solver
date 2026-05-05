@@ -28,6 +28,7 @@ export const createSampleGameState = (): GameState => ({
         displayName: "You",
         score: 0,
         trainsRemaining: 45,
+        handCount: 8,
         claimedRouteIds: [],
         ticketsDrawnCount: 0
       },
@@ -36,6 +37,7 @@ export const createSampleGameState = (): GameState => ({
         displayName: "Opponent 1",
         score: 0,
         trainsRemaining: 45,
+        handCount: 4,
         claimedRouteIds: [],
         ticketsDrawnCount: 0
       },
@@ -44,6 +46,7 @@ export const createSampleGameState = (): GameState => ({
         displayName: "Opponent 2",
         score: 0,
         trainsRemaining: 45,
+        handCount: 4,
         claimedRouteIds: [],
         ticketsDrawnCount: 0
       }
@@ -90,7 +93,8 @@ export const createSampleGameState = (): GameState => ({
     activePlanTags: [],
     securedTicketIds: [],
     atRiskTicketIds: [],
-    bottleneckRouteIds: []
+    bottleneckRouteIds: [],
+    knownOutOfDeckCounts: {}
   }
 });
 
@@ -108,6 +112,7 @@ export const createInitialTicketChoiceGameState = (): GameState => ({
         displayName: "You",
         score: 0,
         trainsRemaining: 45,
+        handCount: 4,
         claimedRouteIds: [],
         ticketsDrawnCount: 1
       },
@@ -116,6 +121,7 @@ export const createInitialTicketChoiceGameState = (): GameState => ({
         displayName: "Opponent 1",
         score: 0,
         trainsRemaining: 45,
+        handCount: 4,
         claimedRouteIds: [],
         ticketsDrawnCount: 1
       },
@@ -124,6 +130,7 @@ export const createInitialTicketChoiceGameState = (): GameState => ({
         displayName: "Opponent 2",
         score: 0,
         trainsRemaining: 45,
+        handCount: 4,
         claimedRouteIds: [],
         ticketsDrawnCount: 1
       }
@@ -176,6 +183,7 @@ export const createInitialTicketChoiceGameState = (): GameState => ({
     activePlanTags: [],
     securedTicketIds: [],
     atRiskTicketIds: [],
-    bottleneckRouteIds: []
+    bottleneckRouteIds: [],
+    knownOutOfDeckCounts: {}
   }
 });
