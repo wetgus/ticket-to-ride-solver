@@ -276,11 +276,29 @@ function colorTitle(color) {
   return color === "locomotive" ? "Locomotive" : color[0].toUpperCase() + color.slice(1);
 }
 
+function colorRoleLabel(color) {
+  return color === "locomotive" ? "Wild" : "Train";
+}
+
+function colorGlyph(color) {
+  if (color === "locomotive") {
+    return "★";
+  }
+
+  return "●";
+}
+
 function colorCardMarkup(color, caption) {
   return `
-    <div class="pool-card-color train-color-${color}"></div>
-    <strong>${colorTitle(color)}</strong>
-    ${caption ? `<div class="meta-line">${caption}</div>` : ""}
+    <div class="pool-card-inner card-color-${color}">
+      <div class="pool-card-header">
+        <span class="pool-card-badge">${colorRoleLabel(color)}</span>
+        <span class="pool-card-corner">${colorGlyph(color)}</span>
+      </div>
+      <div class="pool-card-color train-color-${color}"></div>
+      <div class="pool-card-title">${colorTitle(color)}</div>
+      ${caption ? `<div class="pool-card-caption">${caption}</div>` : ""}
+    </div>
   `;
 }
 
@@ -1022,9 +1040,15 @@ function renderContextPanel() {
       button.innerHTML = color
         ? colorCardMarkup(color, `Slot ${index + 1}`)
         : `
-            <div class="pool-card-color"></div>
-            <strong>Slot ${index + 1}</strong>
-            <div class="meta-line">Select color</div>
+            <div class="pool-card-inner empty-pool-card">
+              <div class="pool-card-header">
+                <span class="pool-card-badge">Pool</span>
+                <span class="pool-card-corner">+</span>
+              </div>
+              <div class="pool-card-color pool-card-color-empty"></div>
+              <div class="pool-card-title">Slot ${index + 1}</div>
+              <div class="pool-card-caption">Select color</div>
+            </div>
           `;
       row.appendChild(button);
     }
