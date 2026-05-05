@@ -1,0 +1,526 @@
+Move 2 :23/04/2026 21:26:38
+tryingsomethingnew keeps 2 destination(s)
+tryingsomethingnew keeps 2 destination(s)
+Move 3 :21:26:40
+Kayleigh Jones keeps 3 destination(s)
+Kayleigh Jones keeps 3 destination(s)
+Move 4 :21:26:43
+domiluc keeps 2 destination(s)
+domiluc keeps 2 destination(s)
+Move 5 :21:27:00
+wetgus keeps 2 destination(s)
+wetgus keeps 2 destination(s)
+Move 7 :21:27:18
+Kayleigh Jones keeps 1 destination(s)
+Kayleigh Jones keeps 1 destination(s)
+Move 8 :21:27:19
+tryingsomethingnew takes 3
+Move 9 :21:27:21
+tryingsomethingnew takes 5
+Move 10 :21:27:23
+domiluc takes 5
+Move 11 :21:27:28
+domiluc takes 6
+Move 12 :21:27:31
+wetgus takes 6
+Move 13 :21:27:33
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 14 :21:27:36
+You take hidden train car card(s) 3
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 15 :21:27:38
+You take hidden train car card(s) 1
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 16 :21:27:40
+tryingsomethingnew takes 1
+Move 17 :21:27:41
+tryingsomethingnew takes 4
+Move 18 :21:27:43
+domiluc takes 7
+Move 19 :21:27:45
+domiluc takes 7
+Move 20 :21:27:48
+wetgus takes 6
+Move 21 :21:27:50
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 22 :21:27:52
+You take hidden train car card(s) 8
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 23 :21:27:54
+You take hidden train car card(s) 4
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 24 :21:27:55
+tryingsomethingnew takes 1
+Move 25 :21:27:57
+tryingsomethingnew takes 5
+Move 26 :21:28:02
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 27 :21:28:03
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 28 :21:28:05
+wetgus takes 4
+Move 29 :21:28:08
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 30 :21:28:10
+Kayleigh Jones takes 3
+Move 31 :21:28:13
+You take hidden train car card(s) 4
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 32 :21:28:14
+tryingsomethingnew takes 8
+Move 33 :21:28:16
+tryingsomethingnew takes 3
+Move 34 :21:28:21
+domiluc gains 2 point(s) by claiming route from Las Vegas to Los Angeles with 2 train car(s) : 8,8
+Move 35 :21:28:27
+wetgus takes 7
+Move 36 :21:28:28
+wetgus takes 7
+Move 37 :21:28:32
+Kayleigh Jones gains 4 point(s) by claiming route from Los Angeles to Phoenix with 3 train car(s) : 4,4,4
+Move 38 :21:28:35
+tryingsomethingnew gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 1,1,0
+Move 39 :21:28:38
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 40 :21:28:39
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 41 :21:28:45
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 42 :21:28:46
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 43 :21:28:54
+Kayleigh Jones gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 5
+Move 44 :21:28:56
+tryingsomethingnew gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,0
+Move 46 :21:29:04
+domiluc keeps 1 destination(s)
+domiluc keeps 1 destination(s)
+Move 47 :21:29:06
+wetgus takes 2
+Move 48 :21:29:12
+wetgus takes 2
+Move 49 :21:29:16
+Kayleigh Jones gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 8,8
+Move 50 :21:29:17
+tryingsomethingnew takes 8
+Move 51 :21:29:19
+tryingsomethingnew takes 2
+Move 52 :21:29:24
+domiluc takes 1
+Move 53 :21:29:27
+You take hidden train car card(s) 6
+domiluc takes 1 hidden train car card(s)
+Move 54 :21:29:29
+wetgus takes 2
+Move 55 :21:29:32
+wetgus takes 2
+Move 56 :21:29:36
+You take hidden train car card(s) 7
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 57 :21:29:38
+You take hidden train car card(s) 2
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 58 :21:29:40
+tryingsomethingnew takes 1
+Move 59 :21:29:45
+tryingsomethingnew takes 7
+Move 60 :21:29:47
+domiluc takes 5
+Move 61 :21:29:49
+domiluc takes 5
+Move 62 :21:29:56
+wetgus takes 2
+Move 63 :21:29:58
+wetgus takes 3
+Move 64 :21:30:02
+Kayleigh Jones takes 6
+Move 65 :21:30:03
+Kayleigh Jones takes 6
+Move 66 :21:30:06
+tryingsomethingnew takes 1
+Three locomotives have been revealed, visible train cards are replaced
+Move 67 :21:30:17
+You take hidden train car card(s) 0
+tryingsomethingnew takes 1 hidden train car card(s)
+Move 68 :21:30:18
+domiluc takes 7
+Move 69 :21:30:20
+domiluc takes 7
+Move 70 :21:30:27
+wetgus takes 4
+Move 71 :21:30:29
+wetgus takes 2
+Move 72 :21:30:35
+Kayleigh Jones takes 6
+Move 73 :21:30:37
+You take hidden train car card(s) 1
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 74 :21:30:39
+tryingsomethingnew takes 1
+Move 75 :21:30:41
+You take hidden train car card(s) 7
+tryingsomethingnew takes 1 hidden train car card(s)
+Move 76 :21:30:46
+domiluc gains 4 point(s) by claiming route from Las Vegas to Salt Lake City with 3 train car(s) : 5,5,5
+Move 77 :21:30:50
+wetgus gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,2,2
+Move 78 :21:30:53
+Kayleigh Jones takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 79 :21:30:56
+Kayleigh Jones takes 2
+Move 80 :21:31:02
+tryingsomethingnew gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 4
+Move 81 :21:31:06
+domiluc gains 4 point(s) by claiming route from Calgary to Vancouver with 3 train car(s) : 7,7,7
+Move 82 :21:31:10
+wetgus takes 8
+Move 83 :21:31:11
+wetgus takes 8
+Move 84 :21:31:15
+You take hidden train car card(s) 4
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 85 :21:31:17
+You take hidden train car card(s) 1
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 86 :21:31:18
+tryingsomethingnew takes 0
+Move 87 :21:31:20
+domiluc gains 7 point(s) by claiming route from Calgary to Helena with 4 train car(s) : 6,6,6,6
+Move 88 :21:31:23
+wetgus takes 8
+Move 89 :21:31:25
+wetgus takes 4
+Move 90 :21:31:27
+You take hidden train car card(s) 0
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 91 :21:31:29
+You take hidden train car card(s) 6
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 92 :21:31:32
+You completed a new destination : Seattle - Los Angeles
+tryingsomethingnew gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 1,1,1,0,0
+Move 93 :21:31:34
+domiluc takes 3
+Move 94 :21:31:36
+domiluc takes 3
+Move 95 :21:31:53
+wetgus takes 5
+Move 96 :21:31:59
+wetgus takes 4
+Move 97 :21:32:02
+Kayleigh Jones takes 2
+Move 98 :21:32:04
+Kayleigh Jones takes 7
+Move 99 :21:32:06
+tryingsomethingnew gains 2 point(s) by claiming route from New York to Washington with 2 train car(s) : 5,5
+Move 100 :21:32:08
+domiluc takes 5
+Move 101 :21:32:10
+domiluc takes 5
+Move 102 :21:32:12
+wetgus takes 5
+The train car deck has been reshuffled
+Three locomotives have been revealed, visible train cards are replaced
+Three locomotives have been revealed, visible train cards are replaced
+Move 103 :21:32:25
+wetgus takes 5
+Move 104 :21:32:28
+Kayleigh Jones takes 2
+Move 105 :21:32:30
+Kayleigh Jones takes 7
+Move 106 :21:32:34
+tryingsomethingnew gains 1 point(s) by claiming route from Seattle to Vancouver with 1 train car(s) : 7
+Move 107 :21:32:36
+You take hidden train car card(s) 0,4
+domiluc takes 2 hidden train car card(s)
+Move 108 :21:32:41
+wetgus takes 4
+Move 109 :21:32:50
+wetgus takes 7
+Move 110 :21:32:54
+Kayleigh Jones gains 10 point(s) by claiming route from Denver to Phoenix with 5 train car(s) : 2,2,2,2,2
+Move 111 :21:32:58
+tryingsomethingnew takes 2
+Move 112 :21:33:00
+tryingsomethingnew takes 6
+Move 113 :21:33:02
+domiluc takes 1
+Move 114 :21:33:05
+domiluc takes 1
+Move 115 :21:33:11
+wetgus gains 7 point(s) by claiming route from Duluth to Winnipeg with 4 train car(s) : 6,6,6,6
+Move 116 :21:33:15
+Kayleigh Jones gains 7 point(s) by claiming route from Denver to Kansas City with 4 train car(s) : 6,6,6,6
+Move 117 :21:33:18
+tryingsomethingnew gains 2 point(s) by claiming route from Raleigh to Washington with 2 train car(s) : 7,7
+Move 118 :21:33:20
+You completed a new destination : Helena - Los Angeles
+You completed a new destination : Calgary - Salt Lake City
+domiluc gains 4 point(s) by claiming route from Helena to Salt Lake City with 3 train car(s) : 1,1,1
+Move 119 :21:33:23
+wetgus takes 5
+Three locomotives have been revealed, visible train cards are replaced
+Move 120 :21:33:28
+wetgus takes 8
+Move 121 :21:33:32
+Kayleigh Jones gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 1,1
+Move 122 :21:33:38
+tryingsomethingnew gains 1 point(s) by claiming route from Atlanta to Nashville with 1 train car(s) : 8
+Move 123 :21:33:41
+domiluc takes 4
+Move 124 :21:33:43
+domiluc takes 3
+Move 125 :21:33:49
+wetgus takes 8
+Move 126 :21:33:51
+wetgus takes 7
+Move 127 :21:33:55
+You completed a new destination : Kansas City - Houston
+Kayleigh Jones gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 1,1
+Move 128 :21:33:57
+tryingsomethingnew takes 6
+Move 129 :21:33:58
+tryingsomethingnew takes 1
+Move 130 :21:34:02
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 131 :21:34:03
+You take hidden train car card(s) 3
+domiluc takes 1 hidden train car card(s)
+Move 132 :21:34:05
+wetgus gains 15 point(s) by claiming route from El Paso to Houston with 6 train car(s) : 8,8,8,8,8,8
+Move 133 :21:34:10
+Kayleigh Jones gains 2 point(s) by claiming route from Houston to New Orleans with 2 train car(s) : 3,3
+Move 134 :21:34:12
+tryingsomethingnew takes 1
+Move 135 :21:34:15
+You take hidden train car card(s) 5
+tryingsomethingnew takes 1 hidden train car card(s)
+Move 136 :21:34:16
+domiluc gains 7 point(s) by claiming route from Helena to Winnipeg with 4 train car(s) : 3,3,3,3
+Move 137 :21:34:21
+wetgus gains 10 point(s) by claiming route from El Paso to Oklahoma City with 5 train car(s) : 4,4,4,4,4
+Move 138 :21:34:24
+You take hidden train car card(s) 5
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 139 :21:34:26
+You take hidden train car card(s) 4
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 140 :21:34:29
+You completed a new destination : Montréal - Atlanta
+tryingsomethingnew gains 2 point(s) by claiming route from Atlanta to Raleigh with 2 train car(s) : 1,1
+Move 141 :21:34:33
+You take hidden train car card(s) 2
+domiluc takes 1 hidden train car card(s)
+Move 142 :21:34:35
+You take hidden train car card(s) 3
+domiluc takes 1 hidden train car card(s)
+Move 143 :21:34:38
+wetgus gains 7 point(s) by claiming route from Denver to Oklahoma City with 4 train car(s) : 7,7,7,7
+Move 144 :21:34:40
+You take hidden train car card(s) 6
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 145 :21:34:41
+You take hidden train car card(s) 3
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 147 :21:35:20
+tryingsomethingnew keeps 1 destination(s)
+tryingsomethingnew keeps 1 destination(s)
+Move 148 :21:35:25
+domiluc gains 4 point(s) by claiming route from Montréal to Toronto with 3 train car(s) : 8,8,8
+Move 149 :21:35:27
+wetgus takes 1
+Move 150 :21:35:33
+wetgus takes 5
+Move 151 :21:35:40
+Kayleigh Jones gains 2 point(s) by claiming route from Pittsburgh to Toronto with 2 train car(s) : 4,4
+Move 152 :21:35:42
+tryingsomethingnew takes 2
+Move 153 :21:35:44
+tryingsomethingnew takes 8
+The train car deck has been reshuffled
+Three locomotives have been revealed, visible train cards are replaced
+Move 154 :21:35:50
+domiluc gains 2 point(s) by claiming route from Sault St. Marie to Toronto with 2 train car(s) : 5,5
+Move 155 :21:35:53
+wetgus takes 1
+Move 156 :21:35:55
+wetgus takes 1
+Move 157 :21:35:58
+Kayleigh Jones takes 7
+Move 158 :21:36:00
+You take hidden train car card(s) 7
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 159 :21:36:02
+tryingsomethingnew gains 7 point(s) by claiming route from Calgary to Seattle with 4 train car(s) : 2,2,2,2
+Move 160 :21:36:04
+domiluc takes 4
+Move 161 :21:36:07
+You take hidden train car card(s) 7
+domiluc takes 1 hidden train car card(s)
+Move 162 :21:36:10
+wetgus gains 7 point(s) by claiming route from Denver to Omaha with 4 train car(s) : 1,1,1,1
+Move 163 :21:36:19
+Kayleigh Jones gains 1 point(s) by claiming route from Kansas City to Omaha with 1 train car(s) : 3
+Move 164 :21:36:21
+tryingsomethingnew takes 6
+Move 165 :21:36:22
+tryingsomethingnew takes 8
+Move 166 :21:36:25
+You completed a new destination : Vancouver - Montréal
+domiluc gains 15 point(s) by claiming route from Sault St. Marie to Winnipeg with 6 train car(s) : 4,4,4,4,4,0
+Move 167 :21:36:29
+wetgus gains 15 point(s) by claiming route from Duluth to Helena with 6 train car(s) : 5,5,5,5,5,5
+Move 168 :21:36:37
+You completed a new destination : Los Angeles - Miami
+Kayleigh Jones gains 15 point(s) by claiming route from Miami to New Orleans with 6 train car(s) : 7,7,7,7,7,0
+Move 169 :21:36:40
+tryingsomethingnew gains 4 point(s) by claiming route from El Paso to Phoenix with 3 train car(s) : 8,8,8
+Move 171 :21:37:19
+domiluc keeps 1 destination(s)
+domiluc keeps 1 destination(s)
+Move 172 :21:37:24
+wetgus takes 8
+Move 173 :21:37:26
+wetgus takes 3
+Move 174 :21:37:42
+You take hidden train car card(s) 4
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 175 :21:37:43
+You take hidden train car card(s) 8
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 176 :21:37:55
+tryingsomethingnew takes 0
+Move 177 :21:37:57
+domiluc takes 1
+Move 178 :21:38:01
+domiluc takes 3
+Move 179 :21:38:05
+wetgus takes 7
+Move 180 :21:38:11
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 181 :21:38:13
+Kayleigh Jones takes 5
+Move 182 :21:38:15
+Kayleigh Jones takes 5
+Move 183 :21:38:17
+tryingsomethingnew takes 6
+Move 184 :21:38:19
+You take hidden train car card(s) 4
+tryingsomethingnew takes 1 hidden train car card(s)
+Move 185 :21:38:20
+domiluc gains 2 point(s) by claiming route from Boston to New York with 2 train car(s) : 7,7
+Move 186 :21:38:23
+wetgus takes 0
+Move 187 :21:38:26
+Kayleigh Jones gains 4 point(s) by claiming route from Duluth to Sault St. Marie with 3 train car(s) : 5,5,5
+Move 188 :21:38:28
+tryingsomethingnew takes 0
+Move 189 :21:38:30
+domiluc takes 6
+Move 190 :21:38:33
+domiluc takes 2
+Move 191 :21:38:36
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 192 :21:38:38
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 193 :21:38:40
+Kayleigh Jones takes 4
+Move 194 :21:38:43
+You take hidden train car card(s) 7
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 195 :21:38:47
+You completed a new destination : Calgary - Phoenix
+tryingsomethingnew gains 15 point(s) by claiming route from El Paso to Los Angeles with 6 train car(s) : 6,6,6,6,0,0
+Move 196 :21:38:50
+domiluc gains 2 point(s) by claiming route from Raleigh to Washington with 2 train car(s) : 2,2
+Move 197 :21:38:57
+You take hidden train car card(s) 2
+wetgus takes 1 hidden train car card(s)
+Move 198 :21:38:59
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 199 :21:39:02
+You completed a new destination : Sault St. Marie - Oklahoma City
+Kayleigh Jones gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 4,4
+Move 201 :21:39:29
+tryingsomethingnew keeps 1 destination(s)
+tryingsomethingnew keeps 1 destination(s)
+Move 202 :21:39:30
+domiluc gains 2 point(s) by claiming route from Charleston to Raleigh with 2 train car(s) : 3,3
+Move 203 :21:39:44
+You completed a new destination : Winnipeg - Houston
+You completed a new destination : Duluth - El Paso
+wetgus gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 8,8
+Move 204 :21:39:46
+You take hidden train car card(s) 0
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 205 :21:39:48
+You take hidden train car card(s) 7
+Kayleigh Jones takes 1 hidden train car card(s)
+Move 206 :21:39:52
+tryingsomethingnew takes 2
+Move 207 :21:39:54
+tryingsomethingnew takes 4
+Move 208 :21:39:56
+domiluc takes 1
+Move 209 :21:39:58
+domiluc takes 1
+Move 210 :21:40:05
+wetgus gains 15 point(s) by claiming route from Portland to Salt Lake City with 6 train car(s) : 3,3,3,3,3,0
+wetgus has 2 train cars or less, starting final turn !
+Move 211 :21:40:11
+Kayleigh Jones gains 4 point(s) by claiming route from Chicago to Duluth with 3 train car(s) : 7,7,0
+Move 212 :21:40:21
+tryingsomethingnew gains 2 point(s) by claiming route from Boston to Montréal with 2 train car(s) : 4,4
+Move 213 :21:40:23
+domiluc gains 2 point(s) by claiming route from Boston to Montréal with 2 train car(s) : 1,1
+Move 214 :21:40:29
+wetgus gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 2,0
+Kayleigh Jones reveals Dallas to New York destination
+Kayleigh Jones loses 11 points with Dallas to New York destination
+Kayleigh Jones reveals Sault St. Marie to Oklahoma City destination
+Kayleigh Jones gains 9 points with Sault St. Marie to Oklahoma City destination
+Kayleigh Jones reveals Los Angeles to Miami destination
+Kayleigh Jones gains 20 points with Los Angeles to Miami destination
+Kayleigh Jones reveals Kansas City to Houston destination
+Kayleigh Jones gains 5 points with Kansas City to Houston destination
+tryingsomethingnew reveals Los Angeles to New York destination
+tryingsomethingnew loses 21 points with Los Angeles to New York destination
+tryingsomethingnew reveals Calgary to Phoenix destination
+tryingsomethingnew gains 13 points with Calgary to Phoenix destination
+tryingsomethingnew reveals Montréal to Atlanta destination
+tryingsomethingnew gains 9 points with Montréal to Atlanta destination
+tryingsomethingnew reveals Seattle to Los Angeles destination
+tryingsomethingnew gains 9 points with Seattle to Los Angeles destination
+domiluc reveals Boston to Miami destination
+domiluc loses 12 points with Boston to Miami destination
+domiluc reveals Vancouver to Montréal destination
+domiluc gains 20 points with Vancouver to Montréal destination
+domiluc reveals Helena to Los Angeles destination
+domiluc gains 8 points with Helena to Los Angeles destination
+domiluc reveals Calgary to Salt Lake City destination
+domiluc gains 7 points with Calgary to Salt Lake City destination
+wetgus reveals Winnipeg to Houston destination
+wetgus gains 12 points with Winnipeg to Houston destination
+wetgus reveals Duluth to El Paso destination
+wetgus gains 10 points with Duluth to El Paso destination
+Kayleigh Jones longest continuous path is 25 train-cars long
+tryingsomethingnew longest continuous path is 22 train-cars long
+domiluc longest continuous path is 27 train-cars long
+wetgus longest continuous path is 31 train-cars long
+wetgus gains 10 points with longest continuous path : 31 train cars
+End of game

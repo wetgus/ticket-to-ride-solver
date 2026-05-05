@@ -1,0 +1,639 @@
+Move 2 :21/04/2026 01:57:57
+wetgus keeps 2 destination(s)
+wetgus keeps 2 destination(s)
+Move 3 :01:58:04
+weaselsperse keeps 2 destination(s)
+weaselsperse keeps 2 destination(s)
+Move 4 :01:58:20
+vik_vik_vik keeps 3 destination(s)
+vik_vik_vik keeps 3 destination(s)
+Move 5 :01:58:22
+pff18 keeps 2 destination(s)
+pff18 keeps 2 destination(s)
+Move 6 :01:58:58
+vik_vik_vik takes 4
+Move 7 :01:59:03
+vik_vik_vik takes 1
+Move 8 :01:59:12
+weaselsperse takes 7
+Move 9 :01:59:14
+weaselsperse takes 7
+Move 10 :01:59:17
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 11 :01:59:18
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 12 :01:59:23
+pff18 takes 5
+Move 13 :01:59:25
+pff18 takes 5
+Move 14 :01:59:47
+vik_vik_vik takes 5
+Move 15 :01:59:51
+You take hidden train car card(s) 0
+vik_vik_vik takes 1 hidden train car card(s)
+Move 16 :01:59:52
+weaselsperse takes 3
+Move 17 :01:59:54
+weaselsperse takes 3
+Move 18 :01:59:57
+You take hidden train car card(s) 2
+wetgus takes 1 hidden train car card(s)
+Move 19 :01:59:58
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 20 :02:00:00
+You take hidden train car card(s) 5
+pff18 takes 1 hidden train car card(s)
+Move 21 :02:00:02
+You take hidden train car card(s) 8
+pff18 takes 1 hidden train car card(s)
+Move 22 :02:00:17
+vik_vik_vik takes 0
+Move 23 :02:00:19
+weaselsperse takes 6
+Move 24 :02:00:22
+You take hidden train car card(s) 3
+weaselsperse takes 1 hidden train car card(s)
+Move 25 :02:00:24
+wetgus takes 4
+Move 26 :02:00:25
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 27 :02:00:28
+pff18 takes 5
+Move 28 :02:00:30
+You take hidden train car card(s) 7
+pff18 takes 1 hidden train car card(s)
+Move 29 :02:00:32
+You take hidden train car card(s) 0
+vik_vik_vik takes 1 hidden train car card(s)
+Move 30 :02:00:34
+You take hidden train car card(s) 6
+vik_vik_vik takes 1 hidden train car card(s)
+Move 31 :02:00:35
+You take hidden train car card(s) 1,1
+weaselsperse takes 2 hidden train car card(s)
+Move 32 :02:00:38
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 33 :02:00:39
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 34 :02:00:46
+pff18 gains 1 point(s) by claiming route from Atlanta to Nashville with 1 train car(s) : 6
+Move 35 :02:01:00
+You take hidden train car card(s) 5
+vik_vik_vik takes 1 hidden train car card(s)
+Move 36 :02:01:01
+You take hidden train car card(s) 6
+vik_vik_vik takes 1 hidden train car card(s)
+Move 37 :02:01:10
+You take hidden train car card(s) 2,6
+weaselsperse takes 2 hidden train car card(s)
+Move 38 :02:01:12
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 39 :02:01:13
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 40 :02:01:16
+You take hidden train car card(s) 2
+pff18 takes 1 hidden train car card(s)
+Move 41 :02:01:18
+You take hidden train car card(s) 3
+pff18 takes 1 hidden train car card(s)
+Move 42 :02:01:29
+You take hidden train car card(s) 8
+vik_vik_vik takes 1 hidden train car card(s)
+Move 43 :02:01:31
+You take hidden train car card(s) 4
+vik_vik_vik takes 1 hidden train car card(s)
+Move 44 :02:01:45
+You take hidden train car card(s) 8,6
+weaselsperse takes 2 hidden train car card(s)
+Move 45 :02:01:47
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 46 :02:01:49
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 47 :02:01:51
+You take hidden train car card(s) 8
+pff18 takes 1 hidden train car card(s)
+Move 48 :02:01:53
+You take hidden train car card(s) 4
+pff18 takes 1 hidden train car card(s)
+Move 49 :02:02:00
+You take hidden train car card(s) 6
+vik_vik_vik takes 1 hidden train car card(s)
+Move 50 :02:02:01
+You take hidden train car card(s) 4
+vik_vik_vik takes 1 hidden train car card(s)
+Move 51 :02:02:17
+You take hidden train car card(s) 8,1
+weaselsperse takes 2 hidden train car card(s)
+Move 52 :02:02:19
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 53 :02:02:21
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 54 :02:02:23
+You take hidden train car card(s) 8
+pff18 takes 1 hidden train car card(s)
+Move 55 :02:02:25
+You take hidden train car card(s) 2
+pff18 takes 1 hidden train car card(s)
+Move 56 :02:02:40
+You take hidden train car card(s) 4
+vik_vik_vik takes 1 hidden train car card(s)
+Move 57 :02:02:42
+You take hidden train car card(s) 2
+vik_vik_vik takes 1 hidden train car card(s)
+Move 58 :02:02:55
+You take hidden train car card(s) 4,4
+weaselsperse takes 2 hidden train car card(s)
+Move 59 :02:02:57
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 60 :02:02:59
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 61 :02:03:01
+pff18 takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 62 :02:03:05
+pff18 takes 8
+Move 63 :02:03:07
+vik_vik_vik takes 1
+Move 64 :02:03:09
+vik_vik_vik takes 1
+Move 65 :02:03:30
+You take hidden train car card(s) 0,7
+weaselsperse takes 2 hidden train car card(s)
+Move 66 :02:03:32
+wetgus takes 8
+Move 67 :02:03:36
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 68 :02:03:41
+pff18 gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 8,8,8,8,8
+Move 69 :02:03:48
+vik_vik_vik gains 4 point(s) by claiming route from Los Angeles to Phoenix with 3 train car(s) : 6,6,6
+Move 70 :02:03:54
+You take hidden train car card(s) 2,0
+weaselsperse takes 2 hidden train car card(s)
+Move 71 :02:03:56
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 72 :02:04:00
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 73 :02:04:02
+pff18 takes 5
+Move 74 :02:04:10
+pff18 takes 7
+Move 75 :02:04:16
+vik_vik_vik takes 5
+Move 76 :02:04:18
+vik_vik_vik takes 1
+Move 77 :02:04:21
+You take hidden train car card(s) 4,3
+weaselsperse takes 2 hidden train car card(s)
+Move 78 :02:04:24
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 79 :02:04:25
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 80 :02:04:28
+pff18 takes 2
+Move 81 :02:04:31
+pff18 takes 2
+Move 82 :02:04:37
+vik_vik_vik gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 1,1,1,1,1
+Move 83 :02:04:40
+weaselsperse takes 3
+Move 84 :02:04:51
+You take hidden train car card(s) 3
+weaselsperse takes 1 hidden train car card(s)
+Move 85 :02:04:54
+wetgus takes 3
+Move 86 :02:04:59
+wetgus takes 1
+The train car deck has been reshuffled
+Move 87 :02:05:03
+You take hidden train car card(s) 8
+pff18 takes 1 hidden train car card(s)
+Move 88 :02:05:05
+You take hidden train car card(s) 6
+pff18 takes 1 hidden train car card(s)
+Move 89 :02:05:08
+vik_vik_vik gains 15 point(s) by claiming route from Helena to Seattle with 6 train car(s) : 4,4,4,4,0,0
+Move 90 :02:05:24
+You take hidden train car card(s) 1,6
+weaselsperse takes 2 hidden train car card(s)
+Move 91 :02:05:33
+wetgus gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 2
+Move 92 :02:05:42
+pff18 gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 3
+Move 93 :02:06:12
+You take hidden train car card(s) 2
+vik_vik_vik takes 1 hidden train car card(s)
+Move 94 :02:06:13
+You take hidden train car card(s) 1
+vik_vik_vik takes 1 hidden train car card(s)
+Move 95 :02:06:22
+You take hidden train car card(s) 1,1
+weaselsperse takes 2 hidden train car card(s)
+Move 96 :02:06:24
+wetgus gains 15 point(s) by claiming route from Portland to Salt Lake City with 6 train car(s) : 3,3,3,3,3,0
+Move 97 :02:06:33
+pff18 takes 6
+Move 98 :02:06:35
+pff18 takes 6
+Move 99 :02:06:49
+You take hidden train car card(s) 8
+vik_vik_vik takes 1 hidden train car card(s)
+Move 100 :02:06:52
+You take hidden train car card(s) 8
+vik_vik_vik takes 1 hidden train car card(s)
+Move 101 :02:06:55
+You take hidden train car card(s) 2
+weaselsperse takes 1 hidden train car card(s)
+Move 102 :02:06:56
+You take hidden train car card(s) 1
+weaselsperse takes 1 hidden train car card(s)
+Move 103 :02:07:01
+wetgus gains 4 point(s) by claiming route from Denver to Salt Lake City with 3 train car(s) : 4,4,4
+Move 104 :02:07:04
+pff18 takes 6
+Move 105 :02:07:07
+pff18 takes 6
+Move 106 :02:07:10
+vik_vik_vik takes 8
+Move 107 :02:07:13
+You take hidden train car card(s) 0
+vik_vik_vik takes 1 hidden train car card(s)
+Move 108 :02:07:15
+You take hidden train car card(s) 3
+The train car deck has been reshuffled
+weaselsperse takes 1 hidden train car card(s)
+Move 109 :02:07:17
+You take hidden train car card(s) 4
+weaselsperse takes 1 hidden train car card(s)
+Move 110 :02:07:30
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 111 :02:07:33
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 112 :02:07:35
+You take hidden train car card(s) 0
+pff18 takes 1 hidden train car card(s)
+Move 113 :02:07:37
+You take hidden train car card(s) 3
+pff18 takes 1 hidden train car card(s)
+Move 114 :02:07:39
+vik_vik_vik gains 7 point(s) by claiming route from Denver to Helena with 4 train car(s) : 8,8,8,8
+Move 115 :02:07:41
+weaselsperse takes 7
+Move 116 :02:07:45
+weaselsperse takes 7
+Move 117 :02:08:00
+wetgus gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 1,1
+Move 118 :02:08:03
+pff18 takes 2
+Move 119 :02:08:06
+pff18 takes 4
+Move 120 :02:08:11
+vik_vik_vik takes 4
+Move 121 :02:08:16
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 122 :02:08:17
+weaselsperse gains 10 point(s) by claiming route from Atlanta to Miami with 5 train car(s) : 3,3,3,3,3
+Move 123 :02:08:21
+wetgus takes 8
+Move 124 :02:08:27
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 125 :02:08:29
+pff18 takes 4
+Move 126 :02:08:32
+You take hidden train car card(s) 0
+pff18 takes 1 hidden train car card(s)
+Move 127 :02:08:35
+vik_vik_vik takes 4
+Move 128 :02:08:37
+vik_vik_vik takes 4
+The train car deck has been reshuffled
+Move 129 :02:08:39
+weaselsperse gains 15 point(s) by claiming route from Miami to New Orleans with 6 train car(s) : 7,7,7,7,7,0
+Move 130 :02:08:50
+wetgus gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 8,8
+Move 131 :02:08:55
+You completed a new destination : Seattle - Los Angeles
+pff18 gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 4,4,4
+Move 132 :02:08:58
+vik_vik_vik gains 7 point(s) by claiming route from Charleston to Miami with 4 train car(s) : 1,0,0,0
+Move 133 :02:09:01
+weaselsperse gains 2 point(s) by claiming route from Atlanta to Raleigh with 2 train car(s) : 3,3
+Move 134 :02:09:05
+wetgus gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 8,8
+Move 135 :02:09:22
+pff18 takes 3
+Move 136 :02:09:25
+pff18 takes 3
+Move 137 :02:09:31
+You take hidden train car card(s) 8
+vik_vik_vik takes 1 hidden train car card(s)
+Move 138 :02:09:33
+vik_vik_vik takes 1
+Move 139 :02:09:36
+weaselsperse gains 2 point(s) by claiming route from Raleigh to Washington with 2 train car(s) : 6,6
+Move 140 :02:09:42
+wetgus gains 7 point(s) by claiming route from Denver to Kansas City with 4 train car(s) : 5,5,5,0
+Move 141 :02:09:46
+pff18 gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,3
+Move 142 :02:09:57
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 143 :02:09:59
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 144 :02:10:24
+weaselsperse gains 2 point(s) by claiming route from New York to Washington with 2 train car(s) : 6,6
+Move 145 :02:10:28
+You completed a new destination : Seattle - New York
+You completed a new destination : Denver - Pittsburgh
+wetgus gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 6,6,6
+Move 146 :02:10:31
+pff18 gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 2,2
+Move 147 :02:10:37
+vik_vik_vik gains 2 point(s) by claiming route from Pittsburgh to Toronto with 2 train car(s) : 3,3
+Move 148 :02:10:41
+You completed a new destination : Boston - Miami
+weaselsperse gains 2 point(s) by claiming route from Boston to New York with 2 train car(s) : 4,4
+Move 149 :02:10:54
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 150 :02:10:56
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 151 :02:11:02
+pff18 gains 10 point(s) by claiming route from Montréal to Sault St. Marie with 5 train car(s) : 6,6,6,6,6
+Move 152 :02:11:06
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 153 :02:11:08
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 154 :02:11:14
+weaselsperse gains 2 point(s) by claiming route from Houston to New Orleans with 2 train car(s) : 4,4
+Move 155 :02:11:17
+You take hidden train car card(s) 4
+The train car deck has been reshuffled
+wetgus takes 1 hidden train car card(s)
+Move 156 :02:11:19
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 157 :02:11:21
+You take hidden train car card(s) 1
+pff18 takes 1 hidden train car card(s)
+Move 158 :02:11:23
+You take hidden train car card(s) 7
+pff18 takes 1 hidden train car card(s)
+Move 159 :02:11:26
+vik_vik_vik gains 2 point(s) by claiming route from Pittsburgh to Raleigh with 2 train car(s) : 3,3
+Move 160 :02:11:30
+weaselsperse takes 8
+Move 161 :02:11:51
+You take hidden train car card(s) 6
+weaselsperse takes 1 hidden train car card(s)
+Move 163 :02:12:26
+wetgus keeps 2 destination(s)
+wetgus keeps 2 destination(s)
+Move 164 :02:12:33
+pff18 gains 7 point(s) by claiming route from Calgary to Seattle with 4 train car(s) : 7,7,7,7
+Move 165 :02:12:39
+vik_vik_vik takes 3
+Move 166 :02:12:42
+You take hidden train car card(s) 3
+vik_vik_vik takes 1 hidden train car card(s)
+Move 167 :02:12:44
+weaselsperse gains 15 point(s) by claiming route from El Paso to Houston with 6 train car(s) : 8,8,8,8,0,0
+Move 168 :02:12:57
+wetgus gains 4 point(s) by claiming route from Duluth to Sault St. Marie with 3 train car(s) : 4,4,4
+Move 169 :02:13:03
+You take hidden train car card(s) 7
+pff18 takes 1 hidden train car card(s)
+Move 170 :02:13:07
+You take hidden train car card(s) 7
+pff18 takes 1 hidden train car card(s)
+Move 171 :02:13:11
+You completed a new destination : Toronto - Miami
+vik_vik_vik gains 2 point(s) by claiming route from Charleston to Raleigh with 2 train car(s) : 3,3
+Move 172 :02:13:15
+weaselsperse gains 2 point(s) by claiming route from El Paso to Santa Fe with 2 train car(s) : 2,2
+Move 173 :02:13:30
+wetgus gains 2 point(s) by claiming route from Nashville to Saint Louis with 2 train car(s) : 1,1
+Move 174 :02:13:35
+You take hidden train car card(s) 8
+pff18 takes 1 hidden train car card(s)
+Move 175 :02:13:37
+You take hidden train car card(s) 6
+pff18 takes 1 hidden train car card(s)
+Move 176 :02:13:54
+You take hidden train car card(s) 6
+vik_vik_vik takes 1 hidden train car card(s)
+Move 177 :02:13:56
+You take hidden train car card(s) 2
+vik_vik_vik takes 1 hidden train car card(s)
+Move 178 :02:14:00
+You completed a new destination : Denver - El Paso
+weaselsperse gains 2 point(s) by claiming route from Denver to Santa Fe with 2 train car(s) : 2,2
+Move 179 :02:14:03
+wetgus takes 3
+Move 180 :02:14:11
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 181 :02:14:14
+You take hidden train car card(s) 6
+pff18 takes 1 hidden train car card(s)
+Move 182 :02:14:16
+You take hidden train car card(s) 5
+pff18 takes 1 hidden train car card(s)
+Move 183 :02:14:19
+You take hidden train car card(s) 0
+vik_vik_vik takes 1 hidden train car card(s)
+Move 184 :02:14:21
+You take hidden train car card(s) 7
+vik_vik_vik takes 1 hidden train car card(s)
+Move 186 :02:14:32
+weaselsperse keeps 1 destination(s)
+weaselsperse keeps 1 destination(s)
+Move 187 :02:14:36
+wetgus gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 3,3
+Move 188 :02:14:40
+pff18 gains 15 point(s) by claiming route from Sault St. Marie to Winnipeg with 6 train car(s) : 5,5,5,5,5,5
+Move 189 :02:14:44
+vik_vik_vik takes 0
+Move 190 :02:14:46
+weaselsperse takes 6
+Move 191 :02:14:49
+You take hidden train car card(s) 0
+weaselsperse takes 1 hidden train car card(s)
+Move 192 :02:14:57
+You completed a new destination : Sault St. Marie - Oklahoma City
+You completed a new destination : Sault St. Marie - Nashville
+wetgus gains 4 point(s) by claiming route from Chicago to Duluth with 3 train car(s) : 7,7,0
+Move 193 :02:15:03
+pff18 takes 4
+Move 194 :02:15:05
+pff18 takes 4
+Move 195 :02:15:26
+vik_vik_vik takes 2
+Move 196 :02:15:29
+You take hidden train car card(s) 8
+vik_vik_vik takes 1 hidden train car card(s)
+Move 197 :02:15:53
+weaselsperse gains 2 point(s) by claiming route from Boston to Montréal with 2 train car(s) : 6,6
+Move 199 :02:16:28
+wetgus keeps 1 destination(s)
+wetgus keeps 1 destination(s)
+Move 200 :02:16:31
+pff18 takes 0
+Move 201 :02:16:33
+vik_vik_vik takes 3
+Move 202 :02:16:35
+vik_vik_vik takes 3
+Move 203 :02:16:54
+weaselsperse gains 4 point(s) by claiming route from Montréal to Toronto with 3 train car(s) : 1,1,1
+Move 204 :02:17:01
+wetgus gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 8
+Move 205 :02:17:08
+You completed a new destination : Montréal - Atlanta
+pff18 gains 7 point(s) by claiming route from Nashville to Pittsburgh with 4 train car(s) : 4,4,0,0
+Move 206 :02:17:28
+vik_vik_vik gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 5,5,5
+Move 207 :02:17:44
+You completed a new destination : Duluth - El Paso
+weaselsperse gains 15 point(s) by claiming route from Duluth to Toronto with 6 train car(s) : 1,1,1,1,1,0
+Move 208 :02:17:50
+You completed a new destination : Duluth - Houston
+wetgus gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 6,6
+Move 209 :02:17:54
+pff18 takes 0
+Move 210 :02:17:56
+vik_vik_vik takes 3
+Move 211 :02:17:59
+You take hidden train car card(s) 4
+vik_vik_vik takes 1 hidden train car card(s)
+Move 213 :02:18:17
+weaselsperse keeps 1 destination(s)
+You completed a new destination : New York - Atlanta
+weaselsperse keeps 1 destination(s)
+Move 214 :02:18:24
+wetgus takes 6
+Move 215 :02:18:26
+wetgus takes 8
+Move 216 :02:18:31
+pff18 gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,0,0
+Move 217 :02:18:33
+vik_vik_vik gains 7 point(s) by claiming route from Chicago to Omaha with 4 train car(s) : 3,3,3,3
+Move 219 :02:18:51
+weaselsperse keeps 1 destination(s)
+weaselsperse keeps 1 destination(s)
+Move 220 :02:18:56
+wetgus takes 6
+Move 221 :02:18:58
+wetgus takes 6
+Move 223 :02:19:40
+pff18 keeps 1 destination(s)
+pff18 keeps 1 destination(s)
+Move 224 :02:19:45
+You completed a new destination : Portland - Phoenix
+vik_vik_vik gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 1,0,0
+Move 225 :02:19:53
+You take hidden train car card(s) 8,5
+weaselsperse takes 2 hidden train car card(s)
+Move 226 :02:19:55
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 227 :02:19:57
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 229 :02:20:15
+pff18 keeps 1 destination(s)
+pff18 keeps 1 destination(s)
+Move 230 :02:20:17
+vik_vik_vik gains 7 point(s) by claiming route from Chicago to Toronto with 4 train car(s) : 2,2,2,2
+Move 231 :02:20:21
+weaselsperse takes 8
+Move 232 :02:20:22
+You take hidden train car card(s) 0
+weaselsperse takes 1 hidden train car card(s)
+Move 233 :02:20:25
+wetgus gains 15 point(s) by claiming route from El Paso to Los Angeles with 6 train car(s) : 6,6,6,6,0,0
+Move 235 :02:20:58
+pff18 keeps 2 destination(s)
+pff18 keeps 2 destination(s)
+Move 236 :02:21:16
+vik_vik_vik gains 4 point(s) by claiming route from Phoenix to Santa Fe with 3 train car(s) : 4,4,4
+vik_vik_vik has 2 train cars or less, starting final turn !
+Move 237 :02:21:31
+weaselsperse gains 4 point(s) by claiming route from El Paso to Phoenix with 3 train car(s) : 8,8,0
+Move 238 :02:21:35
+wetgus gains 1 point(s) by claiming route from Seattle to Vancouver with 1 train car(s) : 4
+Move 239 :02:21:40
+You completed a new destination : Vancouver - Montréal
+pff18 gains 1 point(s) by claiming route from Seattle to Vancouver with 1 train car(s) : 8
+Move 240 :02:22:47
+vik_vik_vik takes 0
+vik_vik_vik reveals Los Angeles to Miami destination
+vik_vik_vik loses 20 points with Los Angeles to Miami destination
+vik_vik_vik reveals Portland to Phoenix destination
+vik_vik_vik gains 11 points with Portland to Phoenix destination
+vik_vik_vik reveals Toronto to Miami destination
+vik_vik_vik gains 10 points with Toronto to Miami destination
+weaselsperse reveals Kansas City to Houston destination
+weaselsperse loses 5 points with Kansas City to Houston destination
+weaselsperse reveals Denver to El Paso destination
+weaselsperse gains 4 points with Denver to El Paso destination
+weaselsperse reveals Boston to Miami destination
+weaselsperse gains 12 points with Boston to Miami destination
+weaselsperse reveals New York to Atlanta destination
+weaselsperse gains 6 points with New York to Atlanta destination
+weaselsperse reveals Duluth to El Paso destination
+weaselsperse gains 10 points with Duluth to El Paso destination
+wetgus reveals Seattle to New York destination
+wetgus gains 22 points with Seattle to New York destination
+wetgus reveals Sault St. Marie to Oklahoma City destination
+wetgus gains 9 points with Sault St. Marie to Oklahoma City destination
+wetgus reveals Sault St. Marie to Nashville destination
+wetgus gains 8 points with Sault St. Marie to Nashville destination
+wetgus reveals Denver to Pittsburgh destination
+wetgus gains 11 points with Denver to Pittsburgh destination
+wetgus reveals Duluth to Houston destination
+wetgus gains 8 points with Duluth to Houston destination
+pff18 reveals Helena to Los Angeles destination
+pff18 loses 8 points with Helena to Los Angeles destination
+pff18 reveals Dallas to New York destination
+pff18 loses 11 points with Dallas to New York destination
+pff18 reveals Chicago to Santa Fe destination
+pff18 loses 9 points with Chicago to Santa Fe destination
+pff18 reveals Seattle to Los Angeles destination
+pff18 gains 9 points with Seattle to Los Angeles destination
+pff18 reveals Vancouver to Montréal destination
+pff18 gains 20 points with Vancouver to Montréal destination
+pff18 reveals Montréal to Atlanta destination
+pff18 gains 9 points with Montréal to Atlanta destination
+vik_vik_vik longest continuous path is 18 train-cars long
+weaselsperse longest continuous path is 42 train-cars long
+wetgus longest continuous path is 25 train-cars long
+pff18 longest continuous path is 40 train-cars long
+weaselsperse gains 10 points with longest continuous path : 42 train cars
+End of game

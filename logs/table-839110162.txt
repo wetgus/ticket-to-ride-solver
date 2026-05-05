@@ -1,0 +1,557 @@
+Move 2 :19/04/2026 22:05:34
+elegant-penguin135 keeps 3 destination(s)
+elegant-penguin135 keeps 3 destination(s)
+Move 3 :22:05:37
+EmCur keeps 2 destination(s)
+EmCur keeps 2 destination(s)
+Move 4 :22:05:47
+wetgus keeps 2 destination(s)
+wetgus keeps 2 destination(s)
+Move 5 :22:05:51
+hokrr23chicken keeps 3 destination(s)
+hokrr23chicken keeps 3 destination(s)
+Move 6 :22:06:02
+You take hidden train car card(s) 3
+hokrr23chicken takes 1 hidden train car card(s)
+Move 7 :22:06:05
+You take hidden train car card(s) 1
+hokrr23chicken takes 1 hidden train car card(s)
+Move 8 :22:06:07
+EmCur takes 2
+Move 9 :22:06:09
+EmCur takes 1
+Move 10 :22:06:16
+elegant-penguin135 takes 8
+Move 11 :22:06:19
+You take hidden train car card(s) 6
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 12 :22:06:23
+wetgus gains 1 point(s) by claiming route from Atlanta to Nashville with 1 train car(s) : 7
+Move 13 :22:06:29
+You take hidden train car card(s) 7
+hokrr23chicken takes 1 hidden train car card(s)
+Move 14 :22:06:32
+hokrr23chicken takes 3
+Move 15 :22:06:33
+EmCur takes 6
+Move 16 :22:06:35
+EmCur takes 4
+Three locomotives have been revealed, visible train cards are replaced
+Move 17 :22:06:39
+elegant-penguin135 takes 6
+Move 18 :22:06:45
+You take hidden train car card(s) 8
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 19 :22:06:49
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 20 :22:06:51
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 21 :22:06:56
+hokrr23chicken gains 4 point(s) by claiming route from Duluth to Sault St. Marie with 3 train car(s) : 3,3,0
+Move 22 :22:06:58
+EmCur takes 1
+Move 23 :22:07:00
+You take hidden train car card(s) 0
+EmCur takes 1 hidden train car card(s)
+Move 24 :22:07:14
+elegant-penguin135 takes 0
+Move 25 :22:07:17
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 26 :22:07:19
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 27 :22:07:42
+hokrr23chicken takes 5
+Move 28 :22:07:44
+hokrr23chicken takes 5
+Move 29 :22:07:46
+EmCur takes 3
+Move 30 :22:07:49
+You take hidden train car card(s) 7
+EmCur takes 1 hidden train car card(s)
+Move 31 :22:07:52
+You take hidden train car card(s) 7
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 32 :22:07:53
+You take hidden train car card(s) 6
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 33 :22:07:57
+You take hidden train car card(s) 2
+wetgus takes 1 hidden train car card(s)
+Move 34 :22:07:58
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 35 :22:08:12
+hokrr23chicken takes 8
+Move 36 :22:08:14
+hokrr23chicken takes 8
+Move 37 :22:08:17
+You take hidden train car card(s) 2,5
+EmCur takes 2 hidden train car card(s)
+Move 38 :22:08:22
+elegant-penguin135 takes 7
+Move 39 :22:08:24
+You take hidden train car card(s) 3
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 40 :22:08:27
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 41 :22:08:28
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 42 :22:08:33
+hokrr23chicken gains 2 point(s) by claiming route from Houston to New Orleans with 2 train car(s) : 8,8
+Move 43 :22:08:36
+You take hidden train car card(s) 1,2
+EmCur takes 2 hidden train car card(s)
+Move 44 :22:08:41
+elegant-penguin135 gains 7 point(s) by claiming route from Duluth to Winnipeg with 4 train car(s) : 6,6,6,0
+Move 45 :22:08:43
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 46 :22:08:45
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 47 :22:09:00
+You take hidden train car card(s) 7
+hokrr23chicken takes 1 hidden train car card(s)
+Move 48 :22:09:02
+You take hidden train car card(s) 4
+hokrr23chicken takes 1 hidden train car card(s)
+Move 49 :22:09:05
+EmCur gains 7 point(s) by claiming route from Helena to Winnipeg with 4 train car(s) : 3,3,3,0
+Move 50 :22:09:07
+elegant-penguin135 takes 0
+Move 51 :22:09:10
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 52 :22:09:11
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 53 :22:09:32
+hokrr23chicken gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 7,7
+Move 54 :22:09:34
+EmCur takes 1
+Move 55 :22:09:37
+You take hidden train car card(s) 5
+EmCur takes 1 hidden train car card(s)
+Move 56 :22:09:42
+elegant-penguin135 gains 4 point(s) by claiming route from Chicago to Duluth with 3 train car(s) : 7,7,0
+Move 57 :22:09:45
+wetgus takes 3
+Move 58 :22:09:47
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 59 :22:09:55
+hokrr23chicken gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 5,5,5
+Move 60 :22:09:57
+EmCur takes 5
+Move 61 :22:09:58
+EmCur takes 6
+Move 62 :22:10:02
+elegant-penguin135 gains 4 point(s) by claiming route from Little Rock to New Orleans with 3 train car(s) : 8,8,8
+Move 63 :22:10:06
+wetgus takes 6
+Move 64 :22:10:09
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 65 :22:10:13
+hokrr23chicken takes 8
+Move 66 :22:10:15
+hokrr23chicken takes 8
+Move 67 :22:10:18
+EmCur takes 7
+Move 68 :22:10:20
+EmCur takes 2
+Move 69 :22:10:26
+elegant-penguin135 gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 1,1
+Move 70 :22:10:37
+wetgus gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,3
+Move 71 :22:10:44
+hokrr23chicken gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 8,8
+Move 72 :22:10:47
+EmCur gains 2 point(s) by claiming route from Little Rock to Oklahoma City with 2 train car(s) : 7,7
+Move 73 :22:10:52
+elegant-penguin135 gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 3
+Move 74 :22:10:55
+wetgus takes 4
+Move 75 :22:10:56
+wetgus takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 76 :22:11:03
+hokrr23chicken gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 2
+Move 77 :22:11:04
+EmCur takes 6
+Move 78 :22:11:06
+EmCur takes 4
+Move 79 :22:11:11
+elegant-penguin135 takes 4
+Move 80 :22:11:12
+elegant-penguin135 takes 4
+Move 81 :22:11:15
+wetgus takes 2
+Move 82 :22:11:22
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 83 :22:11:26
+hokrr23chicken takes 3
+Move 84 :22:11:29
+You take hidden train car card(s) 5
+hokrr23chicken takes 1 hidden train car card(s)
+Move 85 :22:11:30
+EmCur takes 6
+Move 86 :22:11:32
+EmCur takes 4
+Move 87 :22:11:37
+elegant-penguin135 gains 2 point(s) by claiming route from Dallas to Little Rock with 2 train car(s) : 4,4
+Move 88 :22:11:40
+wetgus takes 7
+Move 89 :22:11:41
+wetgus takes 2
+Move 90 :22:11:49
+hokrr23chicken gains 1 point(s) by claiming route from Kansas City to Omaha with 1 train car(s) : 1
+Move 91 :22:11:50
+EmCur takes 5
+Move 92 :22:11:52
+EmCur takes 5
+Move 93 :22:11:54
+elegant-penguin135 takes 0
+Move 94 :22:11:58
+wetgus takes 7
+Move 95 :22:12:02
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 96 :22:12:06
+You take hidden train car card(s) 3
+hokrr23chicken takes 1 hidden train car card(s)
+Move 97 :22:12:08
+You take hidden train car card(s) 1
+hokrr23chicken takes 1 hidden train car card(s)
+Move 98 :22:12:11
+EmCur takes 5
+Move 99 :22:12:12
+EmCur takes 1
+Move 100 :22:12:16
+elegant-penguin135 gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 2,0
+Move 101 :22:12:18
+wetgus takes 4
+The train car deck has been reshuffled
+Move 102 :22:12:19
+wetgus takes 4
+Move 103 :22:12:32
+hokrr23chicken gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 3,3
+Move 104 :22:12:34
+You take hidden train car card(s) 7,8
+EmCur takes 2 hidden train car card(s)
+Move 105 :22:12:36
+elegant-penguin135 takes 8
+Move 106 :22:12:38
+elegant-penguin135 takes 8
+Move 107 :22:12:41
+wetgus gains 7 point(s) by claiming route from Nashville to Pittsburgh with 4 train car(s) : 4,4,4,4
+Move 108 :22:12:46
+hokrr23chicken takes 5
+Move 109 :22:12:48
+hokrr23chicken takes 5
+Move 110 :22:12:53
+EmCur gains 2 point(s) by claiming route from Little Rock to Saint Louis with 2 train car(s) : 1,1
+Move 111 :22:12:57
+You take hidden train car card(s) 0
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 112 :22:12:59
+elegant-penguin135 takes 1
+Move 113 :22:13:04
+You completed a new destination : Montréal - Atlanta
+wetgus gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 8,8
+Move 114 :22:13:07
+hokrr23chicken takes 0
+Move 115 :22:13:11
+You take hidden train car card(s) 0,8
+EmCur takes 2 hidden train car card(s)
+Move 116 :22:13:18
+elegant-penguin135 gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 8,8
+Move 117 :22:13:21
+wetgus gains 10 point(s) by claiming route from Montréal to Sault St. Marie with 5 train car(s) : 6,6,6,6,6
+Move 118 :22:13:26
+You completed a new destination : Sault St. Marie - Oklahoma City
+hokrr23chicken gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 4,4
+Move 119 :22:13:28
+You take hidden train car card(s) 4,5
+EmCur takes 2 hidden train car card(s)
+Move 120 :22:13:32
+You completed a new destination : Winnipeg - Houston
+You completed a new destination : Chicago - New Orleans
+You completed a new destination : Kansas City - Houston
+elegant-penguin135 gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 1,0
+Move 121 :22:13:35
+wetgus takes 3
+Move 122 :22:13:38
+wetgus takes 2
+Move 123 :22:13:46
+You completed a new destination : Duluth - Houston
+hokrr23chicken gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 5,5
+Move 124 :22:13:48
+EmCur takes 6
+Move 125 :22:13:49
+EmCur takes 8
+Three locomotives have been revealed, visible train cards are replaced
+Move 127 :22:14:14
+elegant-penguin135 keeps 1 destination(s)
+elegant-penguin135 keeps 1 destination(s)
+Move 128 :22:14:17
+wetgus takes 3
+Move 129 :22:14:21
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 130 :22:14:23
+hokrr23chicken takes 4
+Move 131 :22:14:25
+hokrr23chicken takes 4
+Move 132 :22:14:27
+EmCur takes 6
+Move 133 :22:14:29
+EmCur takes 8
+Move 134 :22:14:32
+You take hidden train car card(s) 0
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 135 :22:14:35
+You take hidden train car card(s) 7
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 136 :22:14:36
+wetgus takes 7
+Move 137 :22:14:42
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 138 :22:14:46
+You take hidden train car card(s) 7
+hokrr23chicken takes 1 hidden train car card(s)
+Move 139 :22:14:48
+You take hidden train car card(s) 3
+hokrr23chicken takes 1 hidden train car card(s)
+Move 140 :22:14:52
+EmCur gains 10 point(s) by claiming route from El Paso to Oklahoma City with 5 train car(s) : 4,4,4,4,0
+Move 141 :22:14:54
+elegant-penguin135 takes 7
+Move 142 :22:14:57
+You take hidden train car card(s) 7
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 143 :22:15:01
+wetgus gains 15 point(s) by claiming route from Sault St. Marie to Winnipeg with 6 train car(s) : 7,7,7,7,7,7
+Move 144 :22:15:04
+You take hidden train car card(s) 1
+hokrr23chicken takes 1 hidden train car card(s)
+Move 145 :22:15:06
+You take hidden train car card(s) 1
+hokrr23chicken takes 1 hidden train car card(s)
+Move 146 :22:15:09
+EmCur gains 15 point(s) by claiming route from El Paso to Los Angeles with 6 train car(s) : 6,6,6,6,6,6
+Move 147 :22:15:11
+elegant-penguin135 takes 3
+Move 148 :22:15:14
+elegant-penguin135 takes 3
+Move 149 :22:15:17
+wetgus gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,2,2
+Move 150 :22:15:21
+You take hidden train car card(s) 8
+hokrr23chicken takes 1 hidden train car card(s)
+Move 151 :22:15:23
+You take hidden train car card(s) 0
+hokrr23chicken takes 1 hidden train car card(s)
+Move 153 :22:15:33
+EmCur keeps 1 destination(s)
+EmCur keeps 1 destination(s)
+Move 154 :22:15:35
+elegant-penguin135 takes 8
+Three locomotives have been revealed, visible train cards are replaced
+Move 155 :22:15:39
+elegant-penguin135 takes 3
+Move 156 :22:15:44
+wetgus takes 1
+The train car deck has been reshuffled
+Move 157 :22:15:47
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 158 :22:15:51
+hokrr23chicken takes 5
+Move 159 :22:15:54
+You take hidden train car card(s) 7
+hokrr23chicken takes 1 hidden train car card(s)
+Move 160 :22:15:57
+EmCur gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 2,2
+Move 161 :22:15:59
+elegant-penguin135 takes 6
+Move 162 :22:16:01
+elegant-penguin135 takes 6
+Three locomotives have been revealed, visible train cards are replaced
+Move 163 :22:16:07
+wetgus takes 7
+Move 164 :22:16:09
+wetgus takes 7
+Move 165 :22:16:17
+hokrr23chicken gains 2 point(s) by claiming route from Pittsburgh to Washington with 2 train car(s) : 7,7
+Move 166 :22:16:19
+EmCur takes 0
+Move 167 :22:16:21
+elegant-penguin135 takes 6
+Move 168 :22:16:23
+elegant-penguin135 takes 8
+Move 169 :22:16:27
+You completed a new destination : Vancouver - Montréal
+wetgus gains 4 point(s) by claiming route from Calgary to Vancouver with 3 train car(s) : 7,7,7
+Move 170 :22:16:32
+hokrr23chicken takes 4
+Move 171 :22:16:34
+hokrr23chicken takes 4
+Move 172 :22:16:38
+You completed a new destination : Los Angeles - New York
+EmCur gains 10 point(s) by claiming route from Pittsburgh to Saint Louis with 5 train car(s) : 8,8,8,8,0
+Move 173 :22:16:43
+elegant-penguin135 gains 2 point(s) by claiming route from Nashville to Saint Louis with 2 train car(s) : 8,8
+Move 175 :22:17:09
+wetgus keeps 2 destination(s)
+You completed a new destination : Sault St. Marie - Nashville
+wetgus keeps 2 destination(s)
+Move 176 :22:17:15
+hokrr23chicken gains 7 point(s) by claiming route from Atlanta to New Orleans with 4 train car(s) : 4,4,4,4
+Move 177 :22:17:16
+EmCur takes 4
+Move 178 :22:17:18
+EmCur takes 4
+Move 179 :22:17:20
+elegant-penguin135 takes 3
+Move 180 :22:17:23
+elegant-penguin135 takes 3
+Move 181 :22:17:31
+wetgus takes 7
+Move 182 :22:17:34
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 183 :22:17:39
+You completed a new destination : New York - Atlanta
+hokrr23chicken gains 2 point(s) by claiming route from New York to Washington with 2 train car(s) : 5,5
+Move 184 :22:17:41
+EmCur takes 2
+Move 185 :22:17:42
+EmCur takes 2
+Move 186 :22:17:45
+elegant-penguin135 takes 6
+Move 187 :22:17:49
+You take hidden train car card(s) 4
+elegant-penguin135 takes 1 hidden train car card(s)
+Move 188 :22:17:51
+wetgus takes 0
+Move 190 :22:18:24
+hokrr23chicken keeps 1 destination(s)
+hokrr23chicken keeps 1 destination(s)
+Move 191 :22:18:28
+EmCur gains 4 point(s) by claiming route from Helena to Salt Lake City with 3 train car(s) : 1,1,1
+Move 192 :22:18:37
+elegant-penguin135 gains 4 point(s) by claiming route from Denver to Salt Lake City with 3 train car(s) : 7,7,7
+Move 193 :22:18:41
+You completed a new destination : Montréal - New Orleans
+wetgus gains 7 point(s) by claiming route from Atlanta to New Orleans with 4 train car(s) : 5,0,0,0
+Move 194 :22:18:47
+You completed a new destination : Denver - Pittsburgh
+hokrr23chicken gains 7 point(s) by claiming route from Denver to Omaha with 4 train car(s) : 1,1,1,0
+Move 195 :22:18:50
+You take hidden train car card(s) 0,8
+EmCur takes 2 hidden train car card(s)
+Move 196 :22:18:53
+elegant-penguin135 gains 7 point(s) by claiming route from Denver to Kansas City with 4 train car(s) : 6,6,6,6
+Move 198 :22:19:41
+wetgus keeps 1 destination(s)
+wetgus keeps 1 destination(s)
+Move 200 :22:20:35
+hokrr23chicken keeps 1 destination(s)
+hokrr23chicken keeps 1 destination(s)
+Move 201 :22:20:39
+EmCur gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 4,4,0
+Move 202 :22:20:43
+You completed a new destination : Portland - Nashville
+elegant-penguin135 gains 15 point(s) by claiming route from Portland to Salt Lake City with 6 train car(s) : 3,3,3,3,3,0
+Move 203 :22:20:50
+wetgus gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 1,1
+Move 204 :22:20:54
+hokrr23chicken takes 8
+Move 205 :22:20:56
+hokrr23chicken takes 8
+Move 206 :22:21:00
+You completed a new destination : Winnipeg - Little Rock
+You completed a new destination : Helena - Los Angeles
+EmCur gains 10 point(s) by claiming route from Salt Lake City to San Francisco with 5 train car(s) : 2,2,2,2,2
+Move 208 :22:21:17
+elegant-penguin135 keeps 1 destination(s)
+elegant-penguin135 keeps 1 destination(s)
+Move 209 :22:21:22
+wetgus gains 1 point(s) by claiming route from Kansas City to Omaha with 1 train car(s) : 7
+Move 210 :22:21:25
+You take hidden train car card(s) 4
+hokrr23chicken takes 1 hidden train car card(s)
+Move 211 :22:21:27
+You take hidden train car card(s) 2
+hokrr23chicken takes 1 hidden train car card(s)
+Move 212 :22:21:30
+EmCur gains 15 point(s) by claiming route from Duluth to Helena with 6 train car(s) : 5,5,5,5,5,5
+EmCur has 2 train cars or less, starting final turn !
+Move 214 :22:21:47
+elegant-penguin135 keeps 1 destination(s)
+elegant-penguin135 keeps 1 destination(s)
+Move 215 :22:21:48
+wetgus gains 10 point(s) by claiming route from Atlanta to Miami with 5 train car(s) : 3,3,3,3,3
+Move 217 :22:22:12
+hokrr23chicken keeps 1 destination(s)
+hokrr23chicken keeps 1 destination(s)
+Move 219 :22:22:22
+EmCur keeps 1 destination(s)
+EmCur keeps 1 destination(s)
+hokrr23chicken reveals Seattle to Los Angeles destination
+hokrr23chicken loses 9 points with Seattle to Los Angeles destination
+hokrr23chicken reveals Portland to Phoenix destination
+hokrr23chicken loses 11 points with Portland to Phoenix destination
+hokrr23chicken reveals Sault St. Marie to Oklahoma City destination
+hokrr23chicken gains 9 points with Sault St. Marie to Oklahoma City destination
+hokrr23chicken reveals Duluth to Houston destination
+hokrr23chicken gains 8 points with Duluth to Houston destination
+hokrr23chicken reveals Denver to Pittsburgh destination
+hokrr23chicken gains 11 points with Denver to Pittsburgh destination
+hokrr23chicken reveals New York to Atlanta destination
+hokrr23chicken gains 6 points with New York to Atlanta destination
+EmCur reveals Dallas to New York destination
+EmCur loses 11 points with Dallas to New York destination
+EmCur reveals Los Angeles to New York destination
+EmCur gains 21 points with Los Angeles to New York destination
+EmCur reveals Winnipeg to Little Rock destination
+EmCur gains 11 points with Winnipeg to Little Rock destination
+EmCur reveals Helena to Los Angeles destination
+EmCur gains 8 points with Helena to Los Angeles destination
+elegant-penguin135 reveals Chicago to Santa Fe destination
+elegant-penguin135 loses 9 points with Chicago to Santa Fe destination
+elegant-penguin135 reveals Vancouver to Santa Fe destination
+elegant-penguin135 loses 13 points with Vancouver to Santa Fe destination
+elegant-penguin135 reveals Winnipeg to Houston destination
+elegant-penguin135 gains 12 points with Winnipeg to Houston destination
+elegant-penguin135 reveals Chicago to New Orleans destination
+elegant-penguin135 gains 7 points with Chicago to New Orleans destination
+elegant-penguin135 reveals Portland to Nashville destination
+elegant-penguin135 gains 17 points with Portland to Nashville destination
+elegant-penguin135 reveals Kansas City to Houston destination
+elegant-penguin135 gains 5 points with Kansas City to Houston destination
+wetgus reveals Duluth to El Paso destination
+wetgus loses 10 points with Duluth to El Paso destination
+wetgus reveals Vancouver to Montréal destination
+wetgus gains 20 points with Vancouver to Montréal destination
+wetgus reveals Montréal to Atlanta destination
+wetgus gains 9 points with Montréal to Atlanta destination
+wetgus reveals Sault St. Marie to Nashville destination
+wetgus gains 8 points with Sault St. Marie to Nashville destination
+wetgus reveals Montréal to New Orleans destination
+wetgus gains 13 points with Montréal to New Orleans destination
+hokrr23chicken longest continuous path is 22 train-cars long
+EmCur longest continuous path is 39 train-cars long
+elegant-penguin135 longest continuous path is 24 train-cars long
+wetgus longest continuous path is 35 train-cars long
+EmCur gains 10 points with longest continuous path : 39 train cars
+End of game

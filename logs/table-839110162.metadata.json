@@ -1,0 +1,197 @@
+{
+  "gameId": "table-839110162",
+  "sourceLog": "table-839110162.txt",
+  "players": [
+    {
+      "playerName": "EmCur",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Denver - El Paso",
+            "Helena - Los Angeles",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Helena - Los Angeles",
+            "Winnipeg - Little Rock"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 153,
+          "offered": [
+            "Boston - Miami",
+            "Chicago - Santa Fe",
+            "Los Angeles - New York"
+          ],
+          "kept": [
+            "Los Angeles - New York"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 219,
+          "offered": [
+            "Dallas - New York",
+            "Los Angeles - Chicago",
+            "Los Angeles - Miami"
+          ],
+          "kept": [
+            "Dallas - New York"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "wetgus",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Montreal - Atlanta",
+            "Toronto - Miami",
+            "Vancouver - Montreal"
+          ],
+          "kept": [
+            "Montreal - Atlanta",
+            "Vancouver - Montreal"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 175,
+          "offered": [
+            "Montreal - New Orleans",
+            "Sault St Marie - Nashville",
+            "Seattle - Los Angeles"
+          ],
+          "kept": [
+            "Montreal - New Orleans",
+            "Sault St Marie - Nashville"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 198,
+          "offered": [
+            "Dallas - New York",
+            "Duluth - El Paso",
+            "Los Angeles - Chicago"
+          ],
+          "kept": [
+            "Duluth - El Paso"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "elegant-penguin135",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Chicago - New Orleans",
+            "Kansas City - Houston",
+            "Winnipeg - Houston"
+          ],
+          "kept": [
+            "Chicago - New Orleans",
+            "Kansas City - Houston",
+            "Winnipeg - Houston"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 127,
+          "offered": [
+            "Portland - Nashville",
+            "San Francisco - Atlanta",
+            "Vancouver - Santa Fe"
+          ],
+          "kept": [
+            "Portland - Nashville"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 208,
+          "offered": [
+            "Denver - El Paso",
+            "Toronto - Miami",
+            "Vancouver - Santa Fe"
+          ],
+          "kept": [
+            "Vancouver - Santa Fe"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 214,
+          "offered": [
+            "Boston - Miami",
+            "Chicago - Santa Fe",
+            "San Francisco - Atlanta"
+          ],
+          "kept": [
+            "Chicago - Santa Fe"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "hokrr23chicken",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Duluth - Houston",
+            "New York - Atlanta",
+            "Sault St Marie - Oklahoma City"
+          ],
+          "kept": [
+            "Duluth - Houston",
+            "New York - Atlanta",
+            "Sault St Marie - Oklahoma City"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 190,
+          "offered": [
+            "Calgary - Phoenix",
+            "Denver - Pittsvurgh",
+            "Seattle - New York"
+          ],
+          "kept": [
+            "Denver - Pittsvurgh"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 200,
+          "offered": [
+            "Calgary - Salt Lake City",
+            "Los Angeles - Miami",
+            "Portland - Phoenix"
+          ],
+          "kept": [
+            "Portland - Phoenix"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 217,
+          "offered": [
+            "Calgary - Phoenix",
+            "Seattle - Los Angeles",
+            "Seattle - New York"
+          ],
+          "kept": [
+            "Seattle - Los Angeles"
+          ]
+        }
+      ]
+    }
+  ]
+}

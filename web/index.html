@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ticket to Ride Solver Table UI</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar panel">
+        <div class="topbar-left">
+          <h1>Ticket to Ride Solver</h1>
+          <p id="status-text" class="subtle">Set up the table and start the game flow.</p>
+        </div>
+        <div class="topbar-right">
+          <label>
+            Mode
+            <select id="workspace-mode">
+              <option value="play" selected>Play Assistant</option>
+              <option value="metadata">Metadata Builder</option>
+            </select>
+          </label>
+          <label>
+            Players
+            <select id="setup-player-count">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <label>
+            Your seat
+            <select id="setup-our-seat">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <button id="start-game" type="button">Start New Game</button>
+          <button id="undo-button" type="button">Undo</button>
+        </div>
+      </header>
+
+      <section class="summary-strip panel">
+        <div><strong>Phase:</strong> <span id="phase-label">setup</span></div>
+        <div><strong>Active player:</strong> <span id="active-player-label">-</span></div>
+        <div><strong>Turn:</strong> <span id="turn-label">0</span></div>
+        <div><strong>Action mode:</strong> <span id="action-mode-label">-</span></div>
+      </section>
+
+      <section id="play-workspace" class="table-layout">
+        <aside class="left-rail">
+          <section class="panel rail-panel">
+            <h2>Your Hand</h2>
+            <div id="hand-cards" class="visual-hand"></div>
+          </section>
+
+          <section class="panel rail-panel">
+            <h2>Your Tickets</h2>
+            <div id="owned-tickets-list" class="ticket-sections"></div>
+          </section>
+        </aside>
+
+        <section class="center-stack">
+          <section class="center-panel panel">
+            <div class="board-toolbar">
+              <button id="claim-route-mode" type="button">Claim Route</button>
+              <button id="cancel-mode" type="button">Cancel Mode</button>
+            </div>
+            <div id="board-container" class="board-container"></div>
+          </section>
+
+          <section class="bottom-recommendations">
+            <section class="panel recommendations-panel">
+              <h2>Recommended Turns</h2>
+              <div id="turn-recommendations" class="recommendation-list"></div>
+            </section>
+
+            <section class="panel recommendations-panel">
+              <h2>Recommended Next Actions</h2>
+              <div id="action-recommendations" class="recommendation-list"></div>
+            </section>
+          </section>
+        </section>
+
+        <aside class="right-rail">
+          <section class="panel rail-panel">
+            <h2 id="context-title">Table Controls</h2>
+            <div id="context-panel"></div>
+          </section>
+
+          <section class="panel rail-panel">
+            <h2>Players</h2>
+            <div id="players-summary" class="player-list"></div>
+          </section>
+
+          <section class="panel rail-panel log-panel">
+            <h2>Action Log</h2>
+            <div id="action-log" class="log-list"></div>
+          </section>
+        </aside>
+      </section>
+
+      <section id="metadata-workspace" class="metadata-layout hidden">
+        <section class="panel metadata-panel">
+          <h2>Metadata Builder</h2>
+          <div class="metadata-grid">
+            <label>
+              Game id
+              <input id="metadata-game-id" type="text" placeholder="table-841085547" />
+            </label>
+            <label>
+              Variant
+              <select id="metadata-variant">
+                <option value="usa-base" selected>USA Base</option>
+                <option value="usa-1910-mega">USA 1910 Mega</option>
+              </select>
+            </label>
+            <label>
+              Player name
+              <input id="metadata-player-name" type="text" placeholder="wetgus" />
+            </label>
+            <label>
+              Selection type
+              <select id="metadata-selection-type">
+                <option value="initial" selected>Initial</option>
+                <option value="midgame-draw">Midgame Draw</option>
+              </select>
+            </label>
+            <label>
+              Move number
+              <input id="metadata-move-number" type="number" min="1" placeholder="46" />
+            </label>
+          </div>
+
+          <div class="metadata-picker-grid">
+            <label>
+              Offered tickets
+              <select id="metadata-offered-tickets" multiple size="12"></select>
+            </label>
+            <label>
+              Kept tickets
+              <select id="metadata-kept-tickets" multiple size="12"></select>
+            </label>
+          </div>
+
+          <div class="inline-buttons">
+            <button id="metadata-add-selection" type="button">Add Selection</button>
+            <button id="metadata-download" type="button">Download JSON</button>
+            <button id="metadata-reset" type="button">Reset Metadata</button>
+          </div>
+        </section>
+
+        <section class="panel metadata-panel">
+          <h2>Recorded Selections</h2>
+          <div id="metadata-selection-list" class="stack-list"></div>
+        </section>
+
+        <section class="panel metadata-panel">
+          <h2>metadata.json Preview</h2>
+          <pre id="metadata-preview" class="metadata-preview"></pre>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

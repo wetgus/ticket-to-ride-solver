@@ -1,0 +1,45 @@
+Move 34 :21:28:21
+domiluc gains 2 point(s) by claiming route from Las Vegas to Los Angeles with 2 train car(s) : 8,8
+Move 35 :21:28:27
+wetgus takes 7
+Move 36 :21:28:28
+wetgus takes 7
+Move 37 :21:28:32
+Kayleigh Jones gains 4 point(s) by claiming route from Los Angeles to Phoenix with 3 train car(s) : 4,4,4
+Move 38 :21:28:35
+tryingsomethingnew gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 1,1,0
+Move 39 :21:28:38
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 40 :21:28:39
+You take hidden train car card(s) 8
+domiluc takes 1 hidden train car card(s)
+Move 41 :21:28:45
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 42 :21:28:46
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 43 :21:28:54
+Kayleigh Jones gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 5
+Move 44 :21:28:56
+tryingsomethingnew gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,0
+Move 77 :21:30:50
+wetgus gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,2,2
+Move 78 :21:30:53
+Kayleigh Jones takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 79 :21:30:56
+Kayleigh Jones takes 2
+Move 210 :21:40:05
+wetgus gains 15 point(s) by claiming route from Portland to Salt Lake City with 6 train car(s) : 3,3,3,3,3,0
+wetgus has 2 train cars or less, starting final turn !
+Move 214 :21:40:29
+wetgus gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 2,0
+wetgus reveals Winnipeg to Houston destination
+wetgus gains 12 points with Winnipeg to Houston destination
+wetgus reveals Duluth to El Paso destination
+wetgus gains 10 points with Duluth to El Paso destination
+wetgus longest continuous path is 31 train-cars long
+wetgus gains 10 points with longest continuous path : 31 train cars
+End of game

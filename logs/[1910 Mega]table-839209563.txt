@@ -1,0 +1,665 @@
+Move 1 :20/04/2026 01:30:24
+The color of eknarexi has been chosen according to their preferences. Change my preferences.
+Move 2 :01:30:41
+roaminsumwere keeps 3 destination(s)
+roaminsumwere keeps 3 destination(s)
+Move 3 :01:30:43
+eknarexi keeps 3 destination(s)
+eknarexi keeps 3 destination(s)
+Move 4 :01:30:52
+Niñadecobre keeps 5 destination(s)
+Niñadecobre keeps 5 destination(s)
+Move 5 :01:30:53
+wetgus keeps 3 destination(s)
+wetgus keeps 3 destination(s)
+Move 6 :01:31:06
+roaminsumwere takes 8
+Move 7 :01:31:13
+You take hidden train car card(s) 4
+roaminsumwere takes 1 hidden train car card(s)
+Move 8 :01:31:14
+eknarexi takes 8
+Move 9 :01:31:16
+eknarexi takes 8
+Move 10 :01:31:20
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 11 :01:31:21
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 12 :01:31:25
+Niñadecobre takes 3
+Move 13 :01:31:30
+Niñadecobre takes 3
+Move 14 :01:31:34
+roaminsumwere takes 7
+Move 15 :01:31:37
+You take hidden train car card(s) 3
+roaminsumwere takes 1 hidden train car card(s)
+Move 16 :01:31:38
+eknarexi takes 8
+Move 17 :01:31:39
+eknarexi takes 6
+Move 18 :01:31:45
+wetgus gains 1 point(s) by claiming route from Atlanta to Nashville with 1 train car(s) : 7
+Move 19 :01:31:48
+Niñadecobre takes 5
+Move 20 :01:31:50
+Niñadecobre takes 5
+Move 21 :01:31:52
+roaminsumwere takes 4
+Move 22 :01:31:56
+You take hidden train car card(s) 6
+roaminsumwere takes 1 hidden train car card(s)
+Move 23 :01:31:57
+eknarexi takes 1
+Move 24 :01:32:00
+You take hidden train car card(s) 4
+eknarexi takes 1 hidden train car card(s)
+Move 25 :01:32:06
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 26 :01:32:07
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 27 :01:32:12
+Niñadecobre takes 4
+Move 28 :01:32:14
+Niñadecobre takes 4
+Move 29 :01:32:18
+roaminsumwere takes 7
+Move 30 :01:32:20
+roaminsumwere takes 3
+Move 31 :01:32:24
+eknarexi gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 7
+Move 32 :01:32:28
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 33 :01:32:29
+You take hidden train car card(s) 2
+wetgus takes 1 hidden train car card(s)
+Move 34 :01:32:33
+Niñadecobre gains 2 point(s) by claiming route from Houston to New Orleans with 2 train car(s) : 4,4
+Move 35 :01:32:38
+roaminsumwere gains 4 point(s) by claiming route from Los Angeles to Phoenix with 3 train car(s) : 7,7,7
+Move 36 :01:32:46
+You take hidden train car card(s) 2
+eknarexi takes 1 hidden train car card(s)
+Move 37 :01:32:48
+You take hidden train car card(s) 4
+eknarexi takes 1 hidden train car card(s)
+Move 38 :01:32:50
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 39 :01:32:52
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 40 :01:32:54
+Niñadecobre takes 3
+Move 41 :01:32:57
+Niñadecobre takes 2
+Move 42 :01:33:00
+roaminsumwere gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 4,4,4
+Move 43 :01:33:02
+eknarexi takes 1
+Move 44 :01:33:04
+eknarexi takes 8
+Move 45 :01:33:08
+wetgus takes 4
+Move 46 :01:33:11
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 47 :01:33:14
+Niñadecobre takes 3
+Move 48 :01:33:17
+Niñadecobre takes 8
+Move 49 :01:33:19
+roaminsumwere takes 6
+Three locomotives have been revealed, visible train cards are replaced
+Move 50 :01:33:26
+You take hidden train car card(s) 5
+roaminsumwere takes 1 hidden train car card(s)
+Move 51 :01:33:28
+You take hidden train car card(s) 2
+eknarexi takes 1 hidden train car card(s)
+Move 52 :01:33:29
+You take hidden train car card(s) 0
+eknarexi takes 1 hidden train car card(s)
+Move 53 :01:33:42
+wetgus gains 2 point(s) by claiming route from Boston to New York with 2 train car(s) : 4,4
+Move 54 :01:33:46
+Niñadecobre gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,3
+Move 55 :01:33:54
+roaminsumwere takes 7
+Move 56 :01:33:56
+roaminsumwere takes 7
+Move 57 :01:33:59
+eknarexi gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 8,8,8,8,0
+Move 58 :01:34:05
+wetgus takes 5
+Move 59 :01:34:13
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 60 :01:34:16
+Niñadecobre takes 2
+Move 61 :01:34:18
+Niñadecobre takes 2
+Move 62 :01:34:24
+roaminsumwere gains 2 point(s) by claiming route from New York to Washington with 2 train car(s) : 6,6
+Move 63 :01:34:25
+You completed a new destination : Seattle - Los Angeles
+eknarexi gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 1,1,1
+Move 64 :01:34:30
+wetgus gains 4 point(s) by claiming route from Las Vegas to Salt Lake City with 3 train car(s) : 5,5,5
+Move 65 :01:34:37
+Niñadecobre takes 1
+Move 66 :01:34:40
+Niñadecobre takes 1
+Move 67 :01:34:45
+roaminsumwere gains 2 point(s) by claiming route from Las Vegas to Los Angeles with 2 train car(s) : 3,3
+Move 68 :01:34:47
+You take hidden train car card(s) 1
+eknarexi takes 1 hidden train car card(s)
+Move 69 :01:34:48
+You take hidden train car card(s) 2
+eknarexi takes 1 hidden train car card(s)
+Move 70 :01:34:51
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 71 :01:34:52
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 72 :01:34:55
+Niñadecobre takes 8
+Move 73 :01:34:59
+Niñadecobre takes 1
+Move 74 :01:35:01
+roaminsumwere takes 1
+Move 75 :01:35:04
+roaminsumwere takes 7
+Move 76 :01:35:09
+eknarexi takes 4
+Move 77 :01:35:11
+eknarexi takes 4
+Move 78 :01:35:19
+wetgus takes 5
+Three locomotives have been revealed, visible train cards are replaced
+Move 79 :01:35:30
+wetgus takes 5
+Move 80 :01:35:34
+Niñadecobre takes 6
+Move 81 :01:35:36
+Niñadecobre takes 6
+Move 82 :01:35:38
+roaminsumwere takes 6
+Move 83 :01:35:41
+You take hidden train car card(s) 6
+roaminsumwere takes 1 hidden train car card(s)
+Move 84 :01:35:43
+eknarexi takes 3
+Move 85 :01:35:45
+eknarexi takes 3
+Move 86 :01:35:51
+wetgus takes 7
+Move 87 :01:35:53
+You take hidden train car card(s) 7
+wetgus takes 1 hidden train car card(s)
+Move 88 :01:35:55
+Niñadecobre takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 89 :01:36:03
+Niñadecobre takes 3
+Move 90 :01:36:05
+roaminsumwere takes 1
+Move 91 :01:36:07
+roaminsumwere takes 2
+Move 92 :01:36:08
+eknarexi takes 3
+The train car deck has been reshuffled
+Move 93 :01:36:11
+You take hidden train car card(s) 7
+eknarexi takes 1 hidden train car card(s)
+Move 94 :01:36:14
+wetgus takes 3
+Move 95 :01:36:15
+wetgus takes 3
+Three locomotives have been revealed, visible train cards are replaced
+Move 96 :01:36:22
+Niñadecobre gains 4 point(s) by claiming route from Calgary to Vancouver with 3 train car(s) : 1,1,1
+Move 97 :01:36:24
+roaminsumwere takes 1
+Move 98 :01:36:29
+roaminsumwere takes 7
+Move 99 :01:36:30
+eknarexi takes 4
+Move 100 :01:36:32
+eknarexi takes 5
+Move 101 :01:36:38
+wetgus gains 4 point(s) by claiming route from Denver to Salt Lake City with 3 train car(s) : 7,7,7
+Move 102 :01:36:40
+Niñadecobre takes 6
+Move 103 :01:36:49
+You take hidden train car card(s) 5
+Niñadecobre takes 1 hidden train car card(s)
+Move 104 :01:36:54
+roaminsumwere takes 1
+Move 105 :01:36:58
+roaminsumwere takes 5
+Three locomotives have been revealed, visible train cards are replaced
+Move 106 :01:37:01
+eknarexi takes 4
+Move 107 :01:37:05
+eknarexi takes 7
+Move 108 :01:37:07
+wetgus takes 3
+Move 109 :01:37:09
+wetgus takes 3
+Move 110 :01:37:13
+Niñadecobre takes 2
+Move 111 :01:37:16
+You take hidden train car card(s) 6
+Niñadecobre takes 1 hidden train car card(s)
+Move 112 :01:37:18
+roaminsumwere takes 1
+Three locomotives have been revealed, visible train cards are replaced
+Move 113 :01:37:24
+You take hidden train car card(s) 5
+roaminsumwere takes 1 hidden train car card(s)
+Move 114 :01:37:26
+eknarexi gains 15 point(s) by claiming route from Helena to Seattle with 6 train car(s) : 4,4,4,4,4,4
+Move 115 :01:37:29
+wetgus gains 10 point(s) by claiming route from Atlanta to Miami with 5 train car(s) : 3,3,3,3,3
+Move 116 :01:37:36
+Niñadecobre gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 8,8
+Move 117 :01:37:47
+roaminsumwere gains 4 point(s) by claiming route from El Paso to Phoenix with 3 train car(s) : 5,5,5
+Move 118 :01:38:00
+You take hidden train car card(s) 2
+eknarexi takes 1 hidden train car card(s)
+Move 119 :01:38:01
+You take hidden train car card(s) 4
+eknarexi takes 1 hidden train car card(s)
+Move 120 :01:38:03
+wetgus gains 2 point(s) by claiming route from New York to Pittsburgh with 2 train car(s) : 2,2
+Move 121 :01:38:08
+Niñadecobre gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 5,5,5
+Move 122 :01:38:15
+roaminsumwere gains 7 point(s) by claiming route from Dallas to El Paso with 4 train car(s) : 7,7,7,7
+Move 123 :01:38:18
+You take hidden train car card(s) 0
+eknarexi takes 1 hidden train car card(s)
+Move 124 :01:38:19
+You take hidden train car card(s) 5
+eknarexi takes 1 hidden train car card(s)
+Move 125 :01:38:25
+wetgus takes 8
+Move 126 :01:38:28
+wetgus takes 8
+Move 127 :01:38:33
+Niñadecobre gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 7
+Move 128 :01:38:40
+roaminsumwere gains 2 point(s) by claiming route from Dallas to Little Rock with 2 train car(s) : 8,8
+Move 129 :01:38:44
+You take hidden train car card(s) 7
+eknarexi takes 1 hidden train car card(s)
+Move 130 :01:38:45
+You take hidden train car card(s) 3
+eknarexi takes 1 hidden train car card(s)
+Move 131 :01:38:50
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 132 :01:38:52
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 133 :01:38:56
+Niñadecobre takes 3
+The train car deck has been reshuffled
+Move 134 :01:39:02
+You take hidden train car card(s) 8
+Niñadecobre takes 1 hidden train car card(s)
+Move 135 :01:39:05
+You completed a new destination : Portland - Phoenix
+roaminsumwere gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 1,1,1,1,1
+Move 136 :01:39:26
+You take hidden train car card(s) 8
+eknarexi takes 1 hidden train car card(s)
+Move 137 :01:39:27
+You take hidden train car card(s) 4
+eknarexi takes 1 hidden train car card(s)
+Move 138 :01:39:29
+wetgus gains 10 point(s) by claiming route from Pittsburgh to Saint Louis with 5 train car(s) : 8,8,8,8,8
+Move 139 :01:39:32
+Niñadecobre takes 8
+Move 140 :01:39:36
+You take hidden train car card(s) 4
+Niñadecobre takes 1 hidden train car card(s)
+Move 141 :01:39:41
+roaminsumwere gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 8
+Move 142 :01:39:42
+eknarexi takes 7
+Move 143 :01:39:45
+You take hidden train car card(s) 1
+eknarexi takes 1 hidden train car card(s)
+Move 144 :01:39:53
+You completed a new destination : Kansas City - Boston
+wetgus gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 1,1
+Move 145 :01:39:57
+Niñadecobre takes 3
+Move 146 :01:39:58
+Niñadecobre takes 4
+Move 147 :01:40:02
+You take hidden train car card(s) 0
+roaminsumwere takes 1 hidden train car card(s)
+Move 148 :01:40:03
+You take hidden train car card(s) 4
+roaminsumwere takes 1 hidden train car card(s)
+Move 149 :01:40:05
+eknarexi gains 7 point(s) by claiming route from Chicago to Omaha with 4 train car(s) : 3,3,3,3
+Move 150 :01:40:09
+wetgus takes 4
+Move 151 :01:40:11
+wetgus takes 5
+Move 152 :01:40:31
+Niñadecobre gains 1 point(s) by claiming route from Kansas City to Omaha with 1 train car(s) : 3
+Move 153 :01:40:33
+roaminsumwere takes 4
+Three locomotives have been revealed, visible train cards are replaced
+Move 154 :01:40:38
+You take hidden train car card(s) 0
+roaminsumwere takes 1 hidden train car card(s)
+Move 155 :01:40:39
+eknarexi takes 5
+Move 156 :01:40:41
+eknarexi takes 5
+Move 157 :01:40:46
+wetgus takes 5
+Move 158 :01:40:51
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 159 :01:41:07
+Niñadecobre gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 8,8
+Move 160 :01:41:10
+roaminsumwere takes 2
+Move 161 :01:41:12
+You take hidden train car card(s) 1
+roaminsumwere takes 1 hidden train car card(s)
+Move 162 :01:41:13
+eknarexi takes 7
+Move 163 :01:41:15
+eknarexi takes 3
+Move 164 :01:41:20
+wetgus gains 7 point(s) by claiming route from Denver to Kansas City with 4 train car(s) : 5,5,5,5
+Move 165 :01:41:23
+Niñadecobre gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 3,3
+Move 166 :01:41:25
+roaminsumwere gains 4 point(s) by claiming route from Little Rock to Nashville with 3 train car(s) : 2,2,0
+Move 167 :01:41:26
+eknarexi gains 10 point(s) by claiming route from Helena to Omaha with 5 train car(s) : 7,7,7,7,7
+Move 168 :01:41:39
+You completed a new destination : New York - Atlanta
+You completed a new destination : Las Vegas - Miami
+wetgus gains 2 point(s) by claiming route from Nashville to Saint Louis with 2 train car(s) : 4,4
+Move 169 :01:41:44
+Niñadecobre gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 4,4
+Move 170 :01:41:46
+roaminsumwere gains 4 point(s) by claiming route from Nashville to Raleigh with 3 train car(s) : 6,6,0
+Move 171 :01:41:50
+eknarexi gains 1 point(s) by claiming route from Kansas City to Omaha with 1 train car(s) : 8
+Move 173 :01:42:18
+wetgus keeps 3 destination(s)
+You completed a new destination : Boston - Miami
+wetgus keeps 3 destination(s)
+Move 174 :01:42:21
+Niñadecobre takes 3
+Move 175 :01:42:26
+You take hidden train car card(s) 0
+Niñadecobre takes 1 hidden train car card(s)
+Move 177 :01:42:52
+roaminsumwere keeps 1 destination(s)
+roaminsumwere keeps 1 destination(s)
+Move 178 :01:42:54
+You completed a new destination : Los Angeles - Oklahoma City
+eknarexi gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 1,1
+Move 179 :01:42:58
+wetgus takes 7
+Move 180 :01:42:59
+wetgus takes 7
+Move 181 :01:43:04
+You completed a new destination : Montréal - Dallas
+You completed a new destination : Pittsburgh - New Orleans
+Niñadecobre gains 2 point(s) by claiming route from Kansas City to Oklahoma City with 2 train car(s) : 3,3
+Move 182 :01:43:07
+You take hidden train car card(s) 4
+roaminsumwere takes 1 hidden train car card(s)
+Move 183 :01:43:10
+roaminsumwere takes 4
+Move 185 :01:43:39
+eknarexi keeps 3 destination(s)
+You completed a new destination : Helena - Los Angeles
+eknarexi keeps 3 destination(s)
+Move 186 :01:43:45
+You completed a new destination : Montréal - Atlanta
+wetgus gains 2 point(s) by claiming route from Boston to Montréal with 2 train car(s) : 7,7
+Move 187 :01:43:48
+You completed a new destination : Sault St. Marie - Oklahoma City
+Niñadecobre gains 10 point(s) by claiming route from Montréal to Sault St. Marie with 5 train car(s) : 6,6,6,6,6
+Move 188 :01:43:50
+You completed a new destination : Portland - Pittsburgh
+roaminsumwere gains 2 point(s) by claiming route from Pittsburgh to Raleigh with 2 train car(s) : 4,4
+Move 189 :01:43:52
+eknarexi gains 4 point(s) by claiming route from Montréal to Toronto with 3 train car(s) : 5,5,5
+Move 190 :01:43:58
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 191 :01:44:00
+You take hidden train car card(s) 4
+wetgus takes 1 hidden train car card(s)
+Move 192 :01:44:03
+Niñadecobre gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,2,0
+Move 193 :01:44:04
+You completed a new destination : Dallas - New York
+You completed a new destination : San Francisco - Washington
+roaminsumwere gains 2 point(s) by claiming route from Pittsburgh to Washington with 2 train car(s) : 4,4
+Move 194 :01:44:17
+eknarexi gains 2 point(s) by claiming route from Sault St. Marie to Toronto with 2 train car(s) : 4,4
+Move 195 :01:44:22
+You completed a new destination : Chicago - New York
+wetgus gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 6,6,0
+Move 196 :01:44:25
+Niñadecobre takes 5
+Move 197 :01:44:27
+You take hidden train car card(s) 0
+Niñadecobre takes 1 hidden train car card(s)
+Move 198 :01:44:29
+roaminsumwere takes 7
+Move 199 :01:44:33
+roaminsumwere takes 1
+Move 200 :01:44:38
+eknarexi gains 2 point(s) by claiming route from Pittsburgh to Toronto with 2 train car(s) : 6,6
+Move 202 :01:45:00
+wetgus keeps 2 destination(s)
+You completed a new destination : Nashville - New York
+You completed a new destination : Salt Lake City - Kansas City
+wetgus keeps 2 destination(s)
+Move 203 :01:45:04
+You take hidden train car card(s) 7
+Niñadecobre takes 1 hidden train car card(s)
+Move 204 :01:45:06
+You take hidden train car card(s) 7
+Niñadecobre takes 1 hidden train car card(s)
+Move 206 :01:45:25
+roaminsumwere keeps 3 destination(s)
+You completed a new destination : Portland - Nashville
+You completed a new destination : Las Vegas - New York
+roaminsumwere keeps 3 destination(s)
+Move 207 :01:45:26
+You completed a new destination : Montréal - Chicago
+You completed a new destination : San Francisco - Sault St. Marie
+eknarexi gains 7 point(s) by claiming route from Chicago to Toronto with 4 train car(s) : 2,2,2,2
+Move 209 :01:46:02
+wetgus keeps 1 destination(s)
+wetgus keeps 1 destination(s)
+Move 210 :01:46:05
+You take hidden train car card(s) 0
+Niñadecobre takes 1 hidden train car card(s)
+Move 211 :01:46:07
+You take hidden train car card(s) 7
+Niñadecobre takes 1 hidden train car card(s)
+Move 212 :01:46:11
+You take hidden train car card(s) 8
+roaminsumwere takes 1 hidden train car card(s)
+Move 213 :01:46:13
+roaminsumwere takes 8
+Move 214 :01:46:15
+eknarexi takes 3
+Move 215 :01:46:16
+eknarexi takes 3
+Move 216 :01:46:20
+wetgus takes 5
+The train car deck has been reshuffled
+Move 217 :01:46:29
+wetgus takes 4
+Move 218 :01:46:32
+Niñadecobre takes 7
+Move 219 :01:46:35
+You take hidden train car card(s) 3
+Niñadecobre takes 1 hidden train car card(s)
+Move 220 :01:46:39
+You completed a new destination : Los Angeles - Atlanta
+roaminsumwere gains 2 point(s) by claiming route from Atlanta to Raleigh with 2 train car(s) : 8,8
+Move 222 :01:47:16
+eknarexi keeps 1 destination(s)
+eknarexi keeps 1 destination(s)
+Move 223 :01:47:21
+wetgus gains 2 point(s) by claiming route from Dallas to Oklahoma City with 2 train car(s) : 4,4
+Move 224 :01:47:27
+You completed a new destination : Vancouver - Montréal
+You completed a new destination : Winnipeg - Omaha
+Niñadecobre gains 15 point(s) by claiming route from Sault St. Marie to Winnipeg with 6 train car(s) : 7,7,7,7,0,0
+Move 225 :01:47:31
+roaminsumwere takes 1
+Move 226 :01:47:33
+roaminsumwere takes 1
+Move 227 :01:47:35
+You completed a new destination : Chicago - Santa Fe
+eknarexi gains 4 point(s) by claiming route from Oklahoma City to Santa Fe with 3 train car(s) : 3,3,3
+Move 228 :01:47:46
+wetgus gains 2 point(s) by claiming route from Little Rock to Oklahoma City with 2 train car(s) : 5,5
+Move 230 :01:48:19
+Niñadecobre keeps 2 destination(s)
+Niñadecobre keeps 2 destination(s)
+Move 232 :01:48:36
+roaminsumwere keeps 1 destination(s)
+You completed a new destination : San Francisco - Atlanta
+roaminsumwere keeps 1 destination(s)
+Move 233 :01:48:40
+eknarexi gains 1 point(s) by claiming route from Seattle to Vancouver with 1 train car(s) : 5
+Move 234 :01:48:46
+wetgus takes 3
+Move 235 :01:48:47
+wetgus takes 3
+Move 236 :01:48:51
+You completed a new destination : Duluth - Houston
+Niñadecobre gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 5,5
+Move 237 :01:48:53
+roaminsumwere takes 0
+Move 238 :01:49:00
+You take hidden train car card(s) 4
+eknarexi takes 1 hidden train car card(s)
+Move 239 :01:49:01
+You take hidden train car card(s) 2
+eknarexi takes 1 hidden train car card(s)
+Move 240 :01:49:06
+wetgus gains 2 point(s) by claiming route from Little Rock to Saint Louis with 2 train car(s) : 3,3
+Move 241 :01:49:11
+Niñadecobre takes 8
+Move 242 :01:49:12
+Niñadecobre takes 8
+Move 243 :01:49:15
+roaminsumwere gains 2 point(s) by claiming route from Boston to New York with 2 train car(s) : 7,0
+Move 244 :01:49:18
+You completed a new destination : Vancouver - Duluth
+eknarexi gains 4 point(s) by claiming route from Duluth to Sault St. Marie with 3 train car(s) : 4,0,0
+eknarexi has 2 train cars or less, starting final turn !
+Move 245 :01:49:22
+You completed a new destination : Kansas City - Houston
+wetgus gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 0
+Move 246 :01:49:34
+Niñadecobre gains 2 point(s) by claiming route from Boston to Montréal with 2 train car(s) : 8,8
+Move 247 :01:49:35
+roaminsumwere gains 7 point(s) by claiming route from Charleston to Miami with 4 train car(s) : 1,1,1,1
+Move 248 :01:49:40
+You take hidden train car card(s) 1
+eknarexi takes 1 hidden train car card(s)
+Move 249 :01:49:42
+You take hidden train car card(s) 5
+eknarexi takes 1 hidden train car card(s)
+roaminsumwere reveals Los Angeles to Atlanta destination
+roaminsumwere gains 15 points with Los Angeles to Atlanta destination
+roaminsumwere reveals Portland to Phoenix destination
+roaminsumwere gains 11 points with Portland to Phoenix destination
+roaminsumwere reveals San Francisco to Atlanta destination
+roaminsumwere gains 17 points with San Francisco to Atlanta destination
+roaminsumwere reveals Portland to Nashville destination
+roaminsumwere gains 17 points with Portland to Nashville destination
+roaminsumwere reveals Dallas to New York destination
+roaminsumwere gains 11 points with Dallas to New York destination
+roaminsumwere reveals Portland to Pittsburgh destination
+roaminsumwere gains 19 points with Portland to Pittsburgh destination
+roaminsumwere reveals Las Vegas to New York destination
+roaminsumwere gains 19 points with Las Vegas to New York destination
+roaminsumwere reveals San Francisco to Washington destination
+roaminsumwere gains 21 points with San Francisco to Washington destination
+eknarexi reveals Montréal to Chicago destination
+eknarexi gains 7 points with Montréal to Chicago destination
+eknarexi reveals Vancouver to Duluth destination
+eknarexi gains 13 points with Vancouver to Duluth destination
+eknarexi reveals Los Angeles to Oklahoma City destination
+eknarexi gains 9 points with Los Angeles to Oklahoma City destination
+eknarexi reveals Seattle to Los Angeles destination
+eknarexi gains 9 points with Seattle to Los Angeles destination
+eknarexi reveals Helena to Los Angeles destination
+eknarexi gains 8 points with Helena to Los Angeles destination
+eknarexi reveals San Francisco to Sault St. Marie destination
+eknarexi gains 17 points with San Francisco to Sault St. Marie destination
+eknarexi reveals Chicago to Santa Fe destination
+eknarexi gains 9 points with Chicago to Santa Fe destination
+wetgus reveals Chicago to New York destination
+wetgus gains 5 points with Chicago to New York destination
+wetgus reveals Kansas City to Houston destination
+wetgus gains 5 points with Kansas City to Houston destination
+wetgus reveals Nashville to New York destination
+wetgus gains 6 points with Nashville to New York destination
+wetgus reveals New York to Atlanta destination
+wetgus gains 6 points with New York to Atlanta destination
+wetgus reveals Salt Lake City to Kansas City destination
+wetgus gains 7 points with Salt Lake City to Kansas City destination
+wetgus reveals Montréal to Atlanta destination
+wetgus gains 9 points with Montréal to Atlanta destination
+wetgus reveals Kansas City to Boston destination
+wetgus gains 11 points with Kansas City to Boston destination
+wetgus reveals Las Vegas to Miami destination
+wetgus gains 21 points with Las Vegas to Miami destination
+wetgus reveals Boston to Miami destination
+wetgus gains 12 points with Boston to Miami destination
+Niñadecobre reveals Winnipeg to Little Rock destination
+Niñadecobre loses 11 points with Winnipeg to Little Rock destination
+Niñadecobre reveals Montréal to Dallas destination
+Niñadecobre gains 13 points with Montréal to Dallas destination
+Niñadecobre reveals Vancouver to Montréal destination
+Niñadecobre gains 20 points with Vancouver to Montréal destination
+Niñadecobre reveals Winnipeg to Omaha destination
+Niñadecobre gains 6 points with Winnipeg to Omaha destination
+Niñadecobre reveals Sault St. Marie to Oklahoma City destination
+Niñadecobre gains 8 points with Sault St. Marie to Oklahoma City destination
+Niñadecobre reveals Duluth to Houston destination
+Niñadecobre gains 8 points with Duluth to Houston destination
+Niñadecobre reveals Pittsburgh to New Orleans destination
+Niñadecobre gains 8 points with Pittsburgh to New Orleans destination
+wetgus gains 15 points with Globetrotter : 9 completed destinations
+roaminsumwere longest continuous path is 35 train-cars long
+eknarexi longest continuous path is 33 train-cars long
+wetgus longest continuous path is 23 train-cars long
+Niñadecobre longest continuous path is 39 train-cars long
+Niñadecobre gains 10 points with longest continuous path : 39 train cars
+End of game

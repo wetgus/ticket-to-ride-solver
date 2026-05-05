@@ -1,0 +1,607 @@
+Move 2 :01/05/2026 19:51:41
+lucia637 keeps 2 destination(s)
+lucia637 keeps 2 destination(s)
+Move 3 :19:51:48
+idylldreams keeps 3 destination(s)
+idylldreams keeps 3 destination(s)
+Move 4 :19:51:51
+ovrigt keeps 2 destination(s)
+ovrigt keeps 2 destination(s)
+Move 5 :19:51:52
+wetgus keeps 3 destination(s)
+wetgus keeps 3 destination(s)
+Move 6 :19:51:58
+idylldreams takes 5
+Move 7 :19:52:01
+idylldreams takes 7
+Move 8 :19:52:04
+ovrigt gains 2 point(s) by claiming route from Houston to New Orleans with 2 train car(s) : 2,0
+Move 10 :19:52:22
+lucia637 keeps 2 destination(s)
+lucia637 keeps 2 destination(s)
+Move 11 :19:52:29
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 12 :19:52:30
+You take hidden train car card(s) 8
+wetgus takes 1 hidden train car card(s)
+Move 13 :19:52:36
+You take hidden train car card(s) 6
+idylldreams takes 1 hidden train car card(s)
+Move 14 :19:52:37
+You take hidden train car card(s) 8
+idylldreams takes 1 hidden train car card(s)
+Move 15 :19:52:39
+ovrigt takes 3
+Three locomotives have been revealed, visible train cards are replaced
+Move 16 :19:52:42
+ovrigt takes 8
+Move 17 :19:52:44
+lucia637 takes 7
+Move 18 :19:52:46
+lucia637 takes 4
+Move 19 :19:52:50
+wetgus takes 6
+Move 20 :19:52:55
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 21 :19:52:59
+You take hidden train car card(s) 1
+idylldreams takes 1 hidden train car card(s)
+Move 22 :19:53:00
+You take hidden train car card(s) 8
+idylldreams takes 1 hidden train car card(s)
+Move 23 :19:53:01
+ovrigt takes 8
+Move 24 :19:53:03
+ovrigt takes 6
+Move 25 :19:53:07
+lucia637 gains 1 point(s) by claiming route from Dallas to Houston with 1 train car(s) : 4
+Move 26 :19:53:12
+You take hidden train car card(s) 2
+wetgus takes 1 hidden train car card(s)
+Move 27 :19:53:13
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 28 :19:53:15
+idylldreams takes 5
+Move 29 :19:53:16
+idylldreams takes 5
+Move 30 :19:53:18
+ovrigt takes 8
+Move 31 :19:53:19
+ovrigt takes 8
+Move 32 :19:53:22
+lucia637 takes 6
+Move 33 :19:53:23
+lucia637 takes 7
+Move 34 :19:53:26
+You take hidden train car card(s) 3
+wetgus takes 1 hidden train car card(s)
+Move 35 :19:53:27
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 36 :19:53:32
+You take hidden train car card(s) 1
+idylldreams takes 1 hidden train car card(s)
+Move 37 :19:53:33
+You take hidden train car card(s) 8
+idylldreams takes 1 hidden train car card(s)
+Move 38 :19:53:35
+You take hidden train car card(s) 7
+ovrigt takes 1 hidden train car card(s)
+Move 39 :19:53:35
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 40 :19:53:42
+lucia637 gains 2 point(s) by claiming route from Dallas to Little Rock with 2 train car(s) : 2,2
+Move 41 :19:53:46
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 42 :19:53:47
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 43 :19:53:51
+You take hidden train car card(s) 3
+idylldreams takes 1 hidden train car card(s)
+Move 44 :19:53:52
+You take hidden train car card(s) 0
+idylldreams takes 1 hidden train car card(s)
+Move 45 :19:53:53
+You take hidden train car card(s) 7
+ovrigt takes 1 hidden train car card(s)
+Move 46 :19:53:54
+You take hidden train car card(s) 5
+ovrigt takes 1 hidden train car card(s)
+Move 47 :19:53:55
+You take hidden train car card(s) 3
+lucia637 takes 1 hidden train car card(s)
+Move 48 :19:53:56
+You take hidden train car card(s) 2
+lucia637 takes 1 hidden train car card(s)
+Move 49 :19:54:03
+wetgus takes 1
+Move 50 :19:54:08
+You take hidden train car card(s) 5
+wetgus takes 1 hidden train car card(s)
+Move 51 :19:54:11
+You take hidden train car card(s) 8
+idylldreams takes 1 hidden train car card(s)
+Move 52 :19:54:12
+You take hidden train car card(s) 5
+idylldreams takes 1 hidden train car card(s)
+Move 53 :19:54:13
+You take hidden train car card(s) 7
+ovrigt takes 1 hidden train car card(s)
+Move 54 :19:54:14
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 55 :19:54:15
+lucia637 takes 2
+Move 56 :19:54:16
+lucia637 takes 6
+Move 57 :19:54:20
+wetgus takes 2
+Move 58 :19:54:22
+wetgus takes 2
+Move 59 :19:54:25
+You take hidden train car card(s) 3
+idylldreams takes 1 hidden train car card(s)
+Move 60 :19:54:26
+You take hidden train car card(s) 4
+idylldreams takes 1 hidden train car card(s)
+Move 61 :19:54:28
+You take hidden train car card(s) 7
+ovrigt takes 1 hidden train car card(s)
+Move 62 :19:54:28
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 63 :19:54:31
+lucia637 gains 2 point(s) by claiming route from Little Rock to Saint Louis with 2 train car(s) : 2,2
+Move 64 :19:54:37
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 65 :19:54:39
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 66 :19:54:41
+You take hidden train car card(s) 4
+idylldreams takes 1 hidden train car card(s)
+Move 67 :19:54:42
+You take hidden train car card(s) 8
+idylldreams takes 1 hidden train car card(s)
+Move 68 :19:54:45
+ovrigt gains 1 point(s) by claiming route from Atlanta to Nashville with 1 train car(s) : 1
+Move 69 :19:54:47
+You take hidden train car card(s) 3
+lucia637 takes 1 hidden train car card(s)
+Move 70 :19:54:48
+You take hidden train car card(s) 1
+lucia637 takes 1 hidden train car card(s)
+Move 71 :19:54:52
+wetgus takes 4
+Three locomotives have been revealed, visible train cards are replaced
+Move 72 :19:54:56
+wetgus takes 3
+Move 73 :19:54:58
+idylldreams takes 5
+Move 74 :19:54:59
+idylldreams takes 6
+Move 75 :19:55:01
+ovrigt takes 7
+Move 76 :19:55:03
+ovrigt takes 7
+Move 77 :19:55:05
+You take hidden train car card(s) 4
+lucia637 takes 1 hidden train car card(s)
+Move 78 :19:55:05
+You take hidden train car card(s) 1
+lucia637 takes 1 hidden train car card(s)
+Move 79 :19:55:08
+wetgus gains 4 point(s) by claiming route from Montréal to New York with 3 train car(s) : 3,3,3
+Move 80 :19:55:14
+You take hidden train car card(s) 3
+idylldreams takes 1 hidden train car card(s)
+Move 81 :19:55:16
+You take hidden train car card(s) 2
+idylldreams takes 1 hidden train car card(s)
+Move 82 :19:55:18
+You take hidden train car card(s) 5
+ovrigt takes 1 hidden train car card(s)
+Move 83 :19:55:19
+You take hidden train car card(s) 3
+ovrigt takes 1 hidden train car card(s)
+Move 84 :19:55:21
+You take hidden train car card(s) 6
+lucia637 takes 1 hidden train car card(s)
+Move 85 :19:55:22
+You take hidden train car card(s) 4
+lucia637 takes 1 hidden train car card(s)
+Move 86 :19:55:27
+wetgus takes 1
+Move 87 :19:55:33
+wetgus takes 4
+Move 88 :19:55:39
+You take hidden train car card(s) 3
+idylldreams takes 1 hidden train car card(s)
+Move 89 :19:55:40
+You take hidden train car card(s) 4
+idylldreams takes 1 hidden train car card(s)
+Move 90 :19:55:41
+ovrigt takes 8
+Move 91 :19:55:43
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 92 :19:55:44
+lucia637 gains 7 point(s) by claiming route from Duluth to Winnipeg with 4 train car(s) : 6,6,6,0
+Move 93 :19:55:53
+wetgus takes 4
+The train car deck has been reshuffled
+Three locomotives have been revealed, visible train cards are replaced
+Three locomotives have been revealed, visible train cards are replaced
+Move 94 :19:56:04
+wetgus takes 2
+Three locomotives have been revealed, visible train cards are replaced
+Move 95 :19:56:09
+You take hidden train car card(s) 2
+idylldreams takes 1 hidden train car card(s)
+Move 96 :19:56:10
+You take hidden train car card(s) 2
+idylldreams takes 1 hidden train car card(s)
+Move 97 :19:56:12
+You take hidden train car card(s) 2
+ovrigt takes 1 hidden train car card(s)
+Move 98 :19:56:13
+You take hidden train car card(s) 0
+ovrigt takes 1 hidden train car card(s)
+Move 99 :19:56:14
+lucia637 gains 4 point(s) by claiming route from Chicago to Duluth with 3 train car(s) : 7,7,7
+Move 100 :19:56:21
+wetgus takes 2
+Move 101 :19:56:25
+You take hidden train car card(s) 0
+wetgus takes 1 hidden train car card(s)
+Move 102 :19:56:31
+You take hidden train car card(s) 6
+idylldreams takes 1 hidden train car card(s)
+Move 103 :19:56:32
+You take hidden train car card(s) 2
+idylldreams takes 1 hidden train car card(s)
+Move 104 :19:56:34
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 105 :19:56:35
+You take hidden train car card(s) 3
+ovrigt takes 1 hidden train car card(s)
+Move 106 :19:56:37
+You take hidden train car card(s) 6
+lucia637 takes 1 hidden train car card(s)
+Move 107 :19:56:38
+You take hidden train car card(s) 4
+lucia637 takes 1 hidden train car card(s)
+Move 108 :19:56:43
+wetgus gains 4 point(s) by claiming route from Los Angeles to San Francisco with 3 train car(s) : 4,4,4
+Move 109 :19:56:50
+You take hidden train car card(s) 0
+idylldreams takes 1 hidden train car card(s)
+Move 110 :19:56:51
+You take hidden train car card(s) 3
+idylldreams takes 1 hidden train car card(s)
+Move 111 :19:56:52
+ovrigt gains 15 point(s) by claiming route from El Paso to Los Angeles with 6 train car(s) : 6,6,6,6,6,0
+Move 112 :19:56:53
+lucia637 takes 4
+The train car deck has been reshuffled
+Move 113 :19:56:55
+lucia637 takes 4
+Move 114 :19:57:00
+wetgus takes 6
+Three locomotives have been revealed, visible train cards are replaced
+Move 115 :19:57:09
+wetgus takes 6
+Three locomotives have been revealed, visible train cards are replaced
+Move 116 :19:57:15
+idylldreams gains 4 point(s) by claiming route from Los Angeles to Phoenix with 3 train car(s) : 6,6,6
+Move 117 :19:57:19
+ovrigt gains 15 point(s) by claiming route from El Paso to Houston with 6 train car(s) : 8,8,8,8,8,0
+Move 118 :19:57:21
+lucia637 takes 6
+Move 119 :19:57:22
+lucia637 takes 4
+Move 120 :19:57:31
+wetgus gains 10 point(s) by claiming route from Portland to San Francisco with 5 train car(s) : 1,1,1,1,1
+Move 121 :19:57:33
+idylldreams takes 1
+Move 122 :19:57:43
+You take hidden train car card(s) 0
+idylldreams takes 1 hidden train car card(s)
+Move 123 :19:57:44
+You completed a new destination : Los Angeles - Miami
+ovrigt gains 15 point(s) by claiming route from Miami to New Orleans with 6 train car(s) : 7,7,7,7,7,7
+Move 124 :19:57:46
+lucia637 takes 6
+Move 125 :19:57:50
+You take hidden train car card(s) 7
+lucia637 takes 1 hidden train car card(s)
+Move 126 :19:58:00
+wetgus takes 7
+Move 127 :19:58:02
+wetgus takes 6
+Move 128 :19:58:04
+idylldreams takes 1
+The train car deck has been reshuffled
+Three locomotives have been revealed, visible train cards are replaced
+Move 129 :19:58:14
+You take hidden train car card(s) 7
+idylldreams takes 1 hidden train car card(s)
+Move 130 :19:58:16
+ovrigt takes 3
+Move 131 :19:58:18
+You take hidden train car card(s) 0
+ovrigt takes 1 hidden train car card(s)
+Move 132 :19:58:19
+lucia637 gains 4 point(s) by claiming route from Chicago to Pittsburgh with 3 train car(s) : 6,6,6
+Move 133 :19:58:24
+wetgus takes 7
+Move 134 :19:58:32
+wetgus takes 8
+Move 135 :19:58:41
+idylldreams takes 7
+Move 136 :19:58:44
+You take hidden train car card(s) 0
+idylldreams takes 1 hidden train car card(s)
+Move 137 :19:58:47
+ovrigt gains 2 point(s) by claiming route from Pittsburgh to Toronto with 2 train car(s) : 5,5
+Move 138 :19:58:47
+lucia637 takes 8
+Move 139 :19:58:49
+You take hidden train car card(s) 8
+lucia637 takes 1 hidden train car card(s)
+Move 140 :19:58:51
+wetgus gains 10 point(s) by claiming route from Montréal to Sault St. Marie with 5 train car(s) : 6,6,6,6,6
+Move 141 :19:58:54
+idylldreams takes 1
+Move 142 :19:58:57
+You take hidden train car card(s) 1
+idylldreams takes 1 hidden train car card(s)
+Move 143 :19:58:59
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 144 :19:59:00
+You take hidden train car card(s) 8
+ovrigt takes 1 hidden train car card(s)
+Move 145 :19:59:01
+You completed a new destination : Winnipeg - Houston
+You completed a new destination : Winnipeg - Little Rock
+lucia637 gains 2 point(s) by claiming route from Chicago to Saint Louis with 2 train car(s) : 8,8
+Move 146 :19:59:07
+wetgus takes 7
+Move 147 :19:59:13
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 148 :19:59:15
+idylldreams gains 15 point(s) by claiming route from Duluth to Toronto with 6 train car(s) : 1,1,1,1,1,1
+Move 149 :19:59:20
+ovrigt gains 4 point(s) by claiming route from Montréal to Toronto with 3 train car(s) : 1,1,0
+Move 150 :19:59:22
+lucia637 takes 6
+Three locomotives have been revealed, visible train cards are replaced
+Move 151 :19:59:27
+You take hidden train car card(s) 7
+lucia637 takes 1 hidden train car card(s)
+Move 152 :19:59:34
+wetgus gains 15 point(s) by claiming route from Calgary to Winnipeg with 6 train car(s) : 2,2,2,2,2,2
+Move 153 :19:59:36
+idylldreams gains 7 point(s) by claiming route from Chicago to Toronto with 4 train car(s) : 2,2,2,2
+Move 154 :19:59:38
+ovrigt takes 4
+Move 155 :19:59:40
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 157 :19:59:51
+lucia637 keeps 1 destination(s)
+lucia637 keeps 1 destination(s)
+Move 158 :19:59:56
+wetgus takes 7
+The train car deck has been reshuffled
+Move 159 :19:59:58
+wetgus takes 8
+Move 160 :20:00:00
+idylldreams gains 15 point(s) by claiming route from Duluth to Helena with 6 train car(s) : 5,5,5,5,5,5
+Move 161 :20:00:03
+You take hidden train car card(s) 2
+ovrigt takes 1 hidden train car card(s)
+Move 162 :20:00:04
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 163 :20:00:05
+lucia637 takes 6
+Move 164 :20:00:07
+lucia637 takes 7
+Move 165 :20:00:10
+wetgus gains 15 point(s) by claiming route from Sault St. Marie to Winnipeg with 6 train car(s) : 7,7,7,7,7,7
+Move 166 :20:00:17
+idylldreams gains 4 point(s) by claiming route from El Paso to Phoenix with 3 train car(s) : 7,7,7
+Move 167 :20:00:19
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 168 :20:00:20
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 169 :20:00:22
+lucia637 gains 4 point(s) by claiming route from Duluth to Sault St. Marie with 3 train car(s) : 7,7,7
+Move 170 :20:00:33
+You completed a new destination : Vancouver - Montréal
+wetgus gains 4 point(s) by claiming route from Calgary to Vancouver with 3 train car(s) : 8,8,8
+Move 171 :20:00:37
+idylldreams gains 2 point(s) by claiming route from El Paso to Santa Fe with 2 train car(s) : 8,8
+Move 172 :20:00:39
+You take hidden train car card(s) 0
+ovrigt takes 1 hidden train car card(s)
+Move 173 :20:00:40
+You take hidden train car card(s) 2
+ovrigt takes 1 hidden train car card(s)
+Move 174 :20:00:42
+You completed a new destination : Sault St. Marie - Nashville
+lucia637 gains 2 point(s) by claiming route from Nashville to Saint Louis with 2 train car(s) : 1,1
+Move 175 :20:00:54
+You completed a new destination : Seattle - New York
+wetgus gains 1 point(s) by claiming route from Seattle to Vancouver with 1 train car(s) : 6
+Move 176 :20:00:59
+idylldreams gains 2 point(s) by claiming route from Denver to Santa Fe with 2 train car(s) : 4,4
+Move 177 :20:01:01
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 178 :20:01:02
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 179 :20:01:03
+lucia637 takes 6
+Move 180 :20:01:04
+You take hidden train car card(s) 6
+lucia637 takes 1 hidden train car card(s)
+Move 181 :20:01:07
+wetgus takes 5
+Move 182 :20:01:09
+You take hidden train car card(s) 1
+wetgus takes 1 hidden train car card(s)
+Move 183 :20:01:11
+You completed a new destination : Helena - Los Angeles
+You completed a new destination : Duluth - El Paso
+You completed a new destination : Los Angeles - Chicago
+idylldreams gains 7 point(s) by claiming route from Denver to Helena with 4 train car(s) : 8,8,8,8
+Move 184 :20:01:13
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 185 :20:01:14
+You take hidden train car card(s) 0
+ovrigt takes 1 hidden train car card(s)
+Move 186 :20:01:15
+lucia637 gains 7 point(s) by claiming route from Denver to Kansas City with 4 train car(s) : 6,6,6,6
+Move 187 :20:01:20
+You completed a new destination : Los Angeles - New York
+wetgus gains 1 point(s) by claiming route from Portland to Seattle with 1 train car(s) : 1
+Move 188 :20:01:29
+idylldreams takes 1
+Move 189 :20:01:39
+You take hidden train car card(s) 6
+idylldreams takes 1 hidden train car card(s)
+Move 190 :20:01:41
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 191 :20:01:42
+You take hidden train car card(s) 8
+ovrigt takes 1 hidden train car card(s)
+Move 192 :20:01:43
+You completed a new destination : Denver - Pittsburgh
+lucia637 gains 2 point(s) by claiming route from Kansas City to Saint Louis with 2 train car(s) : 3,3
+Move 194 :20:02:20
+wetgus keeps 1 destination(s)
+wetgus keeps 1 destination(s)
+Move 195 :20:02:22
+idylldreams gains 7 point(s) by claiming route from Chicago to Omaha with 4 train car(s) : 3,3,3,3
+Move 196 :20:02:25
+You take hidden train car card(s) 0
+ovrigt takes 1 hidden train car card(s)
+Move 197 :20:02:26
+You take hidden train car card(s) 6
+ovrigt takes 1 hidden train car card(s)
+Move 199 :20:03:06
+lucia637 keeps 1 destination(s)
+lucia637 keeps 1 destination(s)
+Move 200 :20:03:11
+wetgus gains 2 point(s) by claiming route from New York to Washington with 2 train car(s) : 5,5
+Move 201 :20:03:16
+idylldreams takes 2
+Move 202 :20:03:35
+idylldreams takes 1
+Move 203 :20:03:37
+You take hidden train car card(s) 2
+ovrigt takes 1 hidden train car card(s)
+Move 204 :20:03:38
+You take hidden train car card(s) 1
+ovrigt takes 1 hidden train car card(s)
+Move 205 :20:03:39
+lucia637 takes 1
+Three locomotives have been revealed, visible train cards are replaced
+Move 206 :20:03:42
+lucia637 takes 1
+Move 207 :20:03:52
+wetgus gains 2 point(s) by claiming route from Raleigh to Washington with 2 train car(s) : 5,5
+Move 208 :20:04:24
+idylldreams takes 2
+Move 209 :20:04:25
+idylldreams takes 2
+Move 210 :20:04:28
+ovrigt takes 4
+Move 211 :20:04:29
+ovrigt takes 4
+Move 212 :20:04:32
+You take hidden train car card(s) 2
+lucia637 takes 1 hidden train car card(s)
+Move 213 :20:04:32
+You take hidden train car card(s) 0
+lucia637 takes 1 hidden train car card(s)
+Move 214 :20:04:34
+wetgus takes 5
+The train car deck has been reshuffled
+Move 215 :20:04:36
+You take hidden train car card(s) 6
+wetgus takes 1 hidden train car card(s)
+Move 216 :20:04:38
+idylldreams gains 7 point(s) by claiming route from Denver to Omaha with 4 train car(s) : 1,1,0,0
+Move 217 :20:04:39
+You completed a new destination : Montréal - Atlanta
+ovrigt gains 7 point(s) by claiming route from Nashville to Pittsburgh with 4 train car(s) : 4,4,4,0
+Move 218 :20:04:41
+lucia637 gains 4 point(s) by claiming route from Helena to Salt Lake City with 3 train car(s) : 1,1,0
+Move 219 :20:04:46
+You completed a new destination : New York - Atlanta
+wetgus gains 2 point(s) by claiming route from Atlanta to Raleigh with 2 train car(s) : 5,5
+Move 220 :20:04:48
+idylldreams gains 10 point(s) by claiming route from Denver to Phoenix with 5 train car(s) : 2,2,2,2,0
+idylldreams has 2 train cars or less, starting final turn !
+Move 221 :20:04:50
+ovrigt gains 10 point(s) by claiming route from Atlanta to Miami with 5 train car(s) : 3,3,3,3,0
+Move 222 :20:04:51
+lucia637 gains 15 point(s) by claiming route from Helena to Seattle with 6 train car(s) : 4,4,4,4,4,4
+Move 223 :20:05:20
+wetgus gains 2 point(s) by claiming route from Las Vegas to Los Angeles with 2 train car(s) : 6,0
+Move 224 :20:05:47
+idylldreams gains 2 point(s) by claiming route from Duluth to Omaha with 2 train car(s) : 3,3
+idylldreams reveals Helena to Los Angeles destination
+idylldreams gains 8 points with Helena to Los Angeles destination
+idylldreams reveals Duluth to El Paso destination
+idylldreams gains 10 points with Duluth to El Paso destination
+idylldreams reveals Los Angeles to Chicago destination
+idylldreams gains 16 points with Los Angeles to Chicago destination
+ovrigt reveals Montréal to Atlanta destination
+ovrigt gains 9 points with Montréal to Atlanta destination
+ovrigt reveals Los Angeles to Miami destination
+ovrigt gains 20 points with Los Angeles to Miami destination
+lucia637 reveals Denver to El Paso destination
+lucia637 loses 4 points with Denver to El Paso destination
+lucia637 reveals Portland to Nashville destination
+lucia637 loses 17 points with Portland to Nashville destination
+lucia637 reveals Denver to Pittsburgh destination
+lucia637 gains 11 points with Denver to Pittsburgh destination
+lucia637 reveals Sault St. Marie to Nashville destination
+lucia637 gains 8 points with Sault St. Marie to Nashville destination
+lucia637 reveals Winnipeg to Houston destination
+lucia637 gains 12 points with Winnipeg to Houston destination
+lucia637 reveals Winnipeg to Little Rock destination
+lucia637 gains 11 points with Winnipeg to Little Rock destination
+wetgus reveals Los Angeles to New York destination
+wetgus gains 21 points with Los Angeles to New York destination
+wetgus reveals Seattle to New York destination
+wetgus gains 22 points with Seattle to New York destination
+wetgus reveals New York to Atlanta destination
+wetgus gains 6 points with New York to Atlanta destination
+wetgus reveals Vancouver to Montréal destination
+wetgus gains 20 points with Vancouver to Montréal destination
+idylldreams longest continuous path is 43 train-cars long
+ovrigt longest continuous path is 35 train-cars long
+lucia637 longest continuous path is 15 train-cars long
+wetgus longest continuous path is 41 train-cars long
+idylldreams gains 10 points with longest continuous path : 43 train cars
+End of game

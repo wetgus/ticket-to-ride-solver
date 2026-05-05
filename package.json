@@ -6,9 +6,20 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "check": "tsc -p tsconfig.json --noEmit"
+    "check": "tsc -p tsconfig.json --noEmit",
+    "pages:prepare": "npm run build && node web/prepare-pages.mjs",
+    "scenario": "node dist/scripts/scenario-runner.js",
+    "scenario:sample": "node dist/scripts/scenario-runner.js sample-opening",
+    "scenario:block": "node dist/scripts/scenario-runner.js contested-west",
+    "parse:bga-log": "node dist/scripts/parse-bga-log.js",
+    "analyze:bga-log": "node dist/scripts/analyze-bga-log.js",
+    "reconstruct:bga-log": "node dist/scripts/reconstruct-bga-log.js",
+    "extract:decisions": "node dist/scripts/extract-decisions.js",
+    "export:decisions": "node dist/scripts/export-decision-dataset.js",
+    "export:decision-corpus": "node dist/scripts/export-decision-batch.js"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "typescript": "^5.9.3"
   }
 }

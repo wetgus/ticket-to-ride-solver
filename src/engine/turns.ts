@@ -9,6 +9,11 @@ export const advanceToNextPlayer = (gameState: GameState): GameState => {
   );
   const nextIndex = (currentIndex + 1) % gameState.publicState.playerOrder.length;
   const nextPlayerId = gameState.publicState.playerOrder[nextIndex];
+
+  if (!nextPlayerId) {
+    throw new Error("Could not determine next player from player order.");
+  }
+
   const lastRoundTriggeredBy =
     gameState.publicState.lastRoundTriggeredBy ??
     (shouldTriggerLastRound(gameState) ? gameState.publicState.currentPlayerId : undefined);

@@ -1,0 +1,137 @@
+{
+  "gameId": "table-845009780",
+  "sourceLog": "table-845009780.txt",
+  "players": [
+    {
+      "playerName": "wetgus",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Los Angeles - New York",
+            "Seattle - New York",
+            "Vancouver - Montreal"
+          ],
+          "kept": [
+            "Los Angeles - New York",
+            "Seattle - New York",
+            "Vancouver - Montreal"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 194,
+          "offered": [
+            "Calgary - Phoenix",
+            "New York - Atlanta",
+            "Sault St Marie - Oklahoma City"
+          ],
+          "kept": [
+            "New York - Atlanta"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "idylldreams",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Duluth - El Paso",
+            "Helena - Los Angeles",
+            "Los Angeles - Chicago"
+          ],
+          "kept": [
+            "Duluth - El Paso",
+            "Helena - Los Angeles",
+            "Los Angeles - Chicago"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 7,
+          "offered": [
+            "Denver - El Paso",
+            "Los Angeles - Miami",
+            "Portland - Phoenix"
+          ],
+          "kept": [
+            "Los Angeles - Miami"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "ovrigt",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Chicago - Santa Fe",
+            "Los Angeles - Miami",
+            "Montreal - Atlanta"
+          ],
+          "kept": [
+            "Los Angeles - Miami",
+            "Montreal - Atlanta"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "lucia637",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Denver - El Paso",
+            "Denver - Pittsburgh",
+            "Duluth - Houston"
+          ],
+          "kept": [
+            "Denver - El Paso",
+            "Denver - Pittsburgh"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 10,
+          "offered": [
+            "Boston - Miami",
+            "Winnipeg - Houston",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Winnipeg - Houston",
+            "Winnipeg - Little Rock"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 157,
+          "offered": [
+            "Portland - Phoenix",
+            "Sault St Marie - Nashville",
+            "Toronto - Miami"
+          ],
+          "kept": [
+            "Sault St Marie - Nashville"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 199,
+          "offered": [
+            "Montreal - New Orleans",
+            "Portland - Nashville",
+            "San Francisco - Atlanta"
+          ],
+          "kept": [
+            "Portland - Nashville"
+          ]
+        }
+      ]
+    }
+  ]
+}

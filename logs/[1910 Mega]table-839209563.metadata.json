@@ -1,0 +1,214 @@
+{
+  "gameId": "[1910 Mega]table-839209563",
+  "sourceLog": "[1910 Mega]table-839209563.txt",
+  "gameVariant": "usa-1910-mega",
+  "players": [
+    {
+      "playerName": "roaminsumwere",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Omaha - New Orleans",
+            "San Francisco - Washington",
+            "Chicago - New Orleans",
+            "Dallas - New York",
+            "Portland - Phoenix"
+          ],
+          "kept": [
+            "San Francisco - Washington",
+            "Dallas - New York",
+            "Portland - Phoenix"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 177,
+          "offered": [
+            "Montreal - Raleigh",
+            "New York - Miami",
+            "Portland - Pittsburgh",
+            "Toronto - Charleston"
+          ],
+          "kept": [
+            "Portland - Pittsburgh"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 206,
+          "offered": [
+            "Las Vegas - New York",
+            "Los Angeles - Atlanta",
+            "Portland - Nashville",
+            "Toronto - Miami"
+          ],
+          "kept": [
+            "Las Vegas - New York",
+            "Los Angeles - Atlanta",
+            "Portland - Nashville"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 232,
+          "offered": [
+            "Phoenix - Boston",
+            "Salt Lake City - Chicago",
+            "Montreal - New Orleans",
+            "San Francisco - Atlanta"
+          ],
+          "kept": [
+            "San Francisco - Atlanta"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "wetgus",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Duluth - Dallas",
+            "Kansas City - Boston",
+            "Las Vegas - Miami",
+            "New York - Atlanta",
+            "Winnipeg - Houston"
+          ],
+          "kept": [
+            "Kansas City - Boston",
+            "Las Vegas - Miami",
+            "New York - Atlanta"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 173,
+          "offered": [
+            "Chicago - New York",
+            "Boston - Miami",
+            "Calgary - Phoenix",
+            "Montreal - Atlanta"
+          ],
+          "kept": [
+            "Chicago - New York",
+            "Boston - Miami",
+            "Montreal - Atlanta"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 202,
+          "offered": [
+            "Nashville - New York",
+            "Salt Lake City - Kansas City",
+            "Duluth - El Paso",
+            "Vancouver - Portland"
+          ],
+          "kept": [
+            "Nashville - New York",
+            "Salt Lake City - Kansas City"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 209,
+          "offered": [
+            "Portland - Houston",
+            "Vancouver - Denver",
+            "Kansas City - Houston",
+            "Los Angeles - New York"
+          ],
+          "kept": [
+            "Kansas City - Houston"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "eknarexi",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Calgary - Nashville",
+            "Chicago - Atlanta",
+            "Los Angeles - Oklahoma City",
+            "Chicago - Santa Fe",
+            "Seattle - Los Angeles"
+          ],
+          "kept": [
+            "Los Angeles - Oklahoma City",
+            "Chicago - Santa Fe",
+            "Seattle - Los Angeles"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 185,
+          "offered": [
+            "San Francisco - Sault St Marie",
+            "Helena - Los Angeles",
+            "Los Angeles - Miami",
+            "Montreal - Chicago"
+          ],
+          "kept": [
+            "San Francisco - Sault St Marie",
+            "Helena - Los Angeles",
+            "Montreal - Chicago"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 222,
+          "offered": [
+            "Denver - St Louis",
+            "Sault St Marie - Miami",
+            "Vancouver - Duluth",
+            "Washington - Atlanta"
+          ],
+          "kept": [
+            "Vancouver - Duluth"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "Niñadecobre",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Montreal - Dallas",
+            "Pittsburgh - New Orleans",
+            "Sault St Marie - Oklahoma City",
+            "Vancouver - Montreal",
+            "Winnipeg - Omaha"
+          ],
+          "kept": [
+            "Montreal - Dallas",
+            "Pittsburgh - New Orleans",
+            "Sault St Marie - Oklahoma City",
+            "Vancouver - Montreal",
+            "Winnipeg - Omaha"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 230,
+          "offered": [
+            "Winnipeg - Santa Fe",
+            "Duluth - Houston",
+            "Vancouver - Santa Fe",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Duluth - Houston",
+			"Winnipeg - Little Rock"
+          ]
+        }
+      ]
+    }
+  ]
+}

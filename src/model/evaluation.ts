@@ -1,3 +1,4 @@
+import type { GameAction } from "./actions.js";
 import type { RouteId, TicketId } from "./board.js";
 
 export interface TicketCompletionEstimate {
@@ -29,7 +30,17 @@ export interface EvaluationFeatures {
 }
 
 export interface ActionRecommendation {
+  action: GameAction;
   actionId: string;
+  utilityScore: number;
+  confidence: number;
+  rationale: string[];
+  featureBreakdown: EvaluationFeatures;
+}
+
+export interface TurnRecommendation {
+  turnId: string;
+  actions: GameAction[];
   utilityScore: number;
   confidence: number;
   rationale: string[];
@@ -39,6 +50,13 @@ export interface ActionRecommendation {
 export interface PositionEvaluation {
   topRecommendation?: ActionRecommendation;
   alternatives: ActionRecommendation[];
+  ticketEstimates: TicketCompletionEstimate[];
+  routeUrgency: RouteUrgencyEstimate[];
+}
+
+export interface TurnEvaluation {
+  topRecommendation?: TurnRecommendation;
+  alternatives: TurnRecommendation[];
   ticketEstimates: TicketCompletionEstimate[];
   routeUrgency: RouteUrgencyEstimate[];
 }

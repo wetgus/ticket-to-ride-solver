@@ -1,0 +1,173 @@
+{
+  "gameId": "table-839701256",
+  "sourceLog": "table-839701256.txt",
+  "players": [
+    {
+      "playerName": "wetgus",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Denver - Pittsburgh",
+            "Seattle - New York",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Denver - Pittsburgh",
+            "Seattle - New York"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 160,
+          "offered": [
+            "Calgary - Phoenix",
+            "Sault St Marie - Nashville",
+            "Sault St Marie - Oklahoma City"
+          ],
+          "kept": [
+            "Sault St Marie - Nashville",
+            "Sault St Marie - Oklahoma City"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 196,
+          "offered": [
+            "Chicago - New Orleans",
+            "Duluth - Houston",
+            "Montreal - New Orleans"
+          ],
+          "kept": [
+            "Duluth - Houston"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "weaselsperse",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Boston - Miami",
+            "Denver - El Paso",
+            "Vancouver - Santa Fe"
+          ],
+          "kept": [
+            "Boston - Miami",
+            "Denver - El Paso"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 186,
+          "offered": [
+            "Duluth - El Paso",
+            "Helena - Los Angeles",
+            "Vancouver - Montreal"
+          ],
+          "kept": [
+            "Duluth - El Paso"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 213,
+          "offered": [
+            "Calgary - Salt Lake City",
+            "Los Angeles - New York",
+            "New York - Atlanta"
+          ],
+          "kept": [
+            "New York - Atlanta"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 219,
+          "offered": [
+            "Kansas City - Houston",
+            "Portland - Nashville",
+            "San Francisco - Atlanta"
+          ],
+          "kept": [
+            "Kansas City - Houston"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "pff18",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Dallas - New York",
+            "Montreal - Atlanta",
+            "Seattle - Los Angeles"
+          ],
+          "kept": [
+            "Montreal - Atlanta",
+            "Seattle - Los Angeles"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 223,
+          "offered": [
+            "Chicago - Santa Fe",
+            "Los Angeles - Chicago",
+            "Winnipeg - Houston"
+          ],
+          "kept": [
+            "Chicago - Santa Fe"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 229,
+          "offered": [
+            "Dallas - New York",
+            "Vancouver - Santa Fe",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Dallas - New York"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 235,
+          "offered": [
+            "Calgary - Phoenix",
+            "Helena - Los Angeles",
+            "Vancouver - Montreal"
+          ],
+          "kept": [
+            "Helena - Los Angeles",
+            "Vancouver - Montreal"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "vik_vik_vik",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Los Angeles - Miami",
+            "Portland - Phoenix",
+            "Toronto - Miami"
+          ],
+          "kept": [
+            "Los Angeles - Miami",
+            "Portland - Phoenix",
+            "Toronto - Miami"
+          ]
+        }
+      ]
+    }
+  ]
+}

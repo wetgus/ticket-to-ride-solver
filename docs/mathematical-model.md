@@ -431,4 +431,3 @@ Version 1 is successful if:
 - it ranks legal actions plausibly in real midgame scenarios;
 - it explains recommendations in human terms;
 - it improves over simple baseline heuristics on replay tests.
-

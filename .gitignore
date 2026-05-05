@@ -1,5 +1,8 @@
 node_modules/
 dist/
+site/
+artifacts/
 coverage/
 .DS_Store
 Thumbs.db
+web/*.log

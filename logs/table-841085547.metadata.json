@@ -1,0 +1,135 @@
+{
+  "gameId": "table-841085547",
+  "sourceLog": "table-841085547.txt",
+  "players": [
+    {
+      "playerName": "wetgus",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Duluth - El Paso",
+            "Portland - Nashville",
+            "Winnipeg - Houston"
+          ],
+          "kept": [
+            "Duluth - El Paso",
+            "Winnipeg - Houston"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "Kayleigh Jones",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Dallas - New York",
+            "Kansas City - Houston",
+            "Sault St Marie - Oklahoma City"
+          ],
+          "kept": [
+            "Dallas - New York",
+            "Kansas City - Houston",
+            "Sault St Marie - Oklahoma City"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 7,
+          "offered": [
+            "Denver - El Paso",
+            "Los Angeles - Miami",
+            "Portland - Phoenix"
+          ],
+          "kept": [
+            "Los Angeles - Miami"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "domiluc",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Calgary - Salt Lake City",
+            "Helena - Los Angeles",
+            "New York - Atlanta"
+          ],
+          "kept": [
+            "Calgary - Salt Lake City",
+            "Helena - Los Angeles"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 46,
+          "offered": [
+            "Sault St Marie - Nashville",
+            "Toronto - Miami",
+            "Vancouver - Montreal"
+          ],
+          "kept": [
+            "Vancouver - Montreal"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 171,
+          "offered": [
+            "Boston - Miami",
+            "Montreal - New Orleans",
+            "San Francisco - Atlanta"
+          ],
+          "kept": [
+            "Boston - Miami"
+          ]
+        }
+      ]
+    },
+    {
+      "playerName": "tryingsomethingnew",
+      "destinationSelections": [
+        {
+          "selectionType": "initial",
+          "offered": [
+            "Duluth - Houston",
+            "Montreal - Atlanta",
+            "Seattle - Los Angeles"
+          ],
+          "kept": [
+            "Montreal - Atlanta",
+            "Seattle - Los Angeles"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 147,
+          "offered": [
+            "Calgary - Phoenix",
+            "Chicago - New Orleans",
+            "Denver - Pittsburgh"
+          ],
+          "kept": [
+            "Calgary - Phoenix"
+          ]
+        },
+        {
+          "selectionType": "midgame-draw",
+          "moveNumber": 201,
+          "offered": [
+            "Los Angeles - Chicago",
+            "Los Angeles - New York",
+            "Winnipeg - Little Rock"
+          ],
+          "kept": [
+            "Los Angeles - New York"
+          ]
+        }
+      ]
+    }
+  ]
+}
