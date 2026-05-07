@@ -53,6 +53,17 @@ def patch_external_engine_face_up_refill() -> None:
 patch_external_engine_face_up_refill()
 
 
+def patch_external_engine_usa_board(board: Board) -> Board:
+    graph = getattr(board, "graph", None)
+    if graph is None:
+        return board
+    edge_map = graph.get_edge_data("SALT LAKE CITY", "SAN FRANCISCO", default={})
+    for edge_key, edge_data in edge_map.items():
+        if edge_data.get("color") in {"WHITE", "ORANGE"}:
+            graph["SALT LAKE CITY"]["SAN FRANCISCO"][edge_key]["weight"] = 5
+    return board
+
+
 def find_primary_codex_seat(agent_names: List[str]) -> int | None:
     try:
         return agent_names.index("codex")
@@ -225,7 +236,9 @@ def play_game_with_trace(
 
 
 def make_game(player_count: int):
-    board = Board(loadgraphfromfile(os.path.join(EXTERNAL_ROOT, "gameContent", "usa.txt")))
+    board = patch_external_engine_usa_board(
+        Board(loadgraphfromfile(os.path.join(EXTERNAL_ROOT, "gameContent", "usa.txt")))
+    )
     destination_deck = destinationdeckdict(
         dest_list=loaddestinationdeckfromfile(os.path.join(EXTERNAL_ROOT, "gameContent", "usa_destinations.txt")),
         board="usa",
@@ -556,6 +569,12 @@ def main():
     parser = argparse.ArgumentParser(description="Run external Ticket to Ride benchmarks for the Codex solver.")
     parser.add_argument("--games", type=int, default=8, help="Games per rotated seat lineup.")
     parser.add_argument(
+        "--rotations",
+        type=int,
+        default=None,
+        help="How many seat rotations to run. Defaults to the lineup length.",
+    )
+    parser.add_argument(
         "--lineup",
         nargs="+",
         default=["codex", "osa", "lra", "path"],
@@ -633,7 +652,8 @@ def main():
     write_json(progress_output_path, progress_state)
 
     summaries = []
-    rotated_lineups = build_rotated_matchups(args.lineup, len(args.lineup))
+    rotation_count = args.rotations if args.rotations is not None else len(args.lineup)
+    rotated_lineups = build_rotated_matchups(args.lineup, rotation_count)
     for lineup_index, lineup in enumerate(rotated_lineups):
         def update_progress(lineup_progress: Dict) -> None:
             progress_state.update(
