@@ -132,7 +132,13 @@ def extract_codex_decision(agent) -> Dict | None:
     }
 
 
-def play_game_with_trace(game, agents: List[object], agent_names: List[str], game_id: str) -> Dict:
+def play_game_with_trace(
+    game,
+    agents: List[object],
+    agent_names: List[str],
+    game_id: str,
+    collect_replay: bool = False,
+) -> Dict | None:
     primary_codex_seat = find_primary_codex_seat(agent_names)
     primary_codex_agent = (
         agents[primary_codex_seat]
@@ -140,15 +146,17 @@ def play_game_with_trace(game, agents: List[object], agent_names: List[str], gam
         else None
     )
 
-    replay = {
-        "gameId": game_id,
-        "agentNames": agent_names,
-        "codexSeat": primary_codex_seat,
-        "initialSnapshot": primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
-        if primary_codex_agent is not None and primary_codex_seat is not None
-        else None,
-        "steps": [],
-    }
+    replay = None
+    if collect_replay:
+        replay = {
+            "gameId": game_id,
+            "agentNames": agent_names,
+            "codexSeat": primary_codex_seat,
+            "initialSnapshot": primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
+            if primary_codex_agent is not None and primary_codex_seat is not None
+            else None,
+            "steps": [],
+        }
 
     codex_agents = [
         (seat_index, agent)
@@ -162,21 +170,22 @@ def play_game_with_trace(game, agents: List[object], agent_names: List[str], gam
         for codex_seat, codex_agent in codex_agents:
             codex_agent.observe_move(move, seat, codex_seat)
 
-        step = {
-            "index": len(replay["steps"]),
-            "actorSeat": seat,
-            "actorName": agent_names[seat],
-            "move": describe_move(move, agent_names[seat]),
-        }
+        if replay is not None:
+            step = {
+                "index": len(replay["steps"]),
+                "actorSeat": seat,
+                "actorName": agent_names[seat],
+                "move": describe_move(move, agent_names[seat]),
+            }
 
-        if primary_codex_agent is not None and primary_codex_seat is not None:
-            step["snapshot"] = primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
-            if seat == primary_codex_seat:
-                codex_decision = extract_codex_decision(primary_codex_agent)
-                if codex_decision:
-                    step["codexDecision"] = codex_decision
+            if primary_codex_agent is not None and primary_codex_seat is not None:
+                step["snapshot"] = primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
+                if seat == primary_codex_seat:
+                    codex_decision = extract_codex_decision(primary_codex_agent)
+                    if codex_decision:
+                        step["codexDecision"] = codex_decision
 
-        replay["steps"].append(step)
+            replay["steps"].append(step)
 
     while game.game_over is False:
         current_seat = game.current_player
@@ -185,30 +194,32 @@ def play_game_with_trace(game, agents: List[object], agent_names: List[str], gam
         for codex_seat, codex_agent in codex_agents:
             codex_agent.observe_move(move, current_seat, codex_seat)
 
-        step = {
-            "index": len(replay["steps"]),
-            "actorSeat": current_seat,
-            "actorName": agent_names[current_seat],
-            "move": describe_move(move, agent_names[current_seat]),
-        }
+        if replay is not None:
+            step = {
+                "index": len(replay["steps"]),
+                "actorSeat": current_seat,
+                "actorName": agent_names[current_seat],
+                "move": describe_move(move, agent_names[current_seat]),
+            }
 
-        if primary_codex_agent is not None and primary_codex_seat is not None:
-            step["snapshot"] = primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
-            if current_seat == primary_codex_seat:
-                codex_decision = extract_codex_decision(primary_codex_agent)
-                if codex_decision:
-                    step["codexDecision"] = codex_decision
+            if primary_codex_agent is not None and primary_codex_seat is not None:
+                step["snapshot"] = primary_codex_agent.build_replay_snapshot(copy.deepcopy(game), primary_codex_seat)
+                if current_seat == primary_codex_seat:
+                    codex_decision = extract_codex_decision(primary_codex_agent)
+                    if codex_decision:
+                        step["codexDecision"] = codex_decision
 
-        replay["steps"].append(step)
+            replay["steps"].append(step)
 
-    replay["finalScores"] = [
-        {
-            "seat": index,
-            "agentName": agent_names[index],
-            "score": game.players[index].points,
-        }
-        for index in range(game.number_of_players)
-    ]
+    if replay is not None:
+        replay["finalScores"] = [
+            {
+                "seat": index,
+                "agentName": agent_names[index],
+                "score": game.players[index].points,
+            }
+            for index in range(game.number_of_players)
+        ]
 
     return replay
 
@@ -399,6 +410,7 @@ def run_matchup(
     failed_games_output_path=None,
     progress_callback=None,
     lineup_index=0,
+    collect_replays=False,
 ):
     codex_scores = []
     codex_places = []
@@ -420,7 +432,13 @@ def run_matchup(
             learned_weight=learned_weight,
         )
         try:
-            replay = play_game_with_trace(game, agents, agent_names, f"{'-'.join(agent_names)}-g{game_index}")
+            replay = play_game_with_trace(
+                game,
+                agents,
+                agent_names,
+                f"{'-'.join(agent_names)}-g{game_index}",
+                collect_replay=collect_replays,
+            )
         except Exception as error:
             failed_payload = {
                 "lineupIndex": lineup_index,
@@ -480,8 +498,9 @@ def run_matchup(
             )
 
         game_id = f"{'-'.join(agent_names)}-g{game_index}"
-        replay["placements"] = placements
-        replays.append(replay)
+        if replay is not None:
+            replay["placements"] = placements
+            replays.append(replay)
         new_training_rows = materialize_training_rows(game_id, game, agent_names, agents, placements)
         training_row_count += len(new_training_rows)
         if training_output_path:
@@ -656,6 +675,7 @@ def main():
             failed_games_output_path=failed_games_output_path,
             progress_callback=update_progress,
             lineup_index=lineup_index,
+            collect_replays=bool(replay_output_path),
         )
         summaries.append(summary)
         print(
