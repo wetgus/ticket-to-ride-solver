@@ -998,22 +998,33 @@ function renderReplayStepDetail() {
   }
 
   const codexDecision = step.codexDecision;
+  const chosenAction = codexDecision?.chosenAction;
+  const claimPaymentLine =
+    chosenAction?.kind === "claim-route"
+      ? `<div><strong>Payment:</strong> ${chosenAction.payment.colorCards} ${
+          chosenAction.payment.primaryColor
+        } + ${chosenAction.payment.locomotives} locomotive${
+          chosenAction.payment.locomotives === 1 ? "" : "s"
+        }</div>`
+      : "";
   replayStepDetail.innerHTML = `
-    <div class="stack-list">
-      <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
-      <div><strong>Move:</strong> ${step.move?.summary ?? "Unknown move"}</div>
-      ${
-        step.index < (game.agentNames?.length ?? 4)
+      <div class="stack-list">
+        <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
+        <div><strong>Replay step:</strong> ${replayState.stepIndex} (raw index ${step.index})</div>
+        <div><strong>Move:</strong> ${step.move?.summary ?? "Unknown move"}</div>
+        ${
+          step.index < (game.agentNames?.length ?? 4)
           ? "<div class='meta-line'>Setup phase: initial destination-ticket keeps are recorded in seat order before the main turn order begins.</div>"
           : ""
       }
       ${
-        codexDecision
-          ? `
-            <div><strong>Codex chose:</strong> ${formatAction(codexDecision.chosenAction ?? { kind: "unknown" })}</div>
-            <div><strong>Reasons:</strong></div>
-            <ul class="replay-rationale-list">
-              ${(codexDecision.topRationale ?? []).map((line) => `<li>${line}</li>`).join("")}
+          codexDecision
+            ? `
+              <div><strong>Codex chose:</strong> ${formatAction(codexDecision.chosenAction ?? { kind: "unknown" })}</div>
+              ${claimPaymentLine}
+              <div><strong>Reasons:</strong></div>
+              <ul class="replay-rationale-list">
+                ${(codexDecision.topRationale ?? []).map((line) => `<li>${line}</li>`).join("")}
             </ul>
           `
           : "<div class='empty-state'>No Codex rationale on this step.</div>"
@@ -1108,7 +1119,9 @@ function renderReplayWorkspace() {
   replayNextStepButton.disabled = !game || replayState.stepIndex >= (game?.steps?.length ?? 0);
 
   replayStepLabel.textContent = game
-    ? `Game ${replayState.gameIndex + 1} of ${getReplayGames().length} | Step ${replayState.stepIndex} / ${game.steps.length}`
+    ? `Game ${replayState.gameIndex + 1} of ${getReplayGames().length} | Step ${replayState.stepIndex} / ${game.steps.length}${
+        step ? ` (raw ${step.index})` : " (initial snapshot)"
+      }`
     : "No replay loaded.";
 
   if (!snapshot) {

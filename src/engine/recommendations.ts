@@ -119,15 +119,15 @@ const estimateDeploymentPressure = (
 
   let oversizedHandPenalty = 0;
   if (knownHandSize > 30) {
-    oversizedHandPenalty = 9 + (knownHandSize - 30) * 1.1;
+    oversizedHandPenalty = 16 + (knownHandSize - 30) * 2.2;
   } else if (knownHandSize > 26) {
-    oversizedHandPenalty = 4 + (knownHandSize - 26) * 1.1;
+    oversizedHandPenalty = 5 + (knownHandSize - 26) * 1.4;
   } else if (knownHandSize > 22) {
     oversizedHandPenalty = (knownHandSize - 22) * 0.7;
   }
 
   if (claimedRouteCount === 0 && knownHandSize > 18) {
-    oversizedHandPenalty += (knownHandSize - 18) * 0.35;
+    oversizedHandPenalty += (knownHandSize - 18) * 0.55;
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -1540,6 +1540,8 @@ const scoreDrawFaceUpAction = (
     currentRouteUrgency
   );
   const helpedTickets = getTicketsNeedingColor(board, gameState, action.color);
+  const knownHandSize = getKnownHandSize(gameState);
+  const publicPlayer = getPlayerPublicState(gameState);
   const followUpClaimLabel =
     nextClaimRecommendation?.action.kind === "claim-route"
       ? nextClaimRecommendation.action.routeId
@@ -1547,6 +1549,19 @@ const scoreDrawFaceUpAction = (
   const winProxyDelta =
     estimatePositionWinChanceProxy(board, nextState) -
     estimatePositionWinChanceProxy(board, gameState);
+  const earlyLocomotiveTax =
+    isLocomotive &&
+    publicPlayer.claimedRouteIds.length === 0 &&
+    knownHandSize < 18 &&
+    nearReadyClaims === 0 &&
+    helpedTickets.length <= 1
+      ? 4.6
+      : isLocomotive &&
+          publicPlayer.claimedRouteIds.length <= 1 &&
+          knownHandSize < 22 &&
+          nearReadyClaims === 0
+        ? 2.1
+        : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
     expectedFinalScore:
@@ -1573,6 +1588,7 @@ const scoreDrawFaceUpAction = (
     flexibilityValue: isLocomotive ? 5.5 : neededWeight * 0.7 + 1.5,
     riskCost:
       (isLocomotive ? 0.8 : 0.3) +
+      earlyLocomotiveTax +
       deploymentPressure.drawPenalty * (isLocomotive ? 0.75 : 0.92) +
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
         0.12 +
@@ -1612,6 +1628,9 @@ const scoreDrawFaceUpAction = (
       ? `matches current route-color demand weight ${neededWeight.toFixed(1)}`
       : "is not a top-demand color for current tickets",
     endgameClock.signals[0] ?? "endgame timing is not pressuring this draw yet",
+    earlyLocomotiveTax > 0
+      ? "face-up locomotive is taxed here because early flexibility is already good enough"
+      : "face-up locomotive is not overly taxed in this position",
     ...deploymentPressure.signals.map((signal) => `draw is less attractive because ${signal}`),
     winProxyDelta > 0
       ? `improves short-horizon win proxy by ${winProxyDelta.toFixed(1)}`
@@ -2526,6 +2545,23 @@ const scoreTurnCandidate = (
     board,
     postTurnBranches[0]?.state ?? simulatedState
   );
+  const firstDrawAction = actions[0];
+  const secondDrawAction = actions[1];
+  let duplicateFaceUpFollowThroughAdjustment = 0;
+  let duplicateFaceUpFollowThroughReason: string | undefined;
+  if (
+    firstDrawAction?.kind === "draw-face-up" &&
+    firstDrawAction.color !== "locomotive" &&
+    gameState.publicState.faceUpCards.filter((color) => color === firstDrawAction.color).length >= 2
+  ) {
+    if (secondDrawAction?.kind === "draw-face-up" && secondDrawAction.color === firstDrawAction.color) {
+      duplicateFaceUpFollowThroughAdjustment += 2.6;
+      duplicateFaceUpFollowThroughReason = `follows through by taking the second visible ${firstDrawAction.color}`;
+    } else if (secondDrawAction?.kind === "draw-blind") {
+      duplicateFaceUpFollowThroughAdjustment -= 4.4;
+      duplicateFaceUpFollowThroughReason = `passes on a second visible ${firstDrawAction.color} and goes blind instead`;
+    }
+  }
   let stepState = gameState;
   const chosenActionBreakdowns = actions.map((action) => {
     const currentEvaluation = recommendActions(stepState, board);
@@ -2603,6 +2639,7 @@ const scoreTurnCandidate = (
       immediateFeatureBlend.opponentClockPressure * 0.45 +
       immediateFeatureBlend.bottleneckUrgency * 0.6 +
       immediateFeatureBlend.ticketDetourPenalty * 0.38 +
+      duplicateFaceUpFollowThroughAdjustment +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -
@@ -2624,6 +2661,7 @@ const scoreTurnCandidate = (
       representativeOpponentRisk.threatenedRouteId
         ? `still exposes ${representativeOpponentRisk.threatenedRouteId} to opponent pressure`
         : "does not leave an obvious single-route counterplay window",
+      ...(duplicateFaceUpFollowThroughReason ? [duplicateFaceUpFollowThroughReason] : []),
       expectedRolloutContinuationUtility > 0
         ? `keeps a rollout continuation value of ${expectedRolloutContinuationUtility.toFixed(1)}`
         : "does not keep a strong continuation after this turn"
