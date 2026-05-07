@@ -107,7 +107,7 @@ const estimateDeploymentPressure = (
   const publicPlayer = getPlayerPublicState(gameState);
   const claimedRouteCount = publicPlayer.claimedRouteIds.length;
   const maxColorStack = Math.max(
-    ...TRAIN_COLORS.map((color) => gameState.ourState.hand[color] ?? 0)
+    ...NON_LOCOMOTIVE_COLORS.map((color) => gameState.ourState.hand[color] ?? 0)
   );
   const routesByParallelGroup = indexRoutesByParallelGroup(board.routes);
   const legalClaims = getLegalClaimRouteActions(gameState, board.routes, routesByParallelGroup);
@@ -130,14 +130,12 @@ const estimateDeploymentPressure = (
     oversizedHandPenalty += (knownHandSize - 18) * 0.35;
   }
 
-  const stackThreshold = claimedRouteCount === 0 ? 6 : 8;
-  let stackPenalty =
-    Math.max(0, maxColorStack - stackThreshold) * (claimedRouteCount === 0 ? 1.45 : 0.75);
-
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
-  if (locomotiveCount > 6) {
-    stackPenalty += (locomotiveCount - 6) * (claimedRouteCount === 0 ? 1.6 : 0.9);
-  }
+  const colorOverflow = Math.max(0, maxColorStack - 6);
+  const locomotiveOverflow = Math.max(0, locomotiveCount - 6);
+  let stackPenalty =
+    colorOverflow * (claimedRouteCount === 0 ? 1.35 : 0.72) +
+    locomotiveOverflow * (claimedRouteCount === 0 ? 1.55 : 0.85);
 
   let readyClaimPressure = 0;
   if (readyLongClaimCount > 0) {
@@ -150,8 +148,11 @@ const estimateDeploymentPressure = (
   if (knownHandSize > 26) {
     signals.push(`hand is already very large at ${knownHandSize} cards`);
   }
-  if (maxColorStack > stackThreshold) {
+  if (colorOverflow > 0) {
     signals.push(`one color stack is already bloated at ${maxColorStack} cards`);
+  }
+  if (locomotiveOverflow > 0) {
+    signals.push(`locomotive stack is already bloated at ${locomotiveCount} cards`);
   }
   if (claimedRouteCount === 0 && readyLongClaimCount > 0) {
     signals.push("a long route is already claimable, so continuing to draw is expensive");
