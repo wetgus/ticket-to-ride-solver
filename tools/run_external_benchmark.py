@@ -35,6 +35,24 @@ AGENT_FACTORIES = {
 }
 
 
+def patch_external_engine_face_up_refill() -> None:
+    original_add_face_up_train_card = Game.addFaceUpTrainCard
+
+    if getattr(original_add_face_up_train_card, "_codex_face_up_refill_patch", False):
+        return
+
+    def patched_add_face_up_train_card(self):
+        if len(self.train_deck.deck) == 0 and sum(self.train_deck.discard_pile.values()) > 0:
+            self.train_deck.reshuffle()
+        return original_add_face_up_train_card(self)
+
+    patched_add_face_up_train_card._codex_face_up_refill_patch = True
+    Game.addFaceUpTrainCard = patched_add_face_up_train_card
+
+
+patch_external_engine_face_up_refill()
+
+
 def find_primary_codex_seat(agent_names: List[str]) -> int | None:
     try:
         return agent_names.index("codex")

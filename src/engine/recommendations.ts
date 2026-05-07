@@ -85,6 +85,94 @@ const getPlayerPublicState = (gameState: GameState) => {
   return player;
 };
 
+interface DeploymentPressureEstimate {
+  drawPenalty: number;
+  claimBonus: number;
+  knownHandSize: number;
+  maxColorStack: number;
+  claimedRouteCount: number;
+  readyClaimCount: number;
+  readyLongClaimCount: number;
+  signals: string[];
+}
+
+const getKnownHandSize = (gameState: GameState): number =>
+  TRAIN_COLORS.reduce((sum, color) => sum + (gameState.ourState.hand[color] ?? 0), 0);
+
+const estimateDeploymentPressure = (
+  board: BoardDefinition,
+  gameState: GameState
+): DeploymentPressureEstimate => {
+  const knownHandSize = getKnownHandSize(gameState);
+  const publicPlayer = getPlayerPublicState(gameState);
+  const claimedRouteCount = publicPlayer.claimedRouteIds.length;
+  const maxColorStack = Math.max(
+    ...TRAIN_COLORS.map((color) => gameState.ourState.hand[color] ?? 0)
+  );
+  const routesByParallelGroup = indexRoutesByParallelGroup(board.routes);
+  const legalClaims = getLegalClaimRouteActions(gameState, board.routes, routesByParallelGroup);
+  const readyClaimCount = legalClaims.length;
+  const readyLongClaimCount = legalClaims.filter((action) => {
+    const route = board.routes.find((candidate) => candidate.id === action.routeId);
+    return (route?.length ?? 0) >= 5;
+  }).length;
+
+  let oversizedHandPenalty = 0;
+  if (knownHandSize > 30) {
+    oversizedHandPenalty = 9 + (knownHandSize - 30) * 1.1;
+  } else if (knownHandSize > 26) {
+    oversizedHandPenalty = 4 + (knownHandSize - 26) * 1.1;
+  } else if (knownHandSize > 22) {
+    oversizedHandPenalty = (knownHandSize - 22) * 0.7;
+  }
+
+  if (claimedRouteCount === 0 && knownHandSize > 18) {
+    oversizedHandPenalty += (knownHandSize - 18) * 0.35;
+  }
+
+  const stackThreshold = claimedRouteCount === 0 ? 6 : 8;
+  let stackPenalty =
+    Math.max(0, maxColorStack - stackThreshold) * (claimedRouteCount === 0 ? 1.45 : 0.75);
+
+  const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
+  if (locomotiveCount > 6) {
+    stackPenalty += (locomotiveCount - 6) * (claimedRouteCount === 0 ? 1.6 : 0.9);
+  }
+
+  let readyClaimPressure = 0;
+  if (readyLongClaimCount > 0) {
+    readyClaimPressure += claimedRouteCount === 0 ? 5.2 : 3.2;
+  } else if (readyClaimCount > 0 && knownHandSize >= 18) {
+    readyClaimPressure += claimedRouteCount === 0 ? 2.4 : 1.2;
+  }
+
+  const signals: string[] = [];
+  if (knownHandSize > 26) {
+    signals.push(`hand is already very large at ${knownHandSize} cards`);
+  }
+  if (maxColorStack > stackThreshold) {
+    signals.push(`one color stack is already bloated at ${maxColorStack} cards`);
+  }
+  if (claimedRouteCount === 0 && readyLongClaimCount > 0) {
+    signals.push("a long route is already claimable, so continuing to draw is expensive");
+  }
+
+  const drawPenalty = oversizedHandPenalty + stackPenalty + readyClaimPressure;
+  const claimBonus =
+    oversizedHandPenalty * 0.45 + stackPenalty * 0.42 + readyClaimPressure * 0.75;
+
+  return {
+    drawPenalty,
+    claimBonus,
+    knownHandSize,
+    maxColorStack,
+    claimedRouteCount,
+    readyClaimCount,
+    readyLongClaimCount,
+    signals
+  };
+};
+
 const getOurTickets = (
   board: BoardDefinition,
   gameState: GameState
@@ -1200,6 +1288,7 @@ const scoreClaimAction = (
     routeUrgency.find((estimate) => estimate.routeId === route.id)?.loseBeforeNextTurnProbability ??
     0;
   const endgameClock = estimateEndgameClock(gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState);
   const nextRouteUrgency = getRouteUrgency(board, applied);
   const currentDetourExposure = estimateTicketDetourExposure(board, gameState, routeUrgency);
   const nextDetourExposure = estimateTicketDetourExposure(board, applied, nextRouteUrgency);
@@ -1228,6 +1317,7 @@ const scoreClaimAction = (
     ticketValue: ticketProgressDelta * 1.5 + completionDelta * 8,
     tempoValue:
       (route.length >= 5 ? 3.5 : route.length >= 3 ? 2 : 0.8) +
+      deploymentPressure.claimBonus +
       endgameClock.immediateTriggerRisk * 2.2 +
       (route.length >= Math.max(1, gameState.ourState.trainsRemaining - 2) ? 2.8 : 0),
     flexibilityValue: Math.max(0, 5 - action.payment.locomotives * 1.2),
@@ -1275,6 +1365,7 @@ const scoreClaimAction = (
     urgency > 0.35
       ? "secures a route that looks time-sensitive"
       : "route urgency is moderate",
+    ...deploymentPressure.signals.map((signal) => `claim helps because ${signal}`),
     endgameClock.immediateTriggerRisk > 0.4
       ? "tempo matters because an opponent may be close to ending the game"
       : "endgame trigger risk is not immediate"
@@ -1333,6 +1424,7 @@ const scoreDrawTicketsAction = (
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
@@ -1440,6 +1532,7 @@ const scoreDrawFaceUpAction = (
   const isLocomotive = action.color === "locomotive";
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
@@ -1479,6 +1572,7 @@ const scoreDrawFaceUpAction = (
     flexibilityValue: isLocomotive ? 5.5 : neededWeight * 0.7 + 1.5,
     riskCost:
       (isLocomotive ? 0.8 : 0.3) +
+      deploymentPressure.drawPenalty * (isLocomotive ? 0.75 : 0.92) +
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
         0.12 +
       endgameClock.immediateTriggerRisk * 2.4,
@@ -1517,6 +1611,7 @@ const scoreDrawFaceUpAction = (
       ? `matches current route-color demand weight ${neededWeight.toFixed(1)}`
       : "is not a top-demand color for current tickets",
     endgameClock.signals[0] ?? "endgame timing is not pressuring this draw yet",
+    ...deploymentPressure.signals.map((signal) => `draw is less attractive because ${signal}`),
     winProxyDelta > 0
       ? `improves short-horizon win proxy by ${winProxyDelta.toFixed(1)}`
       : "does not materially improve the immediate win proxy"
@@ -1543,6 +1638,7 @@ const scoreDrawBlindAction = (
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
@@ -1585,7 +1681,10 @@ const scoreDrawBlindAction = (
     tempoValue: 0.9,
     flexibilityValue: 2.2 + drawPilePressure + blindExpectation.expectedNearReadyClaims * 0.15,
     riskCost:
-      0.2 + urgentClaimPressure.penalty * 0.32 + endgameClock.immediateTriggerRisk * 2.8,
+      0.2 +
+      deploymentPressure.drawPenalty * 1.08 +
+      urgentClaimPressure.penalty * 0.32 +
+      endgameClock.immediateTriggerRisk * 2.8,
     blockExposure: urgentClaimPressure.penalty * 0.12,
     trainsRemainingPressure:
       -urgentClaimPressure.penalty * 0.08 - endgameClock.nearTermTriggerRisk * 1.4,
@@ -1630,6 +1729,7 @@ const scoreDrawBlindAction = (
       urgentClaimPressure.topUrgentRouteId
         ? `blind draw must justify delaying ${urgentClaimPressure.topUrgentRouteId}`
         : "no single urgent claim currently dominates the position",
+      ...deploymentPressure.signals.map((signal) => `blind draw is less attractive because ${signal}`),
       endgameClock.signals[0] ?? "no opponent looks ready to compress the game clock",
       totalDemand > 0
         ? "still has decent expected value because multiple colors remain useful"
@@ -2183,10 +2283,10 @@ const estimateExpectedClaimUtilityAfterActions = (
 
 const getBestFaceUpFollowUps = (
   gameState: GameState,
-  firstDrawColor?: TrainColor
+  firstDrawIndex?: number
 ): Array<DrawFaceUpAction | DrawBlindAction> => {
   const remainingFaceUp = gameState.publicState.faceUpCards.filter(
-    (color) => color !== firstDrawColor
+    (_, index) => index !== firstDrawIndex
   );
   const faceUpFollowUps = remainingFaceUp
     .filter((color) => color !== "locomotive")
@@ -2232,7 +2332,7 @@ const buildLegalTurnCandidates = (
 
   const drawTurns: GameAction[][] = [];
 
-  for (const color of gameState.publicState.faceUpCards) {
+  for (const [index, color] of gameState.publicState.faceUpCards.entries()) {
     const firstDraw: DrawFaceUpAction = {
       kind: "draw-face-up",
       playerId: gameState.ourState.playerId,
@@ -2245,7 +2345,7 @@ const buildLegalTurnCandidates = (
       continue;
     }
 
-    for (const followUp of getBestFaceUpFollowUps(gameState, color)) {
+    for (const followUp of getBestFaceUpFollowUps(gameState, index)) {
       drawTurns.push([firstDraw, followUp]);
     }
   }

@@ -505,8 +505,37 @@ function spendObservedColor(player, color, count) {
   );
 }
 
+function resetKnownOutOfDeckCounts() {
+  session.knownOutOfDeckCounts = createEmptyHand();
+}
+
+function reshuffleDiscardIntoDrawPile(reason = "The discard pile was reshuffled into the deck.") {
+  if (session.discardCount <= 0) {
+    return false;
+  }
+
+  session.drawPileCount += session.discardCount;
+  session.discardCount = 0;
+  resetKnownOutOfDeckCounts();
+  addLogEntry(reason);
+  return true;
+}
+
+function ensureTrainCardsAvailableForDraw(reason) {
+  if (session.drawPileCount > 0) {
+    return true;
+  }
+
+  if (session.discardCount > 0) {
+    return reshuffleDiscardIntoDrawPile(reason);
+  }
+
+  return false;
+}
+
 function addKnownOutOfDeckColor(color, count = 1) {
   session.knownOutOfDeckCounts[color] = (session.knownOutOfDeckCounts[color] ?? 0) + count;
+  session.discardCount += count;
 }
 
 function requestRecommendations() {
@@ -1919,6 +1948,16 @@ function confirmOpponentTicketKeep(count) {
 }
 
 function requestFaceUpReplacement(slotIndex) {
+  if (!ensureTrainCardsAvailableForDraw("The train card discard pile was reshuffled to refill the visible pool.")) {
+    session.faceUpCards.splice(slotIndex, 1);
+    session.pendingReplacement = null;
+    if (session.currentTurnAction === "drawing" && session.currentTurnDrawCount >= 2) {
+      endTurn();
+    }
+    queueUIRefresh(false);
+    return;
+  }
+
   session.pendingReplacement = {
     slotIndex
   };
@@ -2019,6 +2058,15 @@ function takeFaceUpCard(index) {
 function drawHiddenCard() {
   const player = currentPlayer();
   if (!player) {
+    return;
+  }
+
+  if (
+    !ensureTrainCardsAvailableForDraw(
+      "The train card discard pile was reshuffled before drawing from the deck."
+    )
+  ) {
+    updateStatus("No train cards are available to draw.");
     return;
   }
 
