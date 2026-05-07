@@ -132,9 +132,17 @@ def play_game_with_trace(game, agents: List[object], agent_names: List[str], gam
         "steps": [],
     }
 
+    codex_agents = [
+        (seat_index, agent)
+        for seat_index, agent in enumerate(agents)
+        if isinstance(agent, CodexSolverAgent)
+    ]
+
     for seat in range(0, game.number_of_players):
         move = agents[seat].decide(game.copy(), seat)
         game.make_move(move.function, move.args)
+        for codex_seat, codex_agent in codex_agents:
+            codex_agent.observe_move(move, seat, codex_seat)
 
         step = {
             "index": len(replay["steps"]),
@@ -156,6 +164,8 @@ def play_game_with_trace(game, agents: List[object], agent_names: List[str], gam
         current_seat = game.current_player
         move = agents[current_seat].decide(game, current_seat)
         game.make_move(move.function, move.args)
+        for codex_seat, codex_agent in codex_agents:
+            codex_agent.observe_move(move, current_seat, codex_seat)
 
         step = {
             "index": len(replay["steps"]),

@@ -1784,7 +1784,13 @@ export const recommendActions = (
           (sum, ticket) => sum + estimateTicketStandaloneValue(board, gameState, ticket),
           0
         );
-        const riskCost = Math.max(0, action.keptTicketIds.length - 1) * 1.25;
+        const minimumKeepCount = gameState.pendingTicketChoice?.minimumKeepCount ?? 1;
+        const openingKeepPenalty =
+          getPlayerPublicState(gameState).claimedRouteIds.length === 0
+            ? Math.max(0, action.keptTicketIds.length - minimumKeepCount) * 4
+            : 0;
+        const riskCost =
+          Math.max(0, action.keptTicketIds.length - 1) * 1.25 + openingKeepPenalty;
         const featureBreakdown: EvaluationFeatures = {
           ...createBlankFeatures(),
           expectedFinalScore: getPlayerPublicState(gameState).score + utilityScore * 0.7,
@@ -1809,6 +1815,9 @@ export const recommendActions = (
           confidence: Math.min(0.84, 0.45 + keptTickets.length * 0.08),
           rationale: [
             `keeps ${keptTickets.length} ticket${keptTickets.length > 1 ? "s" : ""}`,
+            openingKeepPenalty > 0
+              ? "keeping extra tickets early adds real risk before a network exists"
+              : "does not overextend ticket risk for the current stage",
             ...keptTickets
               .slice()
               .sort(
@@ -1819,7 +1828,7 @@ export const recommendActions = (
               .slice(0, 2)
               .map(
                 (ticket) =>
-                  `${formatTicketLabel(board, ticket)} looks relatively efficient from the current network`
+                  `${formatTicketLabel(board, ticket)} looks relatively efficient within the current ticket mix`
               )
           ],
           featureBreakdown

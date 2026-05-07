@@ -119,6 +119,7 @@ const replayGameSelect = document.getElementById("replay-game-select");
 const replayPrevStepButton = document.getElementById("replay-prev-step");
 const replayNextStepButton = document.getElementById("replay-next-step");
 const replayStepLabel = document.getElementById("replay-step-label");
+const replayTableState = document.getElementById("replay-table-state");
 const replayBoardContainer = document.getElementById("replay-board-container");
 const replayHandCards = document.getElementById("replay-hand-cards");
 const replayOwnedTicketsList = document.getElementById("replay-owned-tickets-list");
@@ -973,6 +974,11 @@ function renderReplayStepDetail() {
       <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
       <div><strong>Move:</strong> ${step.move?.summary ?? "Unknown move"}</div>
       ${
+        step.index < (game.agentNames?.length ?? 4)
+          ? "<div class='meta-line'>Setup phase: initial destination-ticket keeps are recorded in seat order before the main turn order begins.</div>"
+          : ""
+      }
+      ${
         codexDecision
           ? `
             <div><strong>Codex chose:</strong> ${formatAction(codexDecision.chosenAction ?? { kind: "unknown" })}</div>
@@ -985,6 +991,44 @@ function renderReplayStepDetail() {
       }
     </div>
   `;
+}
+
+function renderReplayTableState() {
+  const snapshot = getReplaySnapshot();
+  replayTableState.innerHTML = "";
+
+  if (!snapshot) {
+    replayTableState.innerHTML = "<div class='empty-state'>No replay state loaded.</div>";
+    return;
+  }
+
+  const faceUpCards = snapshot.publicState.faceUpCards ?? [];
+  replayTableState.innerHTML = `
+    <div class="replay-table-grid">
+      <div class="deck-card replay-deck-card">
+        <strong>Train Deck</strong>
+        <div>Remaining: ${snapshot.publicState.drawPileCount}</div>
+        <div class="meta-line">Discard: ${snapshot.publicState.discardCount}</div>
+      </div>
+      <div class="deck-card replay-deck-card">
+        <strong>Route Deck</strong>
+        <div>Phase: ${snapshot.publicState.phase}</div>
+        <div class="meta-line">Turn: ${snapshot.publicState.turnNumber}</div>
+      </div>
+      <div class="replay-faceup-block">
+        <strong>Face-up Pool</strong>
+        <div class="pool-card-row replay-pool-row" id="replay-faceup-row"></div>
+      </div>
+    </div>
+  `;
+
+  const row = replayTableState.querySelector("#replay-faceup-row");
+  faceUpCards.forEach((color) => {
+    const card = document.createElement("div");
+    card.className = "pool-card static-pool-card";
+    card.innerHTML = colorCardMarkup(color, "Visible");
+    row.appendChild(card);
+  });
 }
 
 function renderReplayLog() {
@@ -1040,6 +1084,7 @@ function renderReplayWorkspace() {
 
   if (!snapshot) {
     replayBoardContainer.innerHTML = "<div class='empty-state replay-empty'>Load a replay JSON exported from benchmark.</div>";
+    replayTableState.innerHTML = "<div class='empty-state'>No replay state loaded.</div>";
     renderReplayHand();
     renderReplayTickets();
     renderReplayPlayers();
@@ -1048,6 +1093,7 @@ function renderReplayWorkspace() {
     return;
   }
 
+  renderReplayTableState();
   renderBoardInto(replayBoardContainer, snapshot.publicState.claimedRoutes, null);
   renderReplayHand();
   renderReplayTickets();

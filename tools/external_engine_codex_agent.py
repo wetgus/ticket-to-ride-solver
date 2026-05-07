@@ -246,11 +246,16 @@ class CodexSolverAgent:
         self.trace_steps = []
         self.decision_counter = 0
         self._worker = PersistentNodeSolverWorker.for_executable(self.node_executable)
+        self._observed_visible_lower_bounds = {}
+        self._known_out_of_deck_counts = {}
+        self._player_count = None
 
     def build_replay_snapshot(self, game, pnum: int) -> Dict:
+        self._ensure_observation_state(game, pnum)
         return self._build_payload(game, pnum)["gameState"]
 
     def decide(self, game, pnum):
+        self._ensure_observation_state(game, pnum)
         payload = self._build_payload(game, pnum)
         recommendation = self._request_solver_recommendation(payload)
         possible_moves = game.get_possible_moves(pnum)
@@ -297,6 +302,56 @@ class CodexSolverAgent:
     def _request_solver_recommendation(self, payload: Dict) -> Dict:
         return self._worker.request("recommend", payload)
 
+    def _ensure_observation_state(self, game, pnum: int) -> None:
+        if self._player_count == game.number_of_players and self._observed_visible_lower_bounds:
+            return
+
+        our_player_id = f"p{pnum}"
+        self._player_count = game.number_of_players
+        self._observed_visible_lower_bounds = {
+            f"p{index}": {
+                color: 0
+                for color in ["red", "blue", "green", "yellow", "black", "white", "orange", "pink", "locomotive"]
+            }
+            for index in range(game.number_of_players)
+            if f"p{index}" != our_player_id
+        }
+        self._known_out_of_deck_counts = {
+            color: 0
+            for color in ["red", "blue", "green", "yellow", "black", "white", "orange", "pink", "locomotive"]
+        }
+
+    def observe_move(self, move, actor_seat: int, our_seat: int) -> None:
+        actor_id = f"p{actor_seat}"
+        our_id = f"p{our_seat}"
+
+        if actor_id == our_id:
+            return
+
+        if actor_id not in self._observed_visible_lower_bounds:
+            self._observed_visible_lower_bounds[actor_id] = {
+                color: 0
+                for color in ["red", "blue", "green", "yellow", "black", "white", "orange", "pink", "locomotive"]
+            }
+
+        if move.function == "drawTrainCard" and str(move.args).lower() != "top":
+            color = normalize_color(str(move.args))
+            self._observed_visible_lower_bounds[actor_id][color] += 1
+            return
+
+        if move.function == "claimRoute":
+            color = normalize_color(str(move.args[2]))
+            route = self._match_route_definition(move.args[0], move.args[1], color)
+            route_length = int(route["length"]) if route else 0
+            observed_available = self._observed_visible_lower_bounds[actor_id].get(color, 0)
+            consumed_known = min(observed_available, route_length)
+
+            if consumed_known > 0:
+                self._observed_visible_lower_bounds[actor_id][color] -= consumed_known
+                self._known_out_of_deck_counts[color] = (
+                    self._known_out_of_deck_counts.get(color, 0) + consumed_known
+                )
+
     def _build_payload(self, game, pnum: int) -> Dict:
         player_ids = [f"p{i}" for i in range(game.number_of_players)]
         player_order = player_ids[:]
@@ -339,7 +394,10 @@ class CodexSolverAgent:
                 }
             )
             if player_id != our_player_id:
-                beliefs.append(empty_belief(player_id))
+                belief = empty_belief(player_id)
+                belief["handColorLowerBounds"] = dict(self._observed_visible_lower_bounds.get(player_id, {}))
+                belief["handColorExpectedCounts"] = dict(self._observed_visible_lower_bounds.get(player_id, {}))
+                beliefs.append(belief)
 
         our_player = game.players[pnum]
         hand = {color: 0 for color in ["red", "blue", "green", "yellow", "black", "white", "orange", "pink", "locomotive"]}
@@ -367,6 +425,8 @@ class CodexSolverAgent:
         for color_name, count in game.train_deck.discard_pile.items():
             normalized = normalize_color(color_name)
             known_out_of_deck_counts[normalized] = known_out_of_deck_counts.get(normalized, 0) + int(count)
+        for color, count in self._known_out_of_deck_counts.items():
+            known_out_of_deck_counts[color] = max(known_out_of_deck_counts.get(color, 0), int(count))
 
         payload = {
             "gameState": {
@@ -583,6 +643,16 @@ class CodexSolverAgent:
 
         move_color = normalize_color(str(move.args[2]))
         return move_color == action["payment"]["primaryColor"]
+
+    def _match_route_definition(self, city_a: str, city_b: str, color: str) -> Optional[Dict]:
+        normalized_pair = sorted((normalize_city(city_a), normalize_city(city_b)))
+        for route in self._usa_routes():
+            route_pair = sorted((route["cityA"], route["cityB"]))
+            if route_pair != normalized_pair:
+                continue
+            if route["color"] == "gray" or route["color"] == color:
+                return route
+        return None
 
     def _route_lookup_by_id(self, route_id: str) -> Optional[Dict]:
         for route in self._usa_routes():

@@ -161,6 +161,37 @@ select {
   margin-bottom: 10px;
 }
 
+.replay-table-state {
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.replay-table-grid {
+  display: grid;
+  grid-template-columns: 180px 180px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.replay-deck-card {
+  min-height: 98px;
+  padding: 10px;
+}
+
+.replay-faceup-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replay-pool-row {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.static-pool-card {
+  cursor: default;
+}
+
 .board-container {
   width: 100%;
   min-height: 700px;
