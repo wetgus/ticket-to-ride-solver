@@ -18,6 +18,7 @@
             Mode
             <select id="workspace-mode">
               <option value="play" selected>Play Assistant</option>
+              <option value="replay">Replay Inspector</option>
               <option value="metadata">Metadata Builder</option>
             </select>
           </label>
@@ -165,6 +166,58 @@
           <h2>metadata.json Preview</h2>
           <pre id="metadata-preview" class="metadata-preview"></pre>
         </section>
+      </section>
+
+      <section id="replay-workspace" class="table-layout hidden">
+        <aside class="left-rail">
+          <section class="panel rail-panel">
+            <h2>Codex Hand</h2>
+            <div id="replay-hand-cards" class="visual-hand"></div>
+          </section>
+
+          <section class="panel rail-panel">
+            <h2>Codex Tickets</h2>
+            <div id="replay-owned-tickets-list" class="ticket-sections"></div>
+          </section>
+        </aside>
+
+        <section class="center-stack">
+          <section class="center-panel panel">
+            <div class="replay-toolbar">
+              <label>
+                Replay file
+                <input id="replay-file-input" type="file" accept=".json,application/json" />
+              </label>
+              <label>
+                Game
+                <select id="replay-game-select"></select>
+              </label>
+              <div class="inline-buttons">
+                <button id="replay-prev-step" type="button">Step Back</button>
+                <button id="replay-next-step" type="button">Step Forward</button>
+              </div>
+              <div class="meta-line" id="replay-step-label">No replay loaded.</div>
+            </div>
+            <div id="replay-board-container" class="board-container"></div>
+          </section>
+        </section>
+
+        <aside class="right-rail">
+          <section class="panel rail-panel">
+            <h2>Step Detail</h2>
+            <div id="replay-step-detail"></div>
+          </section>
+
+          <section class="panel rail-panel">
+            <h2>Players</h2>
+            <div id="replay-players-summary" class="player-list"></div>
+          </section>
+
+          <section class="panel rail-panel log-panel">
+            <h2>Replay Log</h2>
+            <div id="replay-action-log" class="log-list"></div>
+          </section>
+        </aside>
       </section>
     </main>
 

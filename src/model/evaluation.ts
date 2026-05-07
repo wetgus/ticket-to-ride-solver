@@ -27,6 +27,9 @@ export interface EvaluationFeatures {
   riskCost: number;
   blockExposure: number;
   trainsRemainingPressure: number;
+  opponentClockPressure: number;
+  bottleneckUrgency: number;
+  ticketDetourPenalty: number;
 }
 
 export interface ActionRecommendation {

@@ -153,6 +153,14 @@ select {
   margin-bottom: 10px;
 }
 
+.replay-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
 .board-container {
   width: 100%;
   min-height: 700px;
@@ -388,6 +396,10 @@ select {
   margin-top: 8px;
 }
 
+.static-card .train-card-actions {
+  display: none;
+}
+
 .train-card-actions button {
   flex: 1;
   padding: 6px 0;
@@ -401,6 +413,21 @@ select {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.active-log-entry {
+  background: rgba(202, 164, 94, 0.16);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.replay-rationale-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.replay-empty {
+  padding: 24px;
 }
 
 .ticket-section-title {

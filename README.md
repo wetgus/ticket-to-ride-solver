@@ -14,6 +14,9 @@ See also:
 
 - [Mathematical model](./docs/mathematical-model.md)
 - [Implementation roadmap](./docs/implementation-roadmap.md)
+- [Policy learning pipeline](./docs/policy-learning-pipeline.md)
+- [Current policy training parameters](./docs/current-policy-training-parameters.md)
+- [USA base feature backlog](./docs/usa-base-feature-backlog.md)
 
 ## Project goal
 

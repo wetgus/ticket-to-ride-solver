@@ -19,3 +19,8 @@ export * from "./replay/bga-log-parser.js";
 export * from "./replay/destination-metadata.js";
 export * from "./replay/bga-normalization.js";
 export * from "./replay/reconstruction.js";
+export * from "./training/feature-vector.js";
+export * from "./training/pairwise-reranker.js";
+export * from "./training/reranker.js";
+export * from "./training/targets.js";
+export * from "./training/types.js";

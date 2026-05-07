@@ -584,6 +584,53 @@ const getRouteUrgency = (
   );
 };
 
+const estimateTicketDetourExposure = (
+  board: BoardDefinition,
+  gameState: GameState,
+  routeUrgency: RouteUrgencyEstimate[]
+): number => {
+  const urgencyByRoute = new Map(
+    routeUrgency.map((entry) => [entry.routeId, entry.loseBeforeNextTurnProbability])
+  );
+
+  return getTicketProgressStates(board, gameState).reduce((sum, ticketState) => {
+    if (ticketState.distance === Number.POSITIVE_INFINITY) {
+      return sum + 12;
+    }
+
+    const pathPenalty = ticketState.path.reduce((pathSum, step) => {
+      const urgency = urgencyByRoute.get(step.routeId) ?? 0;
+      const annotatedBottleneck = gameState.annotations.bottleneckRouteIds.includes(step.routeId)
+        ? 0.35
+        : 0;
+      const longStepPenalty = step.length >= 5 ? 0.2 : 0;
+
+      return pathSum + step.length * (urgency + annotatedBottleneck + longStepPenalty);
+    }, 0);
+
+    const lowRedundancyPenalty = ticketState.path.length <= 3 ? 1.4 : ticketState.path.length <= 5 ? 0.8 : 0.3;
+    return sum + pathPenalty + lowRedundancyPenalty;
+  }, 0);
+};
+
+const estimateActionClockPressureImpact = (
+  endgameClock: ReturnType<typeof estimateEndgameClock>,
+  actionKind: GameAction["kind"],
+  routeLength = 0
+): number => {
+  const pressureBase = endgameClock.immediateTriggerRisk * 5.5 + endgameClock.nearTermTriggerRisk * 2.8;
+
+  if (actionKind === "claim-route") {
+    return pressureBase + routeLength * 0.45 + endgameClock.selfTriggerChance * 1.6;
+  }
+
+  if (actionKind === "draw-tickets") {
+    return -(pressureBase * 1.25 + 0.8);
+  }
+
+  return -(pressureBase * 0.95);
+};
+
 const createBlankFeatures = (): EvaluationFeatures => ({
   expectedFinalScore: 0,
   winProbabilityEstimate: 0,
@@ -594,7 +641,10 @@ const createBlankFeatures = (): EvaluationFeatures => ({
   flexibilityValue: 0,
   riskCost: 0,
   blockExposure: 0,
-  trainsRemainingPressure: 0
+  trainsRemainingPressure: 0,
+  opponentClockPressure: 0,
+  bottleneckUrgency: 0,
+  ticketDetourPenalty: 0
 });
 
 const getCurrentTicketGap = (
@@ -1150,6 +1200,10 @@ const scoreClaimAction = (
     routeUrgency.find((estimate) => estimate.routeId === route.id)?.loseBeforeNextTurnProbability ??
     0;
   const endgameClock = estimateEndgameClock(gameState);
+  const nextRouteUrgency = getRouteUrgency(board, applied);
+  const currentDetourExposure = estimateTicketDetourExposure(board, gameState, routeUrgency);
+  const nextDetourExposure = estimateTicketDetourExposure(board, applied, nextRouteUrgency);
+  const detourPenaltyImprovement = currentDetourExposure - nextDetourExposure;
   const locomotiveSpendPenalty = action.payment.locomotives * 0.9;
   const topTicketReasons = getTopTicketImprovementReasons(
     board,
@@ -1180,7 +1234,16 @@ const scoreClaimAction = (
     riskCost: locomotiveSpendPenalty + Math.max(0, -ticketProgressDelta * 0.3),
     blockExposure: urgency * 5,
     trainsRemainingPressure:
-      gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2
+      gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2,
+    opponentClockPressure: estimateActionClockPressureImpact(
+      endgameClock,
+      "claim-route",
+      route.length
+    ),
+    bottleneckUrgency:
+      urgency * (route.length >= 5 ? 6.5 : 4.2) +
+      (gameState.annotations.bottleneckRouteIds.includes(route.id) ? 2.8 : 0),
+    ticketDetourPenalty: detourPenaltyImprovement
   };
 
   const utilityScore =
@@ -1189,7 +1252,10 @@ const scoreClaimAction = (
     featureBreakdown.tempoValue +
     featureBreakdown.flexibilityValue +
     featureBreakdown.blockExposure +
-    featureBreakdown.trainsRemainingPressure -
+    featureBreakdown.trainsRemainingPressure +
+    featureBreakdown.opponentClockPressure * 0.45 +
+    featureBreakdown.bottleneckUrgency * 0.6 +
+    featureBreakdown.ticketDetourPenalty * 0.38 -
     featureBreakdown.riskCost;
 
   const rationale = [
@@ -1266,6 +1332,12 @@ const scoreDrawTicketsAction = (
     currentTickets.length > 0 ? completedTickets / currentTickets.length : 1;
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
+  const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const currentDetourExposure = estimateTicketDetourExposure(
+    board,
+    gameState,
+    currentRouteUrgency
+  );
   const currentWinProxy = estimatePositionWinChanceProxy(board, gameState);
   const speculativeState = {
     ...gameState,
@@ -1307,17 +1379,25 @@ const scoreDrawTicketsAction = (
     trainsRemainingPressure:
       (safeToDrawFactor > 0.5 ? 0.5 : -2.4) -
       urgentClaimPressure.penalty * 0.22 -
-      endgameClock.nearTermTriggerRisk * 1.8
+      endgameClock.nearTermTriggerRisk * 1.8,
+    opponentClockPressure: estimateActionClockPressureImpact(endgameClock, "draw-tickets"),
+    bottleneckUrgency: -urgentClaimPressure.penalty * 0.55,
+    ticketDetourPenalty: -currentDetourExposure * 0.3
   };
+
+  const utilityScore =
+    featureBreakdown.ticketValue +
+    featureBreakdown.flexibilityValue +
+    featureBreakdown.tempoValue +
+    featureBreakdown.opponentClockPressure * 0.45 +
+    featureBreakdown.bottleneckUrgency * 0.6 +
+    featureBreakdown.ticketDetourPenalty * 0.38 -
+    featureBreakdown.riskCost;
 
   return {
     action,
     actionId: buildActionId(action),
-    utilityScore:
-      featureBreakdown.ticketValue +
-      featureBreakdown.flexibilityValue +
-      featureBreakdown.tempoValue -
-      featureBreakdown.riskCost,
+    utilityScore,
     confidence: Math.min(0.78, 0.3 + safeToDrawFactor * 0.3 + completionRatio * 0.15),
     rationale: [
       completionRatio >= 0.75
@@ -1359,6 +1439,12 @@ const scoreDrawFaceUpAction = (
   const nearReadyClaims = countNearReadyClaims(board, gameState, action.color);
   const isLocomotive = action.color === "locomotive";
   const endgameClock = estimateEndgameClock(gameState);
+  const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const currentDetourExposure = estimateTicketDetourExposure(
+    board,
+    gameState,
+    currentRouteUrgency
+  );
   const helpedTickets = getTicketsNeedingColor(board, gameState, action.color);
   const followUpClaimLabel =
     nextClaimRecommendation?.action.kind === "claim-route"
@@ -1397,14 +1483,20 @@ const scoreDrawFaceUpAction = (
         0.12 +
       endgameClock.immediateTriggerRisk * 2.4,
     blockExposure: urgentClaimPressure.penalty * 0.08,
-    trainsRemainingPressure: -endgameClock.nearTermTriggerRisk * 1.2
+    trainsRemainingPressure: -endgameClock.nearTermTriggerRisk * 1.2,
+    opponentClockPressure: estimateActionClockPressureImpact(endgameClock, "draw-face-up"),
+    bottleneckUrgency: -urgentClaimPressure.penalty * (isLocomotive ? 0.22 : 0.3),
+    ticketDetourPenalty: -currentDetourExposure * (isLocomotive ? 0.08 : 0.12)
   };
 
   const utilityScore =
     featureBreakdown.ticketValue +
     featureBreakdown.flexibilityValue +
     featureBreakdown.tempoValue +
-    featureBreakdown.routeValue -
+    featureBreakdown.routeValue +
+    featureBreakdown.opponentClockPressure * 0.45 +
+    featureBreakdown.bottleneckUrgency * 0.6 +
+    featureBreakdown.ticketDetourPenalty * 0.38 -
     featureBreakdown.riskCost;
 
   const rationale = [
@@ -1450,6 +1542,12 @@ const scoreDrawBlindAction = (
   const blindExpectation = estimateExpectedNextClaimValue(board, gameState);
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
+  const currentRouteUrgency = getRouteUrgency(board, gameState);
+  const currentDetourExposure = estimateTicketDetourExposure(
+    board,
+    gameState,
+    currentRouteUrgency
+  );
   const activeTicketLabels = getTicketProgressStates(board, gameState)
     .filter((ticketState) => !ticketState.completed)
     .sort((left, right) => left.distance - right.distance)
@@ -1490,14 +1588,20 @@ const scoreDrawBlindAction = (
       0.2 + urgentClaimPressure.penalty * 0.32 + endgameClock.immediateTriggerRisk * 2.8,
     blockExposure: urgentClaimPressure.penalty * 0.12,
     trainsRemainingPressure:
-      -urgentClaimPressure.penalty * 0.08 - endgameClock.nearTermTriggerRisk * 1.4
+      -urgentClaimPressure.penalty * 0.08 - endgameClock.nearTermTriggerRisk * 1.4,
+    opponentClockPressure: estimateActionClockPressureImpact(endgameClock, "draw-blind"),
+    bottleneckUrgency: -urgentClaimPressure.penalty * 0.42,
+    ticketDetourPenalty: -currentDetourExposure * 0.18
   };
 
   const utilityScore =
     featureBreakdown.routeValue +
     featureBreakdown.ticketValue +
     featureBreakdown.flexibilityValue +
-    featureBreakdown.tempoValue -
+    featureBreakdown.tempoValue +
+    featureBreakdown.opponentClockPressure * 0.45 +
+    featureBreakdown.bottleneckUrgency * 0.6 +
+    featureBreakdown.ticketDetourPenalty * 0.38 -
     featureBreakdown.riskCost;
 
   return {
@@ -1692,7 +1796,10 @@ export const recommendActions = (
           flexibilityValue: Math.max(0.5, 3 - riskCost),
           riskCost,
           blockExposure: 0,
-          trainsRemainingPressure: -riskCost * 0.25
+          trainsRemainingPressure: -riskCost * 0.25,
+          opponentClockPressure: 0,
+          bottleneckUrgency: 0,
+          ticketDetourPenalty: 0
         };
 
         return {
@@ -2167,7 +2274,11 @@ const aggregateFeatures = (
       riskCost: accumulator.riskCost + current.riskCost,
       blockExposure: accumulator.blockExposure + current.blockExposure,
       trainsRemainingPressure:
-        accumulator.trainsRemainingPressure + current.trainsRemainingPressure
+        accumulator.trainsRemainingPressure + current.trainsRemainingPressure,
+      opponentClockPressure:
+        accumulator.opponentClockPressure + current.opponentClockPressure,
+      bottleneckUrgency: accumulator.bottleneckUrgency + current.bottleneckUrgency,
+      ticketDetourPenalty: accumulator.ticketDetourPenalty + current.ticketDetourPenalty
     }),
     createBlankFeatures()
   );
@@ -2182,7 +2293,10 @@ const aggregateFeatures = (
     flexibilityValue: totals.flexibilityValue / features.length,
     riskCost: totals.riskCost / features.length,
     blockExposure: totals.blockExposure / features.length,
-    trainsRemainingPressure: totals.trainsRemainingPressure / features.length
+    trainsRemainingPressure: totals.trainsRemainingPressure / features.length,
+    opponentClockPressure: totals.opponentClockPressure / features.length,
+    bottleneckUrgency: totals.bottleneckUrgency / features.length,
+    ticketDetourPenalty: totals.ticketDetourPenalty / features.length
   };
 };
 
@@ -2356,7 +2470,17 @@ const scoreTurnCandidate = (
       (futureTop?.featureBreakdown.flexibilityValue ?? 0) * 0.25,
     riskCost: immediateFeatureBlend.riskCost + opponentResponseRisk * 0.4,
     blockExposure: immediateFeatureBlend.blockExposure + opponentResponseRisk * 0.32,
-    trainsRemainingPressure: immediateFeatureBlend.trainsRemainingPressure
+    trainsRemainingPressure: immediateFeatureBlend.trainsRemainingPressure,
+    opponentClockPressure:
+      immediateFeatureBlend.opponentClockPressure +
+      (futureTop?.featureBreakdown.opponentClockPressure ?? 0) * 0.18 -
+      opponentResponseRisk * 0.08,
+    bottleneckUrgency:
+      immediateFeatureBlend.bottleneckUrgency +
+      (futureTop?.featureBreakdown.bottleneckUrgency ?? 0) * 0.24,
+    ticketDetourPenalty:
+      immediateFeatureBlend.ticketDetourPenalty +
+      (futureTop?.featureBreakdown.ticketDetourPenalty ?? 0) * 0.22
   };
 
   return {
@@ -2366,6 +2490,9 @@ const scoreTurnCandidate = (
       immediateFeatureBlend.ticketValue +
       immediateFeatureBlend.flexibilityValue +
       immediateFeatureBlend.tempoValue +
+      immediateFeatureBlend.opponentClockPressure * 0.45 +
+      immediateFeatureBlend.bottleneckUrgency * 0.6 +
+      immediateFeatureBlend.ticketDetourPenalty * 0.38 +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -

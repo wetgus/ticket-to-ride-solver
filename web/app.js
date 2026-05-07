@@ -113,6 +113,18 @@ const metadataDownloadButton = document.getElementById("metadata-download");
 const metadataResetButton = document.getElementById("metadata-reset");
 const metadataSelectionList = document.getElementById("metadata-selection-list");
 const metadataPreview = document.getElementById("metadata-preview");
+const replayWorkspace = document.getElementById("replay-workspace");
+const replayFileInput = document.getElementById("replay-file-input");
+const replayGameSelect = document.getElementById("replay-game-select");
+const replayPrevStepButton = document.getElementById("replay-prev-step");
+const replayNextStepButton = document.getElementById("replay-next-step");
+const replayStepLabel = document.getElementById("replay-step-label");
+const replayBoardContainer = document.getElementById("replay-board-container");
+const replayHandCards = document.getElementById("replay-hand-cards");
+const replayOwnedTicketsList = document.getElementById("replay-owned-tickets-list");
+const replayPlayersSummary = document.getElementById("replay-players-summary");
+const replayActionLog = document.getElementById("replay-action-log");
+const replayStepDetail = document.getElementById("replay-step-detail");
 
 const solverWorker = new Worker("./solver-worker.js", { type: "module" });
 
@@ -123,6 +135,7 @@ let history = [];
 let currentWorkspaceMode = "play";
 let scheduledRenderHandle = 0;
 let metadataState = createMetadataState();
+let replayState = createEmptyReplayState();
 
 function createEmptyHand() {
   return {
@@ -190,6 +203,14 @@ function createMetadataState() {
     gameId: "",
     gameVariant: "usa-base",
     players: []
+  };
+}
+
+function createEmptyReplayState() {
+  return {
+    payload: null,
+    gameIndex: 0,
+    stepIndex: 0
   };
 }
 
@@ -615,6 +636,10 @@ function renderRecommendations() {
 }
 
 function formatAction(action) {
+  if (!action?.kind) {
+    return "unknown action";
+  }
+
   switch (action.kind) {
     case "claim-route":
       return `claim ${action.routeId}`;
@@ -776,12 +801,271 @@ function renderActionLog() {
   });
 }
 
-function ownerClass(routeId) {
-  const ownerId = session.claimedRoutes[routeId];
+function getReplayGames() {
+  return replayState.payload?.games ?? [];
+}
+
+function getReplayGame() {
+  return getReplayGames()[replayState.gameIndex] ?? null;
+}
+
+function getReplayStep() {
+  const game = getReplayGame();
+  if (!game || replayState.stepIndex <= 0) {
+    return null;
+  }
+  return game.steps?.[replayState.stepIndex - 1] ?? null;
+}
+
+function getReplaySnapshot() {
+  const game = getReplayGame();
+  if (!game) {
+    return null;
+  }
+  if (replayState.stepIndex <= 0) {
+    return game.initialSnapshot ?? null;
+  }
+  return game.steps?.[replayState.stepIndex - 1]?.snapshot ?? null;
+}
+
+function ticketCompletedForSnapshot(snapshot, ticketId) {
+  const ticket = ticketById(ticketId);
+  if (!ticket || !snapshot?.ourState?.playerId) {
+    return false;
+  }
+
+  return areCitiesConnected(
+    snapshot.publicState,
+    snapshot.ourState.playerId,
+    ticket.fromCity,
+    ticket.toCity,
+    ROUTES_BY_ID
+  );
+}
+
+function renderReplayHand() {
+  replayHandCards.innerHTML = "";
+  const snapshot = getReplaySnapshot();
+  const hand = snapshot?.ourState?.hand;
+
+  if (!hand) {
+    replayHandCards.innerHTML = "<div class='empty-state'>Load a replay to inspect Codex hand state.</div>";
+    return;
+  }
+
+  const visibleColors = SORTED_TRAIN_COLORS.filter((color) => (hand[color] ?? 0) > 0);
+  if (visibleColors.length === 0) {
+    replayHandCards.innerHTML = "<div class='empty-state'>No visible Codex hand cards in this snapshot.</div>";
+    return;
+  }
+
+  visibleColors.forEach((color) => {
+    const card = document.createElement("div");
+    card.className = "train-card static-card";
+    card.innerHTML = `
+      <div class="train-card-color train-color-${color}"></div>
+      <div class="train-card-header">
+        <span class="train-card-name">${colorTitle(color)}</span>
+        <span class="train-card-count">${hand[color]}</span>
+      </div>
+    `;
+    replayHandCards.appendChild(card);
+  });
+}
+
+function renderReplayTickets() {
+  replayOwnedTicketsList.innerHTML = "";
+  const snapshot = getReplaySnapshot();
+  const ticketIds = snapshot?.ourState?.ticketIds ?? [];
+
+  if (ticketIds.length === 0) {
+    replayOwnedTicketsList.innerHTML = "<div class='empty-state'>No Codex tickets visible in this snapshot.</div>";
+    return;
+  }
+
+  const completed = ticketIds.filter((ticketId) => ticketCompletedForSnapshot(snapshot, ticketId));
+  const pending = ticketIds.filter((ticketId) => !ticketCompletedForSnapshot(snapshot, ticketId));
+
+  const renderSection = (title, ids, completedState) => {
+    const section = document.createElement("div");
+    section.className = "ticket-section";
+    section.innerHTML = `<p class="ticket-section-title">${title}</p>`;
+
+    if (ids.length === 0) {
+      section.innerHTML += `<div class="empty-state">${completedState ? "No covered tickets." : "No uncovered tickets."}</div>`;
+      return section;
+    }
+
+    ids.forEach((ticketId) => {
+      const ticket = ticketById(ticketId);
+      const card = document.createElement("div");
+      card.className = `ticket-card ${completedState ? "completed" : "pending"}`;
+      card.innerHTML = `
+        <strong>${ticket?.fromCity ?? "?"} -> ${ticket?.toCity ?? "?"}</strong>
+        <div class="ticket-points">${ticket?.points ?? "?"} points</div>
+      `;
+      section.appendChild(card);
+    });
+
+    return section;
+  };
+
+  replayOwnedTicketsList.appendChild(renderSection("Covered", completed, true));
+  replayOwnedTicketsList.appendChild(renderSection("Not Covered", pending, false));
+}
+
+function renderReplayPlayers() {
+  replayPlayersSummary.innerHTML = "";
+  const snapshot = getReplaySnapshot();
+  const game = getReplayGame();
+  const currentStep = getReplayStep();
+  const activeSeat = currentStep?.actorSeat != null ? currentStep.actorSeat + 1 : null;
+
+  if (!snapshot) {
+    replayPlayersSummary.innerHTML = "<div class='empty-state'>No replay loaded.</div>";
+    return;
+  }
+
+  snapshot.publicState.players.forEach((player, index) => {
+    const card = document.createElement("div");
+    card.className = `player-summary-card ${activeSeat === index + 1 ? "active-turn" : ""}`;
+    const agentName = game?.agentNames?.[index] ?? player.displayName;
+    card.innerHTML = `
+      <div class="player-summary-top">
+        <strong>${player.displayName}</strong>
+        <span class="player-chip ${playerChipClass(index + 1)}">${index + 1}</span>
+      </div>
+      <div class="meta-line">${agentName}</div>
+      <div class="player-stats">
+        <div class="player-stat">Score: ${player.score}</div>
+        <div class="player-stat">Trains: ${player.trainsRemaining}</div>
+        <div class="player-stat">Cards: ${player.handCount}</div>
+        <div class="player-stat">Tickets: ${player.ticketsDrawnCount}</div>
+        <div class="player-stat">Routes: ${player.claimedRouteIds.length}</div>
+      </div>
+    `;
+    replayPlayersSummary.appendChild(card);
+  });
+}
+
+function renderReplayStepDetail() {
+  replayStepDetail.innerHTML = "";
+  const game = getReplayGame();
+  const step = getReplayStep();
+
+  if (!game) {
+    replayStepDetail.innerHTML = "<div class='empty-state'>Load a replay JSON file.</div>";
+    return;
+  }
+
+  if (!step) {
+    replayStepDetail.innerHTML = `
+      <div class="empty-state">
+        Initial snapshot for <strong>${game.gameId}</strong>. Step forward to begin the replay.
+      </div>
+    `;
+    return;
+  }
+
+  const codexDecision = step.codexDecision;
+  replayStepDetail.innerHTML = `
+    <div class="stack-list">
+      <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
+      <div><strong>Move:</strong> ${step.move?.summary ?? "Unknown move"}</div>
+      ${
+        codexDecision
+          ? `
+            <div><strong>Codex chose:</strong> ${formatAction(codexDecision.chosenAction ?? { kind: "unknown" })}</div>
+            <div><strong>Reasons:</strong></div>
+            <ul class="replay-rationale-list">
+              ${(codexDecision.topRationale ?? []).map((line) => `<li>${line}</li>`).join("")}
+            </ul>
+          `
+          : "<div class='empty-state'>No Codex rationale on this step.</div>"
+      }
+    </div>
+  `;
+}
+
+function renderReplayLog() {
+  replayActionLog.innerHTML = "";
+  const game = getReplayGame();
+
+  if (!game) {
+    replayActionLog.innerHTML = "<div class='empty-state'>No replay loaded.</div>";
+    return;
+  }
+
+  game.steps.forEach((step, index) => {
+    const node = document.createElement("div");
+    node.className = `log-entry ${index + 1 === replayState.stepIndex ? "active-log-entry" : ""}`;
+    node.innerHTML = `
+      <strong>#${index + 1}</strong> ${step.move?.summary ?? "Unknown move"}
+      ${
+        step.codexDecision?.topRationale?.[0]
+          ? `<div class="meta-line">Codex: ${step.codexDecision.topRationale[0]}</div>`
+          : ""
+      }
+    `;
+    replayActionLog.appendChild(node);
+  });
+}
+
+function renderReplayGameOptions() {
+  const games = getReplayGames();
+  replayGameSelect.innerHTML = "";
+
+  games.forEach((game, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = `${index + 1}. ${game.gameId}`;
+    replayGameSelect.appendChild(option);
+  });
+
+  replayGameSelect.value = String(replayState.gameIndex);
+}
+
+function renderReplayWorkspace() {
+  renderReplayGameOptions();
+  const game = getReplayGame();
+  const snapshot = getReplaySnapshot();
+  const step = getReplayStep();
+
+  replayPrevStepButton.disabled = !game || replayState.stepIndex <= 0;
+  replayNextStepButton.disabled = !game || replayState.stepIndex >= (game?.steps?.length ?? 0);
+
+  replayStepLabel.textContent = game
+    ? `Game ${replayState.gameIndex + 1} of ${getReplayGames().length} | Step ${replayState.stepIndex} / ${game.steps.length}`
+    : "No replay loaded.";
+
+  if (!snapshot) {
+    replayBoardContainer.innerHTML = "<div class='empty-state replay-empty'>Load a replay JSON exported from benchmark.</div>";
+    renderReplayHand();
+    renderReplayTickets();
+    renderReplayPlayers();
+    renderReplayStepDetail();
+    renderReplayLog();
+    return;
+  }
+
+  renderBoardInto(replayBoardContainer, snapshot.publicState.claimedRoutes, null);
+  renderReplayHand();
+  renderReplayTickets();
+  renderReplayPlayers();
+  renderReplayStepDetail();
+  renderReplayLog();
+
+  if (step?.move?.summary) {
+    updateStatus(`Replay: ${step.move.summary}`);
+  }
+}
+
+function ownerClass(routeId, claimedRoutes = session.claimedRoutes) {
+  const ownerId = claimedRoutes[routeId];
   return ownerId ? `claimed-${ownerId}` : "";
 }
 
-function renderBoard() {
+function renderBoardInto(container, claimedRoutes, actionMode = null) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 980 640");
   svg.setAttribute("class", "board-svg");
@@ -818,7 +1102,7 @@ function renderBoard() {
     const groupNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
     groupNode.setAttribute(
       "class",
-      `route-line ${ownerClass(route.id)} ${session.actionMode === "claim-route" ? "claim-mode" : ""}`
+      `route-line ${ownerClass(route.id, claimedRoutes)} ${actionMode === "claim-route" ? "claim-mode" : ""}`
     );
     groupNode.dataset.routeId = route.id;
 
@@ -846,7 +1130,7 @@ function renderBoard() {
     claim.setAttribute("class", "route-claim");
     groupNode.appendChild(claim);
 
-    if (session.claimedRoutes[route.id]) {
+    if (claimedRoutes[route.id]) {
       const dx = end[0] - start[0];
       const dy = end[1] - start[1];
       const segmentSpan = 1 / route.length;
@@ -918,8 +1202,12 @@ function renderBoard() {
     svg.appendChild(label);
   });
 
-  boardContainer.innerHTML = "";
-  boardContainer.appendChild(svg);
+  container.innerHTML = "";
+  container.appendChild(svg);
+}
+
+function renderBoard() {
+  renderBoardInto(boardContainer, session.claimedRoutes, session.actionMode);
 }
 
 function renderTicketSelector(ticketIds, minimumKeepCount, actionLabel, submitId) {
@@ -1296,10 +1584,16 @@ function renderContextPanel() {
 
 function render() {
   playWorkspace.classList.toggle("hidden", currentWorkspaceMode !== "play");
+  replayWorkspace.classList.toggle("hidden", currentWorkspaceMode !== "replay");
   metadataWorkspace.classList.toggle("hidden", currentWorkspaceMode !== "metadata");
 
   if (currentWorkspaceMode === "metadata") {
     renderMetadataBuilder();
+    return;
+  }
+
+  if (currentWorkspaceMode === "replay") {
+    renderReplayWorkspace();
     return;
   }
 
@@ -2138,7 +2432,52 @@ function handleWorkspaceModeChange() {
   updateStatus(
     currentWorkspaceMode === "play"
       ? "Set up the table and continue the game flow."
-      : "Build destination metadata from ticket offers and kept selections."
+      : currentWorkspaceMode === "replay"
+        ? "Load a benchmark replay JSON and step through the generated game."
+        : "Build destination metadata from ticket offers and kept selections."
+  );
+  render();
+}
+
+function handleReplayFileChange(event) {
+  const file = event.target.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    try {
+      const payload = JSON.parse(String(reader.result ?? "{}"));
+      replayState = {
+        payload,
+        gameIndex: 0,
+        stepIndex: 0
+      };
+      updateStatus(`Loaded replay file with ${payload.games?.length ?? 0} game(s).`);
+      render();
+    } catch (error) {
+      updateStatus(`Could not parse replay file: ${error.message}`);
+    }
+  });
+  reader.readAsText(file);
+}
+
+function handleReplayGameChange() {
+  replayState.gameIndex = Number(replayGameSelect.value || 0);
+  replayState.stepIndex = 0;
+  render();
+}
+
+function stepReplay(delta) {
+  const game = getReplayGame();
+  if (!game) {
+    return;
+  }
+
+  replayState.stepIndex = Math.max(
+    0,
+    Math.min(game.steps.length, replayState.stepIndex + delta)
   );
   render();
 }
@@ -2146,6 +2485,10 @@ function handleWorkspaceModeChange() {
 startGameButton.addEventListener("click", initializeGame);
 undoButton.addEventListener("click", restoreHistory);
 workspaceMode.addEventListener("change", handleWorkspaceModeChange);
+replayFileInput.addEventListener("change", handleReplayFileChange);
+replayGameSelect.addEventListener("change", handleReplayGameChange);
+replayPrevStepButton.addEventListener("click", () => stepReplay(-1));
+replayNextStepButton.addEventListener("click", () => stepReplay(1));
 claimRouteModeButton.addEventListener("click", () => {
   session.actionMode = "claim-route";
   render();

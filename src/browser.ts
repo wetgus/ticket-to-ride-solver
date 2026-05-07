@@ -13,3 +13,8 @@ export * from "./engine/state-validation.js";
 export * from "./engine/turns.js";
 export * from "./examples/sample-state.js";
 export * from "./examples/scenarios.js";
+export * from "./training/feature-vector.js";
+export * from "./training/pairwise-reranker.js";
+export * from "./training/reranker.js";
+export * from "./training/targets.js";
+export * from "./training/types.js";

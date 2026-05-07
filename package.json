@@ -16,7 +16,9 @@
     "reconstruct:bga-log": "node dist/scripts/reconstruct-bga-log.js",
     "extract:decisions": "node dist/scripts/extract-decisions.js",
     "export:decisions": "node dist/scripts/export-decision-dataset.js",
-    "export:decision-corpus": "node dist/scripts/export-decision-batch.js"
+    "export:decision-corpus": "node dist/scripts/export-decision-batch.js",
+    "train:policy-reranker": "node dist/scripts/train-policy-reranker.js",
+    "train:policy-phase-pairwise": "node dist/scripts/train-phase-pairwise-reranker.js"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
