@@ -119,15 +119,15 @@ const estimateDeploymentPressure = (
 
   let oversizedHandPenalty = 0;
   if (knownHandSize > 30) {
-    oversizedHandPenalty = 16 + (knownHandSize - 30) * 2.2;
+    oversizedHandPenalty = 22 + (knownHandSize - 30) * 3.1;
   } else if (knownHandSize > 26) {
-    oversizedHandPenalty = 5 + (knownHandSize - 26) * 1.4;
+    oversizedHandPenalty = 7 + (knownHandSize - 26) * 1.9;
   } else if (knownHandSize > 22) {
-    oversizedHandPenalty = (knownHandSize - 22) * 0.7;
+    oversizedHandPenalty = (knownHandSize - 22) * 0.95;
   }
 
   if (claimedRouteCount === 0 && knownHandSize > 18) {
-    oversizedHandPenalty += (knownHandSize - 18) * 0.55;
+    oversizedHandPenalty += (knownHandSize - 18) * 0.78;
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -1549,18 +1549,32 @@ const scoreDrawFaceUpAction = (
   const winProxyDelta =
     estimatePositionWinChanceProxy(board, nextState) -
     estimatePositionWinChanceProxy(board, gameState);
-  const earlyLocomotiveTax =
-    isLocomotive &&
+  const openingFaceUpTax =
+    !isLocomotive &&
     publicPlayer.claimedRouteIds.length === 0 &&
     knownHandSize < 18 &&
     nearReadyClaims === 0 &&
+    neededWeight < 2.2 &&
     helpedTickets.length <= 1
-      ? 4.6
+      ? 1.8
+      : !isLocomotive &&
+          publicPlayer.claimedRouteIds.length === 0 &&
+          knownHandSize < 14 &&
+          nearReadyClaims === 0
+        ? 1.0
+        : 0;
+  const earlyLocomotiveTax =
+    isLocomotive &&
+    publicPlayer.claimedRouteIds.length === 0 &&
+    knownHandSize < 22 &&
+    nearReadyClaims === 0 &&
+    helpedTickets.length <= 1
+      ? 8.4
       : isLocomotive &&
           publicPlayer.claimedRouteIds.length <= 1 &&
-          knownHandSize < 22 &&
+          knownHandSize < 26 &&
           nearReadyClaims === 0
-        ? 2.1
+        ? 4.2
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
@@ -1588,6 +1602,7 @@ const scoreDrawFaceUpAction = (
     flexibilityValue: isLocomotive ? 5.5 : neededWeight * 0.7 + 1.5,
     riskCost:
       (isLocomotive ? 0.8 : 0.3) +
+      openingFaceUpTax +
       earlyLocomotiveTax +
       deploymentPressure.drawPenalty * (isLocomotive ? 0.75 : 0.92) +
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
@@ -1627,6 +1642,9 @@ const scoreDrawFaceUpAction = (
     neededWeight > 0
       ? `matches current route-color demand weight ${neededWeight.toFixed(1)}`
       : "is not a top-demand color for current tickets",
+    openingFaceUpTax > 0
+      ? "open face-up draw is taxed here because the position still prefers broader hidden setup"
+      : "face-up draw is not especially taxed by the current opening posture",
     endgameClock.signals[0] ?? "endgame timing is not pressuring this draw yet",
     earlyLocomotiveTax > 0
       ? "face-up locomotive is taxed here because early flexibility is already good enough"
@@ -1671,6 +1689,20 @@ const scoreDrawBlindAction = (
     .map((ticketState) => formatTicketLabel(board, ticketState.ticket));
   const drawPilePressure =
     gameState.publicState.drawPileCount > 25 ? 1.8 : gameState.publicState.drawPileCount > 10 ? 1.2 : 0.6;
+  const publicPlayer = getPlayerPublicState(gameState);
+  const knownHandSize = getKnownHandSize(gameState);
+  const openingBlindBonus =
+    publicPlayer.claimedRouteIds.length === 0 &&
+    knownHandSize < 24 &&
+    deploymentPressure.readyLongClaimCount === 0
+      ? knownHandSize < 16
+        ? 2.8
+        : 1.7
+      : publicPlayer.claimedRouteIds.length <= 1 &&
+          knownHandSize < 20 &&
+          deploymentPressure.readyClaimCount === 0
+        ? 0.9
+        : 0;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
     gameState,
@@ -1698,8 +1730,9 @@ const scoreDrawBlindAction = (
       blindExpectation.expectedUtility * 0.16 +
       blindExpectation.expectedNearReadyClaims * 0.35,
     ticketValue: totalDemand * 0.35,
-    tempoValue: 0.9,
-    flexibilityValue: 2.2 + drawPilePressure + blindExpectation.expectedNearReadyClaims * 0.15,
+    tempoValue: 0.9 + openingBlindBonus * 0.35,
+    flexibilityValue:
+      2.2 + drawPilePressure + blindExpectation.expectedNearReadyClaims * 0.15 + openingBlindBonus,
     riskCost:
       0.2 +
       deploymentPressure.drawPenalty * 1.08 +
@@ -1743,6 +1776,9 @@ const scoreDrawBlindAction = (
       blindExpectation.expectedUtility > 0
         ? `expected hidden draw improves next-claim quality by ${blindExpectation.expectedUtility.toFixed(1)}`
         : "hidden draw looks more like flexibility than immediate power",
+      openingBlindBonus > 0
+        ? "opening posture gives extra value to a flexible blind draw here"
+        : "blind draw is not receiving extra opening-phase credit here",
       winProxyDelta > 0
         ? `expected blind draw improves short-horizon win proxy by ${winProxyDelta.toFixed(1)}`
         : "blind draw does not substantially improve the short-horizon win proxy",
@@ -2558,12 +2594,12 @@ const scoreTurnCandidate = (
       duplicateFaceUpFollowThroughAdjustment += 2.6;
       duplicateFaceUpFollowThroughReason = `follows through by taking the second visible ${firstDrawAction.color}`;
     } else if (secondDrawAction?.kind === "draw-blind") {
-      duplicateFaceUpFollowThroughAdjustment -= 4.4;
+      duplicateFaceUpFollowThroughAdjustment -= 6.2;
       duplicateFaceUpFollowThroughReason = `passes on a second visible ${firstDrawAction.color} and goes blind instead`;
     }
   }
   let stepState = gameState;
-  const chosenActionBreakdowns = actions.map((action) => {
+  const chosenActionEvaluations = actions.map((action) => {
     const currentEvaluation = recommendActions(stepState, board);
     const recommendation = currentEvaluation.alternatives.find(
       (candidate) => candidate.actionId === buildActionId(action)
@@ -2573,12 +2609,35 @@ const scoreTurnCandidate = (
       stepState = withAdditionalCards(stepState, [action.color]);
     }
 
-    return recommendation;
+    return { recommendation, currentEvaluation };
   });
+  let strongerVisibleFollowUpAdjustment = 0;
+  let strongerVisibleFollowUpReason: string | undefined;
+  if (firstDrawAction?.kind === "draw-face-up" && secondDrawAction?.kind === "draw-blind") {
+    const secondStepEvaluation = chosenActionEvaluations[1]?.currentEvaluation;
+    const chosenSecondRecommendation = chosenActionEvaluations[1]?.recommendation;
+    const bestVisibleFollowUp = secondStepEvaluation?.alternatives
+      .filter((candidate) => candidate.action.kind === "draw-face-up")
+      .sort((left, right) => right.utilityScore - left.utilityScore)[0];
+    if (
+      bestVisibleFollowUp &&
+      chosenSecondRecommendation &&
+      bestVisibleFollowUp.utilityScore > chosenSecondRecommendation.utilityScore + 0.9
+    ) {
+      const utilityGap = bestVisibleFollowUp.utilityScore - chosenSecondRecommendation.utilityScore;
+      strongerVisibleFollowUpAdjustment -= 2.4 + Math.min(2.6, utilityGap * 0.35);
+      const visibleFollowUpColor =
+        bestVisibleFollowUp.action.kind === "draw-face-up"
+          ? bestVisibleFollowUp.action.color
+          : "face-up color";
+      strongerVisibleFollowUpReason = `goes blind even though visible ${visibleFollowUpColor} looked materially stronger for the second draw`;
+    }
+  }
+  const chosenActionBreakdowns = chosenActionEvaluations
+    .map((entry) => entry.recommendation)
+    .filter((entry): entry is ActionRecommendation => Boolean(entry));
   const immediateFeatureBlend = aggregateFeatures(
-    chosenActionBreakdowns
-      .filter((entry): entry is ActionRecommendation => Boolean(entry))
-      .map((entry) => entry.featureBreakdown)
+    chosenActionBreakdowns.map((entry) => entry.featureBreakdown)
   );
   const futureTop = simulatedActionEvaluation.topRecommendation;
   const futureBonus = Math.max(
@@ -2640,6 +2699,7 @@ const scoreTurnCandidate = (
       immediateFeatureBlend.bottleneckUrgency * 0.6 +
       immediateFeatureBlend.ticketDetourPenalty * 0.38 +
       duplicateFaceUpFollowThroughAdjustment +
+      strongerVisibleFollowUpAdjustment +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -
@@ -2662,6 +2722,7 @@ const scoreTurnCandidate = (
         ? `still exposes ${representativeOpponentRisk.threatenedRouteId} to opponent pressure`
         : "does not leave an obvious single-route counterplay window",
       ...(duplicateFaceUpFollowThroughReason ? [duplicateFaceUpFollowThroughReason] : []),
+      ...(strongerVisibleFollowUpReason ? [strongerVisibleFollowUpReason] : []),
       expectedRolloutContinuationUtility > 0
         ? `keeps a rollout continuation value of ${expectedRolloutContinuationUtility.toFixed(1)}`
         : "does not keep a strong continuation after this turn"
