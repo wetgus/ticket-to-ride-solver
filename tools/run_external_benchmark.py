@@ -466,6 +466,14 @@ def summarize_codex_rows(rows: List[Dict]) -> Dict:
     }
 
 
+def summarize_turn_counts(turn_counts: List[int]) -> Dict:
+    return {
+        "averageTurnCount": statistics.mean(turn_counts) if turn_counts else 0,
+        "maxTurnCount": max(turn_counts) if turn_counts else None,
+        "minTurnCount": min(turn_counts) if turn_counts else None,
+    }
+
+
 def run_matchup(
     agent_names,
     games,
@@ -483,9 +491,11 @@ def run_matchup(
     codex_places = []
     codex_wins = 0
     rows = []
+    game_results = []
     replays = []
     training_row_count = 0
     failed_games = []
+    turn_counts = []
     started_at = time.time()
 
     for game_index in range(games):
@@ -568,6 +578,26 @@ def run_matchup(
         if replay is not None:
             replay["placements"] = placements
             replays.append(replay)
+        turn_count = len(replay["steps"]) if replay is not None else None
+        if turn_count is not None:
+            turn_counts.append(turn_count)
+        final_scores = [
+            {
+                "seat": index,
+                "agentName": agent_names[index],
+                "score": int(game.players[index].points),
+                "place": placements[index],
+            }
+            for index in range(game.number_of_players)
+        ]
+        game_results.append(
+            {
+                "game": game_index,
+                "seed": seed_base + game_index,
+                "turnCount": turn_count,
+                "finalScores": final_scores,
+            }
+        )
         new_training_rows = materialize_training_rows(game_id, game, agent_names, agents, placements)
         training_row_count += len(new_training_rows)
         if training_output_path:
@@ -591,6 +621,7 @@ def run_matchup(
             )
 
     codex_summary = summarize_codex_rows(rows)
+    turn_summary = summarize_turn_counts(turn_counts)
 
     return {
         "agent_names": agent_names,
@@ -605,7 +636,11 @@ def run_matchup(
         "codexMinScoreGame": codex_summary["minScoreGame"],
         "codexScoreP10": codex_summary["scoreP10"],
         "codexScoreP90": codex_summary["scoreP90"],
+        "averageTurnCount": turn_summary["averageTurnCount"],
+        "maxTurnCount": turn_summary["maxTurnCount"],
+        "minTurnCount": turn_summary["minTurnCount"],
         "rows": rows,
+        "gameResults": game_results,
         "replays": replays,
         "trainingRowCount": training_row_count,
         "failedGames": failed_games,
@@ -772,7 +807,14 @@ def main():
         )
 
     all_rows = [row for summary in summaries for row in summary["rows"]]
+    all_turn_counts = [
+        game_result["turnCount"]
+        for summary in summaries
+        for game_result in summary["gameResults"]
+        if game_result.get("turnCount") is not None
+    ]
     aggregate_codex_summary = summarize_codex_rows(all_rows)
+    aggregate_turn_summary = summarize_turn_counts(all_turn_counts)
     if all_rows:
         print(
             "\naggregate "
@@ -780,6 +822,7 @@ def main():
             f"codex_win_rate={aggregate_codex_summary['winRate']:.3f} "
             f"codex_avg_score={aggregate_codex_summary['averageScore']:.2f} "
             f"codex_avg_place={aggregate_codex_summary['averagePlace']:.2f} "
+            f"avg_turns={aggregate_turn_summary['averageTurnCount']:.1f} "
             f"places=({aggregate_codex_summary['placementCounts']['1']},"
             f"{aggregate_codex_summary['placementCounts']['2']},"
             f"{aggregate_codex_summary['placementCounts']['3']},"
@@ -816,6 +859,9 @@ def main():
         "aggregateMinScoreSeat": aggregate_codex_summary["minScoreSeat"],
         "aggregateScoreP10": aggregate_codex_summary["scoreP10"],
         "aggregateScoreP90": aggregate_codex_summary["scoreP90"],
+        "aggregateAverageTurnCount": aggregate_turn_summary["averageTurnCount"],
+        "aggregateMaxTurnCount": aggregate_turn_summary["maxTurnCount"],
+        "aggregateMinTurnCount": aggregate_turn_summary["minTurnCount"],
         "summaries": [
             {
                 "agentNames": summary["agent_names"],
@@ -830,9 +876,13 @@ def main():
                 "codexMinScoreGame": summary["codexMinScoreGame"],
                 "codexScoreP10": summary["codexScoreP10"],
                 "codexScoreP90": summary["codexScoreP90"],
+                "averageTurnCount": summary["averageTurnCount"],
+                "maxTurnCount": summary["maxTurnCount"],
+                "minTurnCount": summary["minTurnCount"],
                 "trainingRowCount": summary["trainingRowCount"],
                 "failedGameCount": len(summary["failedGames"]),
                 "elapsedSeconds": summary["elapsedSeconds"],
+                "gameResults": summary["gameResults"],
             }
             for summary in summaries
         ],
