@@ -125,23 +125,27 @@ const estimateDeploymentPressure = (
     oversizedHandPenalty = 7 + (knownHandSize - 26) * 1.9;
   } else if (knownHandSize > 22) {
     oversizedHandPenalty = (knownHandSize - 22) * 0.95;
+  } else if (knownHandSize > 18) {
+    oversizedHandPenalty = 2.5 + (knownHandSize - 18) * 1.15;
   }
 
-  if (claimedRouteCount === 0 && knownHandSize > 18) {
-    oversizedHandPenalty += (knownHandSize - 18) * 0.78;
+  if (claimedRouteCount === 0 && knownHandSize > 12) {
+    oversizedHandPenalty += (knownHandSize - 12) * 1.05;
+  } else if (claimedRouteCount <= 1 && knownHandSize > 16) {
+    oversizedHandPenalty += (knownHandSize - 16) * 0.75;
   }
   if (cardToTrainOverhang > 0) {
     oversizedHandPenalty +=
-      cardToTrainOverhang * (claimedRouteCount <= 1 ? 1.9 : 1.25) +
-      Math.max(0, cardToTrainOverhang - 4) * 1.35;
+      cardToTrainOverhang * (claimedRouteCount <= 1 ? 2.7 : 2.0) +
+      Math.max(0, cardToTrainOverhang - 2) * 2.1;
   }
   if (knownHandSize >= publicPlayer.trainsRemaining - 2) {
     oversizedHandPenalty +=
       (knownHandSize - (publicPlayer.trainsRemaining - 2) + 1) *
-      (claimedRouteCount <= 2 ? 1.4 : 0.95);
+      (claimedRouteCount <= 2 ? 2.2 : 1.55);
   }
-  if (readyClaimCount > 0 && knownHandSize > 24) {
-    oversizedHandPenalty += (knownHandSize - 24) * 0.9;
+  if (readyClaimCount > 0 && knownHandSize > 16) {
+    oversizedHandPenalty += (knownHandSize - 16) * (readyLongClaimCount > 0 ? 1.4 : 1.0);
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -153,9 +157,9 @@ const estimateDeploymentPressure = (
 
   let readyClaimPressure = 0;
   if (readyLongClaimCount > 0) {
-    readyClaimPressure += claimedRouteCount === 0 ? 5.2 : 3.2;
-  } else if (readyClaimCount > 0 && knownHandSize >= 18) {
-    readyClaimPressure += claimedRouteCount === 0 ? 2.4 : 1.2;
+    readyClaimPressure += claimedRouteCount === 0 ? 8.2 : 5.6;
+  } else if (readyClaimCount > 0 && knownHandSize >= 14) {
+    readyClaimPressure += claimedRouteCount === 0 ? 4.2 : 2.6;
   }
 
   const signals: string[] = [];
@@ -1691,20 +1695,20 @@ const scoreDrawFaceUpAction = (
     isLocomotive &&
     trainsRemaining <= 8 &&
     (knownHandSize >= trainsRemaining - 1 || gameState.ourState.hand.locomotive >= 2)
-      ? 6.2 + Math.max(0, 8 - trainsRemaining) * 0.7
+      ? 9.4 + Math.max(0, 8 - trainsRemaining) * 1.1
       : 0;
   const nonPriorityVisibleTax =
     !isLocomotive &&
     !isPriorityColor &&
     drawTactic.mode === "focus"
       ? neededWeight <= 0.5
-        ? 3.0
-        : 1.6
+        ? 4.8
+        : 2.8
       : !isLocomotive &&
           !isPriorityColor &&
           drawTactic.mode === "value" &&
           knownHandSize > Math.min(22, trainsRemaining - 1)
-        ? 1.2
+        ? 1.8
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
@@ -1866,9 +1870,9 @@ const scoreDrawBlindAction = (
         : 0;
   const lateHandBlindTax =
     knownHandSize > Math.min(24, publicPlayer.trainsRemaining)
-      ? (knownHandSize - Math.min(24, publicPlayer.trainsRemaining)) * 0.45
+      ? (knownHandSize - Math.min(24, publicPlayer.trainsRemaining)) * 0.95
       : 0;
-  const overhangBlindTax = cardOverhang * 1.55;
+  const overhangBlindTax = cardOverhang * 2.35;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
     gameState,
@@ -2829,8 +2833,8 @@ const scoreTurnCandidate = (
     const firstStepRecommendation = chosenActionEvaluations[0]?.recommendation;
     if (topBlindOpening && firstStepRecommendation) {
       const blindGap = topBlindOpening.utilityScore - firstStepRecommendation.utilityScore;
-      if (turnDrawTactic.mode === "value" && blindGap > -0.8) {
-        faceUpThenBlindOpeningAdjustment -= 2.2 + Math.max(0, blindGap) * 0.6;
+      if (turnDrawTactic.mode === "value" && blindGap > -1.4) {
+        faceUpThenBlindOpeningAdjustment -= 4.1 + Math.max(0, blindGap) * 0.9;
         faceUpThenBlindOpeningReason =
           "mixed open-plus-blind draw is penalized here because the position still looks more like broad value setup than color focus";
       }
@@ -2843,7 +2847,7 @@ const scoreTurnCandidate = (
     secondDrawAction?.kind === "draw-blind" &&
     turnDrawTactic.mode === "value"
   ) {
-    valueModeDoubleBlindAdjustment += 2.8;
+    valueModeDoubleBlindAdjustment += 4.4;
     valueModeDoubleBlindReason =
       "double-blind draw is rewarded here because the current tactic is still maximizing broad hand value";
   }
@@ -2854,10 +2858,21 @@ const scoreTurnCandidate = (
       .filter((_, index) => index !== gameState.publicState.faceUpCards.indexOf(firstDrawAction.color))
       .some((color) => turnDrawTactic.priorityColors.has(color));
     if (turnDrawTactic.mode === "focus" && remainingVisiblePriority) {
-      focusModeVisiblePriorityAdjustment -= 3.6;
+      focusModeVisiblePriorityAdjustment -= 5.6;
       focusModeVisiblePriorityReason =
         "goes blind even though another visible priority color was still available in focus mode";
     }
+  }
+  let genericFaceUpThenBlindAdjustment = 0;
+  let genericFaceUpThenBlindReason: string | undefined;
+  if (
+    firstDrawAction?.kind === "draw-face-up" &&
+    secondDrawAction?.kind === "draw-blind" &&
+    turnDrawTactic.mode !== "focus"
+  ) {
+    genericFaceUpThenBlindAdjustment -= 1.8;
+    genericFaceUpThenBlindReason =
+      "face-up plus blind is broadly discouraged here because the turn is neither fully focused nor fully value-maximizing";
   }
   const chosenActionBreakdowns = chosenActionEvaluations
     .map((entry) => entry.recommendation)
@@ -2929,6 +2944,7 @@ const scoreTurnCandidate = (
       faceUpThenBlindOpeningAdjustment +
       valueModeDoubleBlindAdjustment +
       focusModeVisiblePriorityAdjustment +
+      genericFaceUpThenBlindAdjustment +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -
@@ -2955,6 +2971,7 @@ const scoreTurnCandidate = (
       ...(faceUpThenBlindOpeningReason ? [faceUpThenBlindOpeningReason] : []),
       ...(valueModeDoubleBlindReason ? [valueModeDoubleBlindReason] : []),
       ...(focusModeVisiblePriorityReason ? [focusModeVisiblePriorityReason] : []),
+      ...(genericFaceUpThenBlindReason ? [genericFaceUpThenBlindReason] : []),
       expectedRolloutContinuationUtility > 0
         ? `keeps a rollout continuation value of ${expectedRolloutContinuationUtility.toFixed(1)}`
         : "does not keep a strong continuation after this turn"
