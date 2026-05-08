@@ -1366,6 +1366,23 @@ const scoreClaimAction = (
   const nextDetourExposure = estimateTicketDetourExposure(board, applied, nextRouteUrgency);
   const detourPenaltyImprovement = currentDetourExposure - nextDetourExposure;
   const locomotiveSpendPenalty = action.payment.locomotives * 0.9;
+  const trainsBefore = gameState.ourState.trainsRemaining;
+  const trainsAfter = applied.ourState.trainsRemaining;
+  const endgamePointPush =
+    trainsBefore <= 8
+      ? route.points * (0.18 + (8 - trainsBefore) * 0.07) +
+        (route.length / Math.max(1, trainsBefore)) * 2.2
+      : 0;
+  const finishWindowBonus =
+    trainsBefore <= 6
+      ? route.points * 0.22 + route.length * 0.65
+      : 0;
+  const exactFinishBonus =
+    trainsAfter === 0
+      ? route.points * 0.55 + 5.5
+      : trainsAfter <= 2
+        ? route.points * 0.24 + 2.8
+        : 0;
   const topTicketReasons = getTopTicketImprovementReasons(
     board,
     currentTicketStates,
@@ -1385,13 +1402,15 @@ const scoreClaimAction = (
       )
     ),
     scoreDiffEstimate: route.points + completionDelta * 5 + longestRouteDelta * 0.8,
-    routeValue: route.points + efficiency * 2 + urgency * 8,
+    routeValue: route.points + efficiency * 2 + urgency * 8 + endgamePointPush,
     ticketValue: ticketProgressDelta * 1.5 + completionDelta * 8,
     tempoValue:
       (route.length >= 5 ? 3.5 : route.length >= 3 ? 2 : 0.8) +
       deploymentPressure.claimBonus +
       endgameClock.immediateTriggerRisk * 2.2 +
-      (route.length >= Math.max(1, gameState.ourState.trainsRemaining - 2) ? 2.8 : 0),
+      (route.length >= Math.max(1, gameState.ourState.trainsRemaining - 2) ? 2.8 : 0) +
+      finishWindowBonus +
+      exactFinishBonus,
     flexibilityValue: Math.max(0, 5 - action.payment.locomotives * 1.2),
     riskCost: locomotiveSpendPenalty + Math.max(0, -ticketProgressDelta * 0.3),
     blockExposure: urgency * 5,
@@ -1434,6 +1453,12 @@ const scoreClaimAction = (
     longestRouteDelta > 0
       ? `extends longest-route potential by ${longestRouteDelta}`
       : "has limited immediate longest-route gain",
+    trainsBefore <= 8
+      ? `late-game scoring pressure favors turning ${route.length} trains into ${route.points} points now`
+      : "still leaves enough trains that exact endgame conversion is less urgent",
+    trainsAfter <= 2
+      ? "leaves very few trains, so immediate point conversion matters a lot here"
+      : "does not immediately force a final-turn scoring squeeze",
     urgency > 0.35
       ? "secures a route that looks time-sensitive"
       : "route urgency is moderate",
@@ -1620,6 +1645,7 @@ const scoreDrawFaceUpAction = (
   );
   const isPriorityColor = drawTactic.priorityColors.has(action.color);
   const trainsRemaining = publicPlayer.trainsRemaining;
+  const cardOverhang = Math.max(0, knownHandSize - trainsRemaining);
   const followUpClaimLabel =
     nextClaimRecommendation?.action.kind === "claim-route"
       ? nextClaimRecommendation.action.routeId
@@ -1661,6 +1687,12 @@ const scoreDrawFaceUpAction = (
           ? 5.6
           : 4.4
         : 0;
+  const lateLocomotiveTax =
+    isLocomotive &&
+    trainsRemaining <= 8 &&
+    (knownHandSize >= trainsRemaining - 1 || gameState.ourState.hand.locomotive >= 2)
+      ? 6.2 + Math.max(0, 8 - trainsRemaining) * 0.7
+      : 0;
   const nonPriorityVisibleTax =
     !isLocomotive &&
     !isPriorityColor &&
@@ -1705,7 +1737,9 @@ const scoreDrawFaceUpAction = (
       (isLocomotive ? 0.8 : 0.3) +
       openingFaceUpTax +
       earlyLocomotiveTax +
+      lateLocomotiveTax +
       nonPriorityVisibleTax +
+      cardOverhang * 1.35 +
       deploymentPressure.drawPenalty * (isLocomotive ? 0.75 : 0.92) +
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
         0.12 +
@@ -1757,6 +1791,12 @@ const scoreDrawFaceUpAction = (
     earlyLocomotiveTax > 0
       ? "face-up locomotive is taxed here because early flexibility is already good enough"
       : "face-up locomotive is not overly taxed in this position",
+    lateLocomotiveTax > 0
+      ? "face-up locomotive is strongly taxed because late-game extra flexibility is no longer converting cleanly into tempo"
+      : "late-game locomotive tax is not strongly active here",
+    cardOverhang > 0
+      ? `draw is punished because the hand already exceeds remaining trains by ${cardOverhang}`
+      : "hand size is not yet larger than the remaining train budget",
     ...deploymentPressure.signals.map((signal) => `draw is less attractive because ${signal}`),
     winProxyDelta > 0
       ? `improves short-horizon win proxy by ${winProxyDelta.toFixed(1)}`
@@ -1799,6 +1839,8 @@ const scoreDrawBlindAction = (
     gameState.publicState.drawPileCount > 25 ? 1.8 : gameState.publicState.drawPileCount > 10 ? 1.2 : 0.6;
   const publicPlayer = getPlayerPublicState(gameState);
   const knownHandSize = getKnownHandSize(gameState);
+  const trainsRemaining = publicPlayer.trainsRemaining;
+  const cardOverhang = Math.max(0, knownHandSize - trainsRemaining);
   const drawTactic = getDrawTacticProfile(
     colorDemand,
     gameState.ourState.hand,
@@ -1826,6 +1868,7 @@ const scoreDrawBlindAction = (
     knownHandSize > Math.min(24, publicPlayer.trainsRemaining)
       ? (knownHandSize - Math.min(24, publicPlayer.trainsRemaining)) * 0.45
       : 0;
+  const overhangBlindTax = cardOverhang * 1.55;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
     gameState,
@@ -1864,6 +1907,7 @@ const scoreDrawBlindAction = (
       0.2 +
       deploymentPressure.drawPenalty * 1.08 +
       lateHandBlindTax +
+      overhangBlindTax +
       urgentClaimPressure.penalty * 0.32 +
       endgameClock.immediateTriggerRisk * 2.8,
     blockExposure: urgentClaimPressure.penalty * 0.12,
@@ -1910,6 +1954,9 @@ const scoreDrawBlindAction = (
       lateHandBlindTax > 0
         ? "blind draw is taxed because the hand is already too large for the remaining deployment window"
         : "hand size does not yet strongly punish another blind draw",
+      cardOverhang > 0
+        ? `blind draw is heavily penalized because the hand already exceeds remaining trains by ${cardOverhang}`
+        : "remaining trains still leave room for another flexible draw",
       drawTactic.mode === "value"
         ? "current tactic still favors broad value accumulation over visible color commitment"
         : "current tactic is already focused enough that blind draw gets less extra credit",
