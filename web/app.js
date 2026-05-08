@@ -999,6 +999,14 @@ function renderReplayStepDetail() {
 
   const codexDecision = step.codexDecision;
   const chosenAction = codexDecision?.chosenAction;
+  const offeredTicketsLine =
+    step.move?.kind === "keep-destination-tickets" && (step.move.offeredTicketIds?.length ?? 0) > 0
+      ? `<div><strong>Offered:</strong> ${step.move.offeredTicketIds.map(ticketLabel).join("; ")}</div>`
+      : "";
+  const keptTicketsLine =
+    step.move?.kind === "keep-destination-tickets" && (step.move.keptTicketIds?.length ?? 0) > 0
+      ? `<div><strong>Kept:</strong> ${step.move.keptTicketIds.map(ticketLabel).join("; ")}</div>`
+      : "";
   const claimPaymentLine =
     chosenAction?.kind === "claim-route"
       ? `<div><strong>Payment:</strong> ${chosenAction.payment.colorCards} ${
@@ -1012,6 +1020,8 @@ function renderReplayStepDetail() {
         <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
         <div><strong>Replay step:</strong> ${replayState.stepIndex} (raw index ${step.index})</div>
         <div><strong>Move:</strong> ${step.move?.summary ?? "Unknown move"}</div>
+        ${offeredTicketsLine}
+        ${keptTicketsLine}
         ${
           step.index < (game.agentNames?.length ?? 4)
           ? "<div class='meta-line'>Setup phase: initial destination-ticket keeps are recorded in seat order before the main turn order begins.</div>"

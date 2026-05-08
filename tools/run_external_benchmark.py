@@ -71,7 +71,7 @@ def find_primary_codex_seat(agent_names: List[str]) -> int | None:
         return None
 
 
-def describe_move(move, actor_name: str) -> Dict:
+def describe_move(move, actor_name: str, offered_ticket_ids: List[str] | None = None) -> Dict:
     if move.function == "drawTrainCard":
         if str(move.args).lower() == "top":
             return {
@@ -93,9 +93,16 @@ def describe_move(move, actor_name: str) -> Dict:
 
     if move.function == "chooseDestinationCards":
         kept_count = len(move.args[1]) if isinstance(move.args, list) and len(move.args) > 1 else 0
+        kept_ticket_ids = (
+            [ticket_id_for_card(card) for card in move.args[1]]
+            if isinstance(move.args, list) and len(move.args) > 1
+            else []
+        )
         return {
             "kind": "keep-destination-tickets",
             "keptCount": kept_count,
+            "offeredTicketIds": offered_ticket_ids or [],
+            "keptTicketIds": kept_ticket_ids,
             "summary": f"{actor_name} kept {kept_count} destination ticket(s).",
         }
 
@@ -176,6 +183,9 @@ def play_game_with_trace(
     ]
 
     for seat in range(0, game.number_of_players):
+        offered_ticket_ids = None
+        if game.players_choosing_destination_cards or game.players[seat].choosing_destination_cards:
+            offered_ticket_ids = [ticket_id_for_card(card) for card in game.list_pending_destination_cards(seat)]
         move = agents[seat].decide(game.copy(), seat)
         game.make_move(move.function, move.args)
         for codex_seat, codex_agent in codex_agents:
@@ -186,7 +196,7 @@ def play_game_with_trace(
                 "index": len(replay["steps"]),
                 "actorSeat": seat,
                 "actorName": agent_names[seat],
-                "move": describe_move(move, agent_names[seat]),
+                "move": describe_move(move, agent_names[seat], offered_ticket_ids),
             }
 
             if primary_codex_agent is not None and primary_codex_seat is not None:
@@ -200,6 +210,11 @@ def play_game_with_trace(
 
     while game.game_over is False:
         current_seat = game.current_player
+        offered_ticket_ids = None
+        if game.players_choosing_destination_cards or game.players[current_seat].choosing_destination_cards:
+            offered_ticket_ids = [
+                ticket_id_for_card(card) for card in game.list_pending_destination_cards(current_seat)
+            ]
         move = agents[current_seat].decide(game, current_seat)
         game.make_move(move.function, move.args)
         for codex_seat, codex_agent in codex_agents:
@@ -210,7 +225,7 @@ def play_game_with_trace(
                 "index": len(replay["steps"]),
                 "actorSeat": current_seat,
                 "actorName": agent_names[current_seat],
-                "move": describe_move(move, agent_names[current_seat]),
+                "move": describe_move(move, agent_names[current_seat], offered_ticket_ids),
             }
 
             if primary_codex_agent is not None and primary_codex_seat is not None:
