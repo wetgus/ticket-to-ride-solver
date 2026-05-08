@@ -412,6 +412,45 @@ def initialize_output_file(path: str, append_mode: bool) -> None:
             handle.write("")
 
 
+def compute_percentile(values: List[float], percentile: float) -> float:
+    if not values:
+        return 0
+    sorted_values = sorted(values)
+    if len(sorted_values) == 1:
+        return float(sorted_values[0])
+    rank = (len(sorted_values) - 1) * percentile
+    lower_index = int(rank)
+    upper_index = min(lower_index + 1, len(sorted_values) - 1)
+    lower_value = sorted_values[lower_index]
+    upper_value = sorted_values[upper_index]
+    fraction = rank - lower_index
+    return lower_value + (upper_value - lower_value) * fraction
+
+
+def summarize_codex_rows(rows: List[Dict]) -> Dict:
+    scores = [row["score"] for row in rows]
+    places = [row["place"] for row in rows]
+    placement_counts = {str(place): sum(1 for row in rows if row["place"] == place) for place in range(1, 5)}
+    max_row = max(rows, key=lambda row: row["score"]) if rows else None
+    min_row = min(rows, key=lambda row: row["score"]) if rows else None
+
+    return {
+        "gameCount": len(rows),
+        "winRate": sum(1 for row in rows if row["place"] == 1) / len(rows) if rows else 0,
+        "averageScore": statistics.mean(scores) if scores else 0,
+        "averagePlace": statistics.mean(places) if places else 0,
+        "placementCounts": placement_counts,
+        "maxScore": max_row["score"] if max_row else None,
+        "maxScoreGame": max_row["game"] if max_row else None,
+        "maxScoreSeat": max_row["seat"] if max_row else None,
+        "minScore": min_row["score"] if min_row else None,
+        "minScoreGame": min_row["game"] if min_row else None,
+        "minScoreSeat": min_row["seat"] if min_row else None,
+        "scoreP10": compute_percentile(scores, 0.10),
+        "scoreP90": compute_percentile(scores, 0.90),
+    }
+
+
 def run_matchup(
     agent_names,
     games,
@@ -536,12 +575,21 @@ def run_matchup(
                 }
             )
 
+    codex_summary = summarize_codex_rows(rows)
+
     return {
         "agent_names": agent_names,
         "games": games,
-        "codexWinRate": codex_wins / max(1, len(codex_scores)),
-        "codexAverageScore": statistics.mean(codex_scores) if codex_scores else 0,
-        "codexAveragePlace": statistics.mean(codex_places) if codex_places else 0,
+        "codexWinRate": codex_summary["winRate"],
+        "codexAverageScore": codex_summary["averageScore"],
+        "codexAveragePlace": codex_summary["averagePlace"],
+        "codexPlacementCounts": codex_summary["placementCounts"],
+        "codexMaxScore": codex_summary["maxScore"],
+        "codexMaxScoreGame": codex_summary["maxScoreGame"],
+        "codexMinScore": codex_summary["minScore"],
+        "codexMinScoreGame": codex_summary["minScoreGame"],
+        "codexScoreP10": codex_summary["scoreP10"],
+        "codexScoreP90": codex_summary["scoreP90"],
         "rows": rows,
         "replays": replays,
         "trainingRowCount": training_row_count,
@@ -709,20 +757,29 @@ def main():
         )
 
     all_rows = [row for summary in summaries for row in summary["rows"]]
+    aggregate_codex_summary = summarize_codex_rows(all_rows)
     if all_rows:
         print(
             "\naggregate "
-            f"games={len(all_rows)} "
-            f"codex_win_rate={sum(1 for row in all_rows if row['place'] == 1) / len(all_rows):.3f} "
-            f"codex_avg_score={statistics.mean(row['score'] for row in all_rows):.2f} "
-            f"codex_avg_place={statistics.mean(row['place'] for row in all_rows):.2f}"
+            f"games={aggregate_codex_summary['gameCount']} "
+            f"codex_win_rate={aggregate_codex_summary['winRate']:.3f} "
+            f"codex_avg_score={aggregate_codex_summary['averageScore']:.2f} "
+            f"codex_avg_place={aggregate_codex_summary['averagePlace']:.2f} "
+            f"places=({aggregate_codex_summary['placementCounts']['1']},"
+            f"{aggregate_codex_summary['placementCounts']['2']},"
+            f"{aggregate_codex_summary['placementCounts']['3']},"
+            f"{aggregate_codex_summary['placementCounts']['4']}) "
+            f"max={aggregate_codex_summary['maxScore']}@g{aggregate_codex_summary['maxScoreGame']} "
+            f"min={aggregate_codex_summary['minScore']}@g{aggregate_codex_summary['minScoreGame']} "
+            f"p10={aggregate_codex_summary['scoreP10']:.2f} "
+            f"p90={aggregate_codex_summary['scoreP90']:.2f}"
         )
 
     summary_payload = {
         "lineup": args.lineup,
         "gamesPerSeatRotation": args.games,
         "rotations": len(summaries),
-        "aggregateGameCount": len(all_rows),
+        "aggregateGameCount": aggregate_codex_summary["gameCount"],
         "aggregateTrainingRowCount": sum(summary["trainingRowCount"] for summary in summaries),
         "policyModel": args.policy_model,
         "heuristicWeight": args.heuristic_weight,
@@ -732,9 +789,18 @@ def main():
         "progressOutputPath": progress_output_path,
         "replayOutputPath": replay_output_path,
         "elapsedSeconds": round(time.time() - started_at, 2),
-        "aggregateCodexWinRate": sum(1 for row in all_rows if row["place"] == 1) / len(all_rows) if all_rows else 0,
-        "aggregateCodexAverageScore": statistics.mean(row["score"] for row in all_rows) if all_rows else 0,
-        "aggregateCodexAveragePlace": statistics.mean(row["place"] for row in all_rows) if all_rows else 0,
+        "aggregateCodexWinRate": aggregate_codex_summary["winRate"],
+        "aggregateCodexAverageScore": aggregate_codex_summary["averageScore"],
+        "aggregateCodexAveragePlace": aggregate_codex_summary["averagePlace"],
+        "aggregatePlacementCounts": aggregate_codex_summary["placementCounts"],
+        "aggregateMaxScore": aggregate_codex_summary["maxScore"],
+        "aggregateMaxScoreGame": aggregate_codex_summary["maxScoreGame"],
+        "aggregateMaxScoreSeat": aggregate_codex_summary["maxScoreSeat"],
+        "aggregateMinScore": aggregate_codex_summary["minScore"],
+        "aggregateMinScoreGame": aggregate_codex_summary["minScoreGame"],
+        "aggregateMinScoreSeat": aggregate_codex_summary["minScoreSeat"],
+        "aggregateScoreP10": aggregate_codex_summary["scoreP10"],
+        "aggregateScoreP90": aggregate_codex_summary["scoreP90"],
         "summaries": [
             {
                 "agentNames": summary["agent_names"],
@@ -742,6 +808,13 @@ def main():
                 "codexWinRate": summary["codexWinRate"],
                 "codexAverageScore": summary["codexAverageScore"],
                 "codexAveragePlace": summary["codexAveragePlace"],
+                "codexPlacementCounts": summary["codexPlacementCounts"],
+                "codexMaxScore": summary["codexMaxScore"],
+                "codexMaxScoreGame": summary["codexMaxScoreGame"],
+                "codexMinScore": summary["codexMinScore"],
+                "codexMinScoreGame": summary["codexMinScoreGame"],
+                "codexScoreP10": summary["codexScoreP10"],
+                "codexScoreP90": summary["codexScoreP90"],
                 "trainingRowCount": summary["trainingRowCount"],
                 "failedGameCount": len(summary["failedGames"]),
                 "elapsedSeconds": summary["elapsedSeconds"],
