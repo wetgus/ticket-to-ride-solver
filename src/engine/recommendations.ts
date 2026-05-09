@@ -139,16 +139,13 @@ const estimateDeploymentPressure = (
       cardToTrainOverhang * (claimedRouteCount <= 1 ? 2.15 : 1.8) +
       Math.max(0, cardToTrainOverhang - 2) * 1.95;
   }
-  if (claimedRouteCount >= 2 && knownHandSize > 16) {
-    oversizedHandPenalty += (knownHandSize - 16) * 0.65;
-  }
   if (claimedRouteCount >= 2 && knownHandSize >= publicPlayer.trainsRemaining - 2) {
     oversizedHandPenalty +=
       (knownHandSize - (publicPlayer.trainsRemaining - 2) + 1) *
       1.45;
   }
-  if (readyClaimCount > 0 && knownHandSize > 18 && claimedRouteCount >= 1) {
-    oversizedHandPenalty += (knownHandSize - 18) * (readyLongClaimCount > 0 ? 1.15 : 0.82);
+  if (readyClaimCount > 0 && knownHandSize > 20 && claimedRouteCount >= 1) {
+    oversizedHandPenalty += (knownHandSize - 20) * (readyLongClaimCount > 0 ? 1.05 : 0.72);
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -161,7 +158,7 @@ const estimateDeploymentPressure = (
   let readyClaimPressure = 0;
   if (readyLongClaimCount > 0 && (knownHandSize >= 18 || claimedRouteCount >= 2)) {
     readyClaimPressure += claimedRouteCount === 0 ? 2.4 : 4.3;
-  } else if (readyClaimCount > 0 && knownHandSize >= 18) {
+  } else if (readyClaimCount > 0 && knownHandSize >= 20) {
     readyClaimPressure += claimedRouteCount === 0 ? 0.9 : 2.1;
   }
 
@@ -1010,27 +1007,6 @@ const getTopTicketImprovementReasons = (
     );
 };
 
-const getRouteTicketPathCoverage = (
-  currentTicketStates: TicketProgressState[],
-  routeId: RouteId
-): { ticketCount: number; weightedCoverage: number } => {
-  const coveredStates = currentTicketStates.filter(
-    (ticketState) => !ticketState.completed && ticketState.path.some((step) => step.routeId === routeId)
-  );
-
-  const weightedCoverage = coveredStates.reduce((sum, ticketState) => {
-    const pathLength = Math.max(1, ticketState.path.length);
-    const distanceWeight =
-      ticketState.distance <= 4 ? 1.7 : ticketState.distance <= 7 ? 1.25 : 0.9;
-    return sum + distanceWeight / pathLength;
-  }, 0);
-
-  return {
-    ticketCount: coveredStates.length,
-    weightedCoverage
-  };
-};
-
 const getTicketsNeedingColor = (
   board: BoardDefinition,
   gameState: GameState,
@@ -1521,10 +1497,6 @@ const scoreClaimAction = (
     currentTicketStates,
     nextTicketStates
   );
-  const routeTicketCoverage = getRouteTicketPathCoverage(currentTicketStates, route.id);
-  const routeTicketCoverageBonus =
-    routeTicketCoverage.weightedCoverage * 2.4 +
-    routeTicketCoverage.ticketCount * 0.9;
 
   const featureBreakdown: EvaluationFeatures = {
     expectedFinalScore:
@@ -1544,7 +1516,6 @@ const scoreClaimAction = (
       efficiency * 2.2 +
       urgency * 8 +
       endgamePointPush +
-      routeTicketCoverageBonus +
       (route.length >= 5 ? 1.8 : 0) -
       (route.length <= 3 && ticketProgressDelta <= 0 && urgency < 0.3 ? 2.2 : 0),
     ticketValue:
@@ -1855,22 +1826,19 @@ const scoreDrawFaceUpAction = (
         : 3.2
       : !isLocomotive &&
           !isPriorityColor &&
-          drawTactic.mode === "value"
-        ? knownHandSize < 20
-          ? 4.6
-          : knownHandSize > Math.min(22, trainsRemaining - 1)
-            ? 2.8
-            : 2.2
+          drawTactic.mode === "value" &&
+          knownHandSize > Math.min(22, trainsRemaining - 1)
+        ? 2.1
         : 0;
   const followThroughVisibleBonus =
     gameState.publicState.phase === "drawing-cards" &&
-    currentTurnFirstDrawSource == "face-up" &&
+    currentTurnFirstDrawSource === "face-up" &&
     currentTurnFirstDrawColor === action.color
-      ? 7.8
+      ? 7.6
       : gameState.publicState.phase === "drawing-cards" &&
-          currentTurnFirstDrawSource == "face-up" &&
+          currentTurnFirstDrawSource === "face-up" &&
           isPriorityColor
-        ? 3.6
+        ? 3.4
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
@@ -1892,12 +1860,11 @@ const scoreDrawFaceUpAction = (
       nearReadyClaims * 0.5 +
       (nextClaimRecommendation?.utilityScore ?? 0) * 0.12,
     routeValue:
-      nearReadyClaims * (isPriorityColor ? 0.55 : 0.18) +
-      followThroughVisibleBonus * 0.28 +
-      (nextClaimRecommendation?.utilityScore ?? 0) * (isPriorityColor ? 0.18 : 0.11),
+      nearReadyClaims * 0.8 +
+      followThroughVisibleBonus * 0.26 +
+      (nextClaimRecommendation?.utilityScore ?? 0) * 0.18,
     ticketValue:
-      neededWeight * (isPriorityColor ? 1.7 : 1.0) +
-      followThroughVisibleBonus,
+      neededWeight * (isPriorityColor ? 1.7 : 1.25) + followThroughVisibleBonus,
     tempoValue: isLocomotive ? 2.6 : 1.1,
     flexibilityValue:
       isLocomotive
@@ -1953,7 +1920,7 @@ const scoreDrawFaceUpAction = (
       : `${action.color} is not one of the current priority colors`,
     followThroughVisibleBonus > 0
       ? `continues the same turn's visible color focus on ${action.color}`
-      : "does not receive any same-turn follow-through bonus",
+      : "does not receive any same-turn visible follow-through bonus",
     nonPriorityVisibleTax > 0
       ? "visible draw is taxed because this color does not fit the current route-focused plan"
       : "visible draw is not being punished for route-focus mismatch",
@@ -2021,6 +1988,9 @@ const scoreDrawBlindAction = (
   );
   const currentTurnFirstDrawColor = gameState.annotations.currentTurnDrawColors?.[0];
   const currentTurnFirstDrawSource = gameState.annotations.currentTurnDrawSources?.[0];
+  const visiblePriorityColors = new Set(
+    gameState.publicState.faceUpCards.filter((color) => drawTactic.priorityColors.has(color))
+  );
   const openingBlindBonus =
     publicPlayer.claimedRouteIds.length === 0 &&
     knownHandSize < 20 &&
@@ -2046,14 +2016,14 @@ const scoreDrawBlindAction = (
   const overhangBlindTax = cardOverhang * 2.35;
   const sameTurnVisibleFollowThroughTax =
     gameState.publicState.phase === "drawing-cards" &&
-    currentTurnFirstDrawSource == "face-up" &&
+    currentTurnFirstDrawSource === "face-up" &&
     currentTurnFirstDrawColor &&
     gameState.publicState.faceUpCards.some((color) => color === currentTurnFirstDrawColor)
       ? 18
       : gameState.publicState.phase === "drawing-cards" &&
-          currentTurnFirstDrawSource == "face-up" &&
-          gameState.publicState.faceUpCards.some((color) => drawTactic.priorityColors.has(color))
-        ? 11
+          currentTurnFirstDrawSource === "face-up" &&
+          visiblePriorityColors.size > 0
+        ? 12
         : 0;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
@@ -2145,7 +2115,7 @@ const scoreDrawBlindAction = (
         ? `blind draw is heavily penalized because the hand already exceeds remaining trains by ${cardOverhang}`
         : "remaining trains still leave room for another flexible draw",
       sameTurnVisibleFollowThroughTax > 0
-        ? "blind draw is strongly taxed because a same-turn visible follow-up is still available"
+        ? "blind draw is strongly taxed because a visible priority follow-up is still available this turn"
         : "blind draw is not being punished by same-turn visible follow-through pressure",
       drawTactic.mode === "value"
         ? "current tactic still favors broad value accumulation over visible color commitment"
@@ -2428,39 +2398,6 @@ const withAdditionalCards = (
   };
 };
 
-const withApproximatePostDrawState = (
-  gameState: GameState,
-  draw: DrawFaceUpAction | DrawBlindAction
-): GameState => {
-  const nextState =
-    draw.kind === "draw-face-up"
-      ? withAdditionalCards(gameState, [draw.color])
-      : withAdditionalCards(gameState, []);
-
-  const nextFaceUpCards =
-    draw.kind === "draw-face-up"
-      ? (() => {
-          const removalIndex = gameState.publicState.faceUpCards.findIndex(
-            (color) => color === draw.color
-          );
-          if (removalIndex < 0) {
-            return gameState.publicState.faceUpCards;
-          }
-
-          return gameState.publicState.faceUpCards.filter((_, index) => index !== removalIndex);
-        })()
-      : gameState.publicState.faceUpCards;
-
-  return {
-    ...nextState,
-    publicState: {
-      ...nextState.publicState,
-      phase: "drawing-cards",
-      faceUpCards: nextFaceUpCards
-    }
-  };
-};
-
 interface WeightedHandState {
   state: GameState;
   weight: number;
@@ -2586,25 +2523,15 @@ const applyApproximateActionBranches = (
   if (action.kind === "draw-face-up") {
     return [
       {
-        state: withApproximatePostDrawState(branch.state, action),
+        state: withAdditionalCards(branch.state, [action.color]),
         weight: branch.weight
       }
     ];
   }
 
   if (action.kind === "draw-blind") {
-    const baseState = withApproximatePostDrawState(branch.state, action);
     return getEstimatedBlindDrawDistribution(branch.state).map((outcome) => ({
-      state: {
-        ...baseState,
-        ourState: {
-          ...baseState.ourState,
-          hand: {
-            ...baseState.ourState.hand,
-            [outcome.color]: baseState.ourState.hand[outcome.color] + 1
-          }
-        }
-      },
+      state: withAdditionalCards(branch.state, [outcome.color]),
       weight: branch.weight * outcome.probability
     }));
   }
@@ -2799,11 +2726,6 @@ const buildLegalTurnCandidates = (
   const drawTicketTurns = getLegalTicketDrawActions(gameState).map(
     (action) => [action] satisfies GameAction[]
   );
-  const openingDrawTactic = getDrawTacticProfile(
-    evaluateTickets(board, gameState).pathDemand,
-    gameState.ourState.hand,
-    getPlayerPublicState(gameState).claimedRouteIds.length
-  );
 
   const drawTurns: GameAction[][] = [];
 
@@ -2820,21 +2742,7 @@ const buildLegalTurnCandidates = (
       continue;
     }
 
-    const remainingFaceUp = gameState.publicState.faceUpCards.filter((_, candidateIndex) => candidateIndex !== index);
-    const firstWasPriority = openingDrawTactic.priorityColors.has(color);
-    const remainingVisibleSameColor = remainingFaceUp.some((candidateColor) => candidateColor === color);
-    const remainingVisiblePriority = remainingFaceUp.some((candidateColor) =>
-      openingDrawTactic.priorityColors.has(candidateColor)
-    );
-    const allowBlindFollowUp =
-      firstWasPriority &&
-      !remainingVisibleSameColor &&
-      !remainingVisiblePriority;
-    const followUps = getBestFaceUpFollowUps(gameState, index).filter((followUp) =>
-      followUp.kind === "draw-blind" ? allowBlindFollowUp : true
-    );
-
-    for (const followUp of followUps) {
+    for (const followUp of getBestFaceUpFollowUps(gameState, index)) {
       drawTurns.push([firstDraw, followUp]);
     }
   }
@@ -3043,8 +2951,8 @@ const scoreTurnCandidate = (
       (candidate) => candidate.actionId === buildActionId(action)
     );
 
-    if (action.kind === "draw-face-up" || action.kind === "draw-blind") {
-      stepState = withApproximatePostDrawState(stepState, action);
+    if (action.kind === "draw-face-up") {
+      stepState = withAdditionalCards(stepState, [action.color]);
     }
 
     return { recommendation, currentEvaluation };
@@ -3073,44 +2981,21 @@ const scoreTurnCandidate = (
   }
   let faceUpThenBlindOpeningAdjustment = 0;
   let faceUpThenBlindOpeningReason: string | undefined;
-  let faceUpThenBlindPolicyAdjustment = 0;
-  let faceUpThenBlindPolicyReason: string | undefined;
   if (firstDrawAction?.kind === "draw-face-up" && secondDrawAction?.kind === "draw-blind") {
     const firstStepEvaluation = chosenActionEvaluations[0]?.currentEvaluation;
     const topBlindOpening = firstStepEvaluation?.alternatives.find(
       (candidate) => candidate.action.kind === "draw-blind"
     );
     const firstStepRecommendation = chosenActionEvaluations[0]?.recommendation;
-    const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
-    const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
-    const remainingVisibleSameColor = gameState.publicState.faceUpCards
-      .filter((_, index) => index !== firstIndex)
-      .some((color) => color === firstDrawAction.color);
-    const remainingVisiblePriority = gameState.publicState.faceUpCards
-      .filter((_, index) => index !== firstIndex)
-      .some((color) => turnDrawTactic.priorityColors.has(color));
-    const allowedMixedPattern =
-      turnDrawTactic.mode === "focus" && firstWasPriority && !remainingVisiblePriority;
-
-    if (!allowedMixedPattern) {
-      faceUpThenBlindPolicyAdjustment -= turnDrawTactic.mode === "value" ? 7.8 : 5.4;
-      faceUpThenBlindPolicyReason =
-        turnDrawTactic.mode === "value"
-          ? "face-up plus blind is strongly discouraged in value mode; if we are still gathering value, double-blind should usually dominate"
-          : "face-up plus blind is discouraged unless the first visible pick exhausted the current priority colors";
-    }
-    if (firstWasPriority && (remainingVisibleSameColor || remainingVisiblePriority)) {
-      faceUpThenBlindPolicyAdjustment -= remainingVisibleSameColor ? 11.5 : 9.2;
-      faceUpThenBlindPolicyReason = remainingVisibleSameColor
-        ? `goes blind after taking a priority ${firstDrawAction.color} even though another ${firstDrawAction.color} is still visible`
-        : "goes blind after taking a priority color even though another visible priority color is still available";
-    }
-    if (!firstWasPriority && turnDrawTactic.mode === "value") {
-      faceUpThenBlindPolicyAdjustment -= 4.4;
-    }
-
     if (topBlindOpening && firstStepRecommendation) {
       const blindGap = topBlindOpening.utilityScore - firstStepRecommendation.utilityScore;
+      const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
+      const remainingVisiblePriority = (() => {
+        const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
+        return gameState.publicState.faceUpCards
+          .filter((_, index) => index !== firstIndex)
+          .some((color) => turnDrawTactic.priorityColors.has(color));
+      })();
       if (turnDrawTactic.mode === "value" && blindGap > -1.6) {
         faceUpThenBlindOpeningAdjustment -=
           (firstWasPriority && !remainingVisiblePriority ? 2.8 : 6.4) +
@@ -3227,7 +3112,6 @@ const scoreTurnCandidate = (
       valueModeDoubleBlindAdjustment +
       focusModeVisiblePriorityAdjustment +
       genericFaceUpThenBlindAdjustment +
-      faceUpThenBlindPolicyAdjustment +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -
@@ -3252,7 +3136,6 @@ const scoreTurnCandidate = (
       ...(duplicateFaceUpFollowThroughReason ? [duplicateFaceUpFollowThroughReason] : []),
       ...(strongerVisibleFollowUpReason ? [strongerVisibleFollowUpReason] : []),
       ...(faceUpThenBlindOpeningReason ? [faceUpThenBlindOpeningReason] : []),
-      ...(faceUpThenBlindPolicyReason ? [faceUpThenBlindPolicyReason] : []),
       ...(valueModeDoubleBlindReason ? [valueModeDoubleBlindReason] : []),
       ...(focusModeVisiblePriorityReason ? [focusModeVisiblePriorityReason] : []),
       ...(genericFaceUpThenBlindReason ? [genericFaceUpThenBlindReason] : []),

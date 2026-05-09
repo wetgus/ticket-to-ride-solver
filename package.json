@@ -1,6 +1,6 @@
 {
   "name": "ticket-to-ride-solver",
-  "version": "0.1.0",
+  "version": "1.0.3",
   "private": true,
   "description": "Recommendation engine and web tooling for Ticket to Ride USA.",
   "type": "module",
