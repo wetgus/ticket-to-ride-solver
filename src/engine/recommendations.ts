@@ -1794,6 +1794,8 @@ const scoreDrawFaceUpAction = (
     gameState.ourState.hand,
     publicPlayer.claimedRouteIds.length
   );
+  const currentTurnFirstDrawColor = gameState.annotations.currentTurnDrawColors?.[0];
+  const currentTurnFirstDrawSource = gameState.annotations.currentTurnDrawSources?.[0];
   const isPriorityColor = drawTactic.priorityColors.has(action.color);
   const trainsRemaining = publicPlayer.trainsRemaining;
   const cardOverhang = Math.max(0, knownHandSize - trainsRemaining);
@@ -1860,6 +1862,16 @@ const scoreDrawFaceUpAction = (
             ? 2.8
             : 2.2
         : 0;
+  const followThroughVisibleBonus =
+    gameState.publicState.phase === "drawing-cards" &&
+    currentTurnFirstDrawSource == "face-up" &&
+    currentTurnFirstDrawColor === action.color
+      ? 7.8
+      : gameState.publicState.phase === "drawing-cards" &&
+          currentTurnFirstDrawSource == "face-up" &&
+          isPriorityColor
+        ? 3.6
+        : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
     expectedFinalScore:
@@ -1881,8 +1893,11 @@ const scoreDrawFaceUpAction = (
       (nextClaimRecommendation?.utilityScore ?? 0) * 0.12,
     routeValue:
       nearReadyClaims * (isPriorityColor ? 0.55 : 0.18) +
+      followThroughVisibleBonus * 0.28 +
       (nextClaimRecommendation?.utilityScore ?? 0) * (isPriorityColor ? 0.18 : 0.11),
-    ticketValue: neededWeight * (isPriorityColor ? 1.7 : 1.0),
+    ticketValue:
+      neededWeight * (isPriorityColor ? 1.7 : 1.0) +
+      followThroughVisibleBonus,
     tempoValue: isLocomotive ? 2.6 : 1.1,
     flexibilityValue:
       isLocomotive
@@ -1936,6 +1951,9 @@ const scoreDrawFaceUpAction = (
     isPriorityColor
       ? `${action.color} is in the current priority-color set`
       : `${action.color} is not one of the current priority colors`,
+    followThroughVisibleBonus > 0
+      ? `continues the same turn's visible color focus on ${action.color}`
+      : "does not receive any same-turn follow-through bonus",
     nonPriorityVisibleTax > 0
       ? "visible draw is taxed because this color does not fit the current route-focused plan"
       : "visible draw is not being punished for route-focus mismatch",
@@ -2001,6 +2019,8 @@ const scoreDrawBlindAction = (
     gameState.ourState.hand,
     publicPlayer.claimedRouteIds.length
   );
+  const currentTurnFirstDrawColor = gameState.annotations.currentTurnDrawColors?.[0];
+  const currentTurnFirstDrawSource = gameState.annotations.currentTurnDrawSources?.[0];
   const openingBlindBonus =
     publicPlayer.claimedRouteIds.length === 0 &&
     knownHandSize < 20 &&
@@ -2024,6 +2044,17 @@ const scoreDrawBlindAction = (
       ? (knownHandSize - Math.min(24, publicPlayer.trainsRemaining)) * 0.95
       : 0;
   const overhangBlindTax = cardOverhang * 2.35;
+  const sameTurnVisibleFollowThroughTax =
+    gameState.publicState.phase === "drawing-cards" &&
+    currentTurnFirstDrawSource == "face-up" &&
+    currentTurnFirstDrawColor &&
+    gameState.publicState.faceUpCards.some((color) => color === currentTurnFirstDrawColor)
+      ? 18
+      : gameState.publicState.phase === "drawing-cards" &&
+          currentTurnFirstDrawSource == "face-up" &&
+          gameState.publicState.faceUpCards.some((color) => drawTactic.priorityColors.has(color))
+        ? 11
+        : 0;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
     gameState,
@@ -2063,6 +2094,7 @@ const scoreDrawBlindAction = (
       deploymentPressure.drawPenalty * 1.08 +
       lateHandBlindTax +
       overhangBlindTax +
+      sameTurnVisibleFollowThroughTax +
       urgentClaimPressure.penalty * 0.32 +
       endgameClock.immediateTriggerRisk * 2.8,
     blockExposure: urgentClaimPressure.penalty * 0.12,
@@ -2112,6 +2144,9 @@ const scoreDrawBlindAction = (
       cardOverhang > 0
         ? `blind draw is heavily penalized because the hand already exceeds remaining trains by ${cardOverhang}`
         : "remaining trains still leave room for another flexible draw",
+      sameTurnVisibleFollowThroughTax > 0
+        ? "blind draw is strongly taxed because a same-turn visible follow-up is still available"
+        : "blind draw is not being punished by same-turn visible follow-through pressure",
       drawTactic.mode === "value"
         ? "current tactic still favors broad value accumulation over visible color commitment"
         : "current tactic is already focused enough that blind draw gets less extra credit",
@@ -2764,6 +2799,11 @@ const buildLegalTurnCandidates = (
   const drawTicketTurns = getLegalTicketDrawActions(gameState).map(
     (action) => [action] satisfies GameAction[]
   );
+  const openingDrawTactic = getDrawTacticProfile(
+    evaluateTickets(board, gameState).pathDemand,
+    gameState.ourState.hand,
+    getPlayerPublicState(gameState).claimedRouteIds.length
+  );
 
   const drawTurns: GameAction[][] = [];
 
@@ -2780,7 +2820,21 @@ const buildLegalTurnCandidates = (
       continue;
     }
 
-    for (const followUp of getBestFaceUpFollowUps(gameState, index)) {
+    const remainingFaceUp = gameState.publicState.faceUpCards.filter((_, candidateIndex) => candidateIndex !== index);
+    const firstWasPriority = openingDrawTactic.priorityColors.has(color);
+    const remainingVisibleSameColor = remainingFaceUp.some((candidateColor) => candidateColor === color);
+    const remainingVisiblePriority = remainingFaceUp.some((candidateColor) =>
+      openingDrawTactic.priorityColors.has(candidateColor)
+    );
+    const allowBlindFollowUp =
+      firstWasPriority &&
+      !remainingVisibleSameColor &&
+      !remainingVisiblePriority;
+    const followUps = getBestFaceUpFollowUps(gameState, index).filter((followUp) =>
+      followUp.kind === "draw-blind" ? allowBlindFollowUp : true
+    );
+
+    for (const followUp of followUps) {
       drawTurns.push([firstDraw, followUp]);
     }
   }

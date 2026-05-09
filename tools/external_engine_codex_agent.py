@@ -249,6 +249,8 @@ class CodexSolverAgent:
         self._observed_visible_lower_bounds = {}
         self._known_out_of_deck_counts = {}
         self._player_count = None
+        self._current_turn_draw_colors = []
+        self._current_turn_draw_sources = []
 
     def build_replay_snapshot(self, game, pnum: int) -> Dict:
         self._ensure_observation_state(game, pnum)
@@ -263,6 +265,7 @@ class CodexSolverAgent:
         for alternative in recommendation.get("alternatives", []):
             matched = self._match_external_move(game, pnum, possible_moves, alternative.get("action"))
             if matched is not None:
+                self._record_turn_draw_context(alternative.get("action"))
                 self._record_trace_step(payload, pnum, recommendation, alternative)
                 return matched
 
@@ -298,6 +301,23 @@ class CodexSolverAgent:
             }
         )
         self.decision_counter += 1
+
+    def _record_turn_draw_context(self, action: Optional[Dict]) -> None:
+        if not action:
+            return
+
+        kind = action.get("kind")
+        if kind == "draw-face-up":
+            self._current_turn_draw_colors.append(action.get("color"))
+            self._current_turn_draw_sources.append("face-up")
+            return
+
+        if kind == "draw-blind":
+            self._current_turn_draw_sources.append("blind")
+            return
+
+        self._current_turn_draw_colors = []
+        self._current_turn_draw_sources = []
 
     def _request_solver_recommendation(self, payload: Dict) -> Dict:
         return self._worker.request("recommend", payload)
@@ -353,6 +373,10 @@ class CodexSolverAgent:
                 )
 
     def _build_payload(self, game, pnum: int) -> Dict:
+        if not game.players[pnum].drawing_train_cards:
+            self._current_turn_draw_colors = []
+            self._current_turn_draw_sources = []
+
         player_ids = [f"p{i}" for i in range(game.number_of_players)]
         player_order = player_ids[:]
         current_player_id = player_ids[game.current_player]
@@ -472,6 +496,8 @@ class CodexSolverAgent:
                     "atRiskTicketIds": [],
                     "bottleneckRouteIds": [],
                     "knownOutOfDeckCounts": known_out_of_deck_counts,
+                    "currentTurnDrawColors": list(self._current_turn_draw_colors),
+                    "currentTurnDrawSources": list(self._current_turn_draw_sources),
                 },
             }
         }

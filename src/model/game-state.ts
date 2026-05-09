@@ -88,6 +88,8 @@ export interface SolverAnnotations {
   atRiskTicketIds: TicketId[];
   bottleneckRouteIds: RouteId[];
   knownOutOfDeckCounts?: Partial<Record<TrainColor, number>>;
+  currentTurnDrawColors?: TrainColor[];
+  currentTurnDrawSources?: Array<"face-up" | "blind">;
 }
 
 export interface GameState {
