@@ -119,33 +119,33 @@ const estimateDeploymentPressure = (
   const cardToTrainOverhang = Math.max(0, knownHandSize - publicPlayer.trainsRemaining);
 
   let oversizedHandPenalty = 0;
-  if (knownHandSize > 30) {
-    oversizedHandPenalty = 22 + (knownHandSize - 30) * 3.1;
-  } else if (knownHandSize > 26) {
-    oversizedHandPenalty = 7 + (knownHandSize - 26) * 1.9;
-  } else if (knownHandSize > 22) {
-    oversizedHandPenalty = (knownHandSize - 22) * 0.95;
-  } else if (knownHandSize > 18) {
-    oversizedHandPenalty = 2.5 + (knownHandSize - 18) * 1.15;
+  if (knownHandSize > 32) {
+    oversizedHandPenalty = 18 + (knownHandSize - 32) * 3.4;
+  } else if (knownHandSize > 28) {
+    oversizedHandPenalty = 5 + (knownHandSize - 28) * 1.7;
+  } else if (knownHandSize > 24) {
+    oversizedHandPenalty = (knownHandSize - 24) * 0.7;
+  } else if (knownHandSize > 20 && claimedRouteCount >= 2) {
+    oversizedHandPenalty = 1.2 + (knownHandSize - 20) * 0.85;
   }
 
-  if (claimedRouteCount === 0 && knownHandSize > 12) {
-    oversizedHandPenalty += (knownHandSize - 12) * 1.05;
-  } else if (claimedRouteCount <= 1 && knownHandSize > 16) {
-    oversizedHandPenalty += (knownHandSize - 16) * 0.75;
+  if (claimedRouteCount === 0 && knownHandSize > 22) {
+    oversizedHandPenalty += (knownHandSize - 22) * 0.55;
+  } else if (claimedRouteCount <= 1 && knownHandSize > 20) {
+    oversizedHandPenalty += (knownHandSize - 20) * 0.45;
   }
   if (cardToTrainOverhang > 0) {
     oversizedHandPenalty +=
-      cardToTrainOverhang * (claimedRouteCount <= 1 ? 2.7 : 2.0) +
-      Math.max(0, cardToTrainOverhang - 2) * 2.1;
+      cardToTrainOverhang * (claimedRouteCount <= 1 ? 2.15 : 1.8) +
+      Math.max(0, cardToTrainOverhang - 2) * 1.95;
   }
-  if (knownHandSize >= publicPlayer.trainsRemaining - 2) {
+  if (claimedRouteCount >= 2 && knownHandSize >= publicPlayer.trainsRemaining - 2) {
     oversizedHandPenalty +=
       (knownHandSize - (publicPlayer.trainsRemaining - 2) + 1) *
-      (claimedRouteCount <= 2 ? 2.2 : 1.55);
+      1.45;
   }
-  if (readyClaimCount > 0 && knownHandSize > 16) {
-    oversizedHandPenalty += (knownHandSize - 16) * (readyLongClaimCount > 0 ? 1.4 : 1.0);
+  if (readyClaimCount > 0 && knownHandSize > 20 && claimedRouteCount >= 1) {
+    oversizedHandPenalty += (knownHandSize - 20) * (readyLongClaimCount > 0 ? 1.05 : 0.72);
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -156,14 +156,14 @@ const estimateDeploymentPressure = (
     locomotiveOverflow * (claimedRouteCount === 0 ? 1.55 : 0.85);
 
   let readyClaimPressure = 0;
-  if (readyLongClaimCount > 0) {
-    readyClaimPressure += claimedRouteCount === 0 ? 8.2 : 5.6;
-  } else if (readyClaimCount > 0 && knownHandSize >= 14) {
-    readyClaimPressure += claimedRouteCount === 0 ? 4.2 : 2.6;
+  if (readyLongClaimCount > 0 && (knownHandSize >= 18 || claimedRouteCount >= 2)) {
+    readyClaimPressure += claimedRouteCount === 0 ? 2.4 : 4.3;
+  } else if (readyClaimCount > 0 && knownHandSize >= 20) {
+    readyClaimPressure += claimedRouteCount === 0 ? 0.9 : 2.1;
   }
 
   const signals: string[] = [];
-  if (knownHandSize > 26) {
+  if (knownHandSize > 28) {
     signals.push(`hand is already very large at ${knownHandSize} cards`);
   }
   if (colorOverflow > 0) {
@@ -177,7 +177,7 @@ const estimateDeploymentPressure = (
         `hand already exceeds remaining trains by ${cardToTrainOverhang} card${cardToTrainOverhang > 1 ? "s" : ""}`
       );
     }
-  if (claimedRouteCount === 0 && readyLongClaimCount > 0) {
+  if (claimedRouteCount >= 1 && readyLongClaimCount > 0 && knownHandSize >= 18) {
     signals.push("a long route is already claimable, so continuing to draw is expensive");
   }
 
@@ -837,6 +837,7 @@ const getDrawTacticProfile = (
   const totalUnmet = unmet.reduce((sum, entry) => sum + entry.unmet, 0);
   const topUnmet = unmet[0]?.unmet ?? 0;
   const secondUnmet = unmet[1]?.unmet ?? 0;
+  const knownHandSize = TRAIN_COLORS.reduce((sum, color) => sum + (hand[color] ?? 0), 0);
   const concentration =
     totalUnmet > 0 ? (topUnmet + secondUnmet) / totalUnmet : 0;
   const priorityColors = new Set(
@@ -848,11 +849,13 @@ const getDrawTacticProfile = (
   const mode =
     totalUnmet === 0
       ? "value"
-      : claimedRouteCount === 0 && topUnmet < 4 && concentration < 0.68
+      : claimedRouteCount === 0 && knownHandSize < 20 && topUnmet < 5 && concentration < 0.78
         ? "value"
-        : claimedRouteCount >= 2
+        : claimedRouteCount <= 1 && knownHandSize < 18 && topUnmet < 4 && concentration < 0.72
+          ? "value"
+        : claimedRouteCount >= 3
           ? "focus"
-          : topUnmet >= 4 || concentration >= 0.68
+          : topUnmet >= 5 || concentration >= 0.74
           ? "focus"
           : "value";
 
@@ -862,6 +865,100 @@ const getDrawTacticProfile = (
     concentration,
     topUnmet
   };
+};
+
+const estimateClaimPaymentOpportunityCost = (
+  board: BoardDefinition,
+  gameState: GameState,
+  action: ClaimRouteAction,
+  route: RouteDefinition,
+  colorDemand: Map<TrainColor, number>
+): { penalty: number; rationale?: string } => {
+  const color = action.payment.primaryColor;
+  const cardsSpent = action.payment.colorCards;
+  const unmetBefore = getNeededColorWeight(color, colorDemand, gameState.ourState.hand);
+  const handAfterSpend = {
+    ...gameState.ourState.hand,
+    [color]: Math.max(0, gameState.ourState.hand[color] - cardsSpent)
+  };
+  const unmetAfter = getNeededColorWeight(color, colorDemand, handAfterSpend);
+  const ownDemandPenalty = Math.max(0, unmetAfter - unmetBefore) * 1.35;
+
+  let grayRouteAlternativePenalty = 0;
+  let grayRouteReason: string | undefined;
+  if (route.color === "gray") {
+    const candidatePenalties = NON_LOCOMOTIVE_COLORS.filter(
+      (candidateColor) =>
+        (gameState.ourState.hand[candidateColor] ?? 0) >= cardsSpent && candidateColor !== color
+    ).map((candidateColor) => {
+      const candidateAfterSpend = {
+        ...gameState.ourState.hand,
+        [candidateColor]: Math.max(0, gameState.ourState.hand[candidateColor] - cardsSpent)
+      };
+      const before = getNeededColorWeight(candidateColor, colorDemand, gameState.ourState.hand);
+      const after = getNeededColorWeight(candidateColor, colorDemand, candidateAfterSpend);
+      return {
+        color: candidateColor,
+        penalty: Math.max(0, after - before)
+      };
+    });
+
+    const bestAlternative = candidatePenalties.sort((left, right) => left.penalty - right.penalty)[0];
+    if (bestAlternative && bestAlternative.penalty + 0.5 < Math.max(0, unmetAfter - unmetBefore)) {
+      grayRouteAlternativePenalty =
+        (Math.max(0, unmetAfter - unmetBefore) - bestAlternative.penalty) * 1.6;
+      grayRouteReason = `spends ${color} on a gray route even though ${bestAlternative.color} was a cleaner payment color`;
+    }
+  }
+
+  const sameColorLongerClaimPenalty = (() => {
+    const routesByParallelGroup = indexRoutesByParallelGroup(board.routes);
+    const legalClaims = getLegalClaimRouteActions(gameState, board.routes, routesByParallelGroup);
+    const currentRoutePoints = route.points;
+    const betterSameColorClaim = legalClaims
+      .filter(
+        (candidate) =>
+          candidate.payment.primaryColor === color &&
+          candidate.routeId !== action.routeId
+      )
+      .map((candidate) => {
+        const candidateRoute = board.routes.find((entry) => entry.id === candidate.routeId);
+        return candidateRoute
+          ? {
+              routeId: candidate.routeId,
+              length: candidateRoute.length,
+              points: candidateRoute.points
+            }
+          : undefined;
+      })
+      .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+      .sort((left, right) => right.points - left.points)[0];
+
+    if (
+      betterSameColorClaim &&
+      betterSameColorClaim.points >= currentRoutePoints + 4 &&
+      betterSameColorClaim.length >= route.length + 2
+    ) {
+      return {
+        penalty: 3.1,
+        rationale: `uses ${color} on ${route.id} even though a higher-value ${betterSameColorClaim.length}-train ${color} claim is already available`
+      };
+    }
+
+    return { penalty: 0 };
+  })();
+
+  const rationale = grayRouteReason ?? sameColorLongerClaimPenalty.rationale;
+  return rationale
+    ? {
+        penalty:
+          ownDemandPenalty + grayRouteAlternativePenalty + sameColorLongerClaimPenalty.penalty,
+        rationale
+      }
+    : {
+        penalty:
+          ownDemandPenalty + grayRouteAlternativePenalty + sameColorLongerClaimPenalty.penalty
+      };
 };
 
 const getTopTicketImprovementReasons = (
@@ -1369,6 +1466,14 @@ const scoreClaimAction = (
   const currentDetourExposure = estimateTicketDetourExposure(board, gameState, routeUrgency);
   const nextDetourExposure = estimateTicketDetourExposure(board, applied, nextRouteUrgency);
   const detourPenaltyImprovement = currentDetourExposure - nextDetourExposure;
+  const colorDemand = evaluateTickets(board, gameState).pathDemand;
+  const paymentOpportunity = estimateClaimPaymentOpportunityCost(
+    board,
+    gameState,
+    action,
+    route,
+    colorDemand
+  );
   const locomotiveSpendPenalty = action.payment.locomotives * 0.9;
   const trainsBefore = gameState.ourState.trainsRemaining;
   const trainsAfter = applied.ourState.trainsRemaining;
@@ -1406,8 +1511,17 @@ const scoreClaimAction = (
       )
     ),
     scoreDiffEstimate: route.points + completionDelta * 5 + longestRouteDelta * 0.8,
-    routeValue: route.points + efficiency * 2 + urgency * 8 + endgamePointPush,
-    ticketValue: ticketProgressDelta * 1.5 + completionDelta * 8,
+    routeValue:
+      route.points +
+      efficiency * 2.2 +
+      urgency * 8 +
+      endgamePointPush +
+      (route.length >= 5 ? 1.8 : 0) -
+      (route.length <= 3 && ticketProgressDelta <= 0 && urgency < 0.3 ? 2.2 : 0),
+    ticketValue:
+      ticketProgressDelta * 1.9 +
+      completionDelta * 9 +
+      detourPenaltyImprovement * 0.45,
     tempoValue:
       (route.length >= 5 ? 3.5 : route.length >= 3 ? 2 : 0.8) +
       deploymentPressure.claimBonus +
@@ -1416,7 +1530,10 @@ const scoreClaimAction = (
       finishWindowBonus +
       exactFinishBonus,
     flexibilityValue: Math.max(0, 5 - action.payment.locomotives * 1.2),
-    riskCost: locomotiveSpendPenalty + Math.max(0, -ticketProgressDelta * 0.3),
+    riskCost:
+      locomotiveSpendPenalty +
+      Math.max(0, -ticketProgressDelta * 0.3) +
+      paymentOpportunity.penalty,
     blockExposure: urgency * 5,
     trainsRemainingPressure:
       gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2,
@@ -1466,6 +1583,7 @@ const scoreClaimAction = (
     urgency > 0.35
       ? "secures a route that looks time-sensitive"
       : "route urgency is moderate",
+    ...(paymentOpportunity.rationale ? [paymentOpportunity.rationale] : []),
     ...deploymentPressure.signals.map((signal) => `claim helps because ${signal}`),
     endgameClock.immediateTriggerRisk > 0.4
       ? "tempo matters because an opponent may be close to ending the game"
@@ -1660,19 +1778,19 @@ const scoreDrawFaceUpAction = (
   const openingFaceUpTax =
     !isLocomotive &&
     publicPlayer.claimedRouteIds.length === 0 &&
-    knownHandSize < 18 &&
+    knownHandSize < 20 &&
     nearReadyClaims === 0 &&
     drawTactic.mode === "value" &&
     !isPriorityColor &&
     neededWeight < 2.4 &&
     helpedTickets.length <= 1
-      ? 2.8
+      ? 3.6
       : !isLocomotive &&
           publicPlayer.claimedRouteIds.length === 0 &&
           drawTactic.mode === "value" &&
-          knownHandSize < 14 &&
+          knownHandSize < 18 &&
           nearReadyClaims === 0
-        ? 1.4
+        ? 1.8
         : 0;
   const earlyLocomotiveTax =
     isLocomotive &&
@@ -1681,15 +1799,15 @@ const scoreDrawFaceUpAction = (
     nearReadyClaims === 0 &&
     helpedTickets.length <= 1
       ? drawTactic.mode === "value"
-        ? 11.2
-        : 8.8
+        ? 12.4
+        : 9.8
       : isLocomotive &&
           publicPlayer.claimedRouteIds.length <= 1 &&
           knownHandSize < 26 &&
           nearReadyClaims === 0
         ? drawTactic.mode === "value"
-          ? 5.6
-          : 4.4
+          ? 6.2
+          : 4.8
         : 0;
   const lateLocomotiveTax =
     isLocomotive &&
@@ -1702,13 +1820,13 @@ const scoreDrawFaceUpAction = (
     !isPriorityColor &&
     drawTactic.mode === "focus"
       ? neededWeight <= 0.5
-        ? 4.8
-        : 2.8
+        ? 5.4
+        : 3.2
       : !isLocomotive &&
           !isPriorityColor &&
           drawTactic.mode === "value" &&
           knownHandSize > Math.min(22, trainsRemaining - 1)
-        ? 1.8
+        ? 2.1
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
@@ -1743,8 +1861,8 @@ const scoreDrawFaceUpAction = (
       earlyLocomotiveTax +
       lateLocomotiveTax +
       nonPriorityVisibleTax +
-      cardOverhang * 1.35 +
-      deploymentPressure.drawPenalty * (isLocomotive ? 0.75 : 0.92) +
+      cardOverhang * 1.45 +
+      deploymentPressure.drawPenalty * (isLocomotive ? 0.72 : 0.88) +
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
         0.12 +
       endgameClock.immediateTriggerRisk * 2.4,
@@ -1852,19 +1970,19 @@ const scoreDrawBlindAction = (
   );
   const openingBlindBonus =
     publicPlayer.claimedRouteIds.length === 0 &&
-    knownHandSize < 22 &&
+    knownHandSize < 20 &&
     deploymentPressure.readyLongClaimCount === 0
       ? knownHandSize < 16
-        ? 2.8
-        : 1.7
+        ? 3.2
+        : 2.0
       : publicPlayer.claimedRouteIds.length <= 1 &&
           knownHandSize < 20 &&
           deploymentPressure.readyClaimCount === 0
-        ? 0.9
+        ? 1.2
         : 0;
   const tacticBlindBonus =
     drawTactic.mode === "value"
-      ? 1.15 + Math.max(0, 0.8 - drawTactic.concentration)
+      ? 1.5 + Math.max(0, 0.92 - drawTactic.concentration)
       : drawTactic.mode === "focus" && drawTactic.topUnmet < 5
         ? 0.25
         : 0;
@@ -2781,10 +2899,10 @@ const scoreTurnCandidate = (
     gameState.publicState.faceUpCards.filter((color) => color === firstDrawAction.color).length >= 2
   ) {
     if (secondDrawAction?.kind === "draw-face-up" && secondDrawAction.color === firstDrawAction.color) {
-      duplicateFaceUpFollowThroughAdjustment += 2.6;
+      duplicateFaceUpFollowThroughAdjustment += 3.4;
       duplicateFaceUpFollowThroughReason = `follows through by taking the second visible ${firstDrawAction.color}`;
     } else if (secondDrawAction?.kind === "draw-blind") {
-      duplicateFaceUpFollowThroughAdjustment -= 6.2;
+      duplicateFaceUpFollowThroughAdjustment -= 8.4;
       duplicateFaceUpFollowThroughReason = `passes on a second visible ${firstDrawAction.color} and goes blind instead`;
     }
   }
@@ -2833,10 +2951,21 @@ const scoreTurnCandidate = (
     const firstStepRecommendation = chosenActionEvaluations[0]?.recommendation;
     if (topBlindOpening && firstStepRecommendation) {
       const blindGap = topBlindOpening.utilityScore - firstStepRecommendation.utilityScore;
-      if (turnDrawTactic.mode === "value" && blindGap > -1.4) {
-        faceUpThenBlindOpeningAdjustment -= 4.1 + Math.max(0, blindGap) * 0.9;
+      const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
+      const remainingVisiblePriority = (() => {
+        const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
+        return gameState.publicState.faceUpCards
+          .filter((_, index) => index !== firstIndex)
+          .some((color) => turnDrawTactic.priorityColors.has(color));
+      })();
+      if (turnDrawTactic.mode === "value" && blindGap > -1.6) {
+        faceUpThenBlindOpeningAdjustment -=
+          (firstWasPriority && !remainingVisiblePriority ? 2.8 : 6.4) +
+          Math.max(0, blindGap) * 1.0;
         faceUpThenBlindOpeningReason =
-          "mixed open-plus-blind draw is penalized here because the position still looks more like broad value setup than color focus";
+          firstWasPriority && !remainingVisiblePriority
+            ? "mixed open-plus-blind draw survives here only because the first visible pick hit a priority color and no other priority color remained visible"
+            : "mixed open-plus-blind draw is heavily penalized here because the position still looks more like broad value setup than color focus";
       }
     }
   }
@@ -2847,7 +2976,7 @@ const scoreTurnCandidate = (
     secondDrawAction?.kind === "draw-blind" &&
     turnDrawTactic.mode === "value"
   ) {
-    valueModeDoubleBlindAdjustment += 4.4;
+    valueModeDoubleBlindAdjustment += 6.2;
     valueModeDoubleBlindReason =
       "double-blind draw is rewarded here because the current tactic is still maximizing broad hand value";
   }
@@ -2858,7 +2987,7 @@ const scoreTurnCandidate = (
       .filter((_, index) => index !== gameState.publicState.faceUpCards.indexOf(firstDrawAction.color))
       .some((color) => turnDrawTactic.priorityColors.has(color));
     if (turnDrawTactic.mode === "focus" && remainingVisiblePriority) {
-      focusModeVisiblePriorityAdjustment -= 5.6;
+      focusModeVisiblePriorityAdjustment -= 7.2;
       focusModeVisiblePriorityReason =
         "goes blind even though another visible priority color was still available in focus mode";
     }
@@ -2870,7 +2999,7 @@ const scoreTurnCandidate = (
     secondDrawAction?.kind === "draw-blind" &&
     turnDrawTactic.mode !== "focus"
   ) {
-    genericFaceUpThenBlindAdjustment -= 1.8;
+    genericFaceUpThenBlindAdjustment -= 3.2;
     genericFaceUpThenBlindReason =
       "face-up plus blind is broadly discouraged here because the turn is neither fully focused nor fully value-maximizing";
   }
