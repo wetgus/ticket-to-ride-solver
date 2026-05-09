@@ -1853,9 +1853,12 @@ const scoreDrawFaceUpAction = (
         : 3.2
       : !isLocomotive &&
           !isPriorityColor &&
-          drawTactic.mode === "value" &&
-          knownHandSize > Math.min(22, trainsRemaining - 1)
-        ? 2.1
+          drawTactic.mode === "value"
+        ? knownHandSize < 20
+          ? 4.6
+          : knownHandSize > Math.min(22, trainsRemaining - 1)
+            ? 2.8
+            : 2.2
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
@@ -1877,8 +1880,9 @@ const scoreDrawFaceUpAction = (
       nearReadyClaims * 0.5 +
       (nextClaimRecommendation?.utilityScore ?? 0) * 0.12,
     routeValue:
-      nearReadyClaims * 0.8 + (nextClaimRecommendation?.utilityScore ?? 0) * 0.18,
-    ticketValue: neededWeight * (isPriorityColor ? 1.7 : 1.25),
+      nearReadyClaims * (isPriorityColor ? 0.55 : 0.18) +
+      (nextClaimRecommendation?.utilityScore ?? 0) * (isPriorityColor ? 0.18 : 0.11),
+    ticketValue: neededWeight * (isPriorityColor ? 1.7 : 1.0),
     tempoValue: isLocomotive ? 2.6 : 1.1,
     flexibilityValue:
       isLocomotive
@@ -3025,6 +3029,9 @@ const scoreTurnCandidate = (
     const firstStepRecommendation = chosenActionEvaluations[0]?.recommendation;
     const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
     const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
+    const remainingVisibleSameColor = gameState.publicState.faceUpCards
+      .filter((_, index) => index !== firstIndex)
+      .some((color) => color === firstDrawAction.color);
     const remainingVisiblePriority = gameState.publicState.faceUpCards
       .filter((_, index) => index !== firstIndex)
       .some((color) => turnDrawTactic.priorityColors.has(color));
@@ -3032,11 +3039,20 @@ const scoreTurnCandidate = (
       turnDrawTactic.mode === "focus" && firstWasPriority && !remainingVisiblePriority;
 
     if (!allowedMixedPattern) {
-      faceUpThenBlindPolicyAdjustment -= turnDrawTactic.mode === "value" ? 6.8 : 4.6;
+      faceUpThenBlindPolicyAdjustment -= turnDrawTactic.mode === "value" ? 7.8 : 5.4;
       faceUpThenBlindPolicyReason =
         turnDrawTactic.mode === "value"
           ? "face-up plus blind is strongly discouraged in value mode; if we are still gathering value, double-blind should usually dominate"
           : "face-up plus blind is discouraged unless the first visible pick exhausted the current priority colors";
+    }
+    if (firstWasPriority && (remainingVisibleSameColor || remainingVisiblePriority)) {
+      faceUpThenBlindPolicyAdjustment -= remainingVisibleSameColor ? 11.5 : 9.2;
+      faceUpThenBlindPolicyReason = remainingVisibleSameColor
+        ? `goes blind after taking a priority ${firstDrawAction.color} even though another ${firstDrawAction.color} is still visible`
+        : "goes blind after taking a priority color even though another visible priority color is still available";
+    }
+    if (!firstWasPriority && turnDrawTactic.mode === "value") {
+      faceUpThenBlindPolicyAdjustment -= 4.4;
     }
 
     if (topBlindOpening && firstStepRecommendation) {
