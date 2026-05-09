@@ -2389,6 +2389,39 @@ const withAdditionalCards = (
   };
 };
 
+const withApproximatePostDrawState = (
+  gameState: GameState,
+  draw: DrawFaceUpAction | DrawBlindAction
+): GameState => {
+  const nextState =
+    draw.kind === "draw-face-up"
+      ? withAdditionalCards(gameState, [draw.color])
+      : withAdditionalCards(gameState, []);
+
+  const nextFaceUpCards =
+    draw.kind === "draw-face-up"
+      ? (() => {
+          const removalIndex = gameState.publicState.faceUpCards.findIndex(
+            (color) => color === draw.color
+          );
+          if (removalIndex < 0) {
+            return gameState.publicState.faceUpCards;
+          }
+
+          return gameState.publicState.faceUpCards.filter((_, index) => index !== removalIndex);
+        })()
+      : gameState.publicState.faceUpCards;
+
+  return {
+    ...nextState,
+    publicState: {
+      ...nextState.publicState,
+      phase: "drawing-cards",
+      faceUpCards: nextFaceUpCards
+    }
+  };
+};
+
 interface WeightedHandState {
   state: GameState;
   weight: number;
@@ -2514,15 +2547,25 @@ const applyApproximateActionBranches = (
   if (action.kind === "draw-face-up") {
     return [
       {
-        state: withAdditionalCards(branch.state, [action.color]),
+        state: withApproximatePostDrawState(branch.state, action),
         weight: branch.weight
       }
     ];
   }
 
   if (action.kind === "draw-blind") {
+    const baseState = withApproximatePostDrawState(branch.state, action);
     return getEstimatedBlindDrawDistribution(branch.state).map((outcome) => ({
-      state: withAdditionalCards(branch.state, [outcome.color]),
+      state: {
+        ...baseState,
+        ourState: {
+          ...baseState.ourState,
+          hand: {
+            ...baseState.ourState.hand,
+            [outcome.color]: baseState.ourState.hand[outcome.color] + 1
+          }
+        }
+      },
       weight: branch.weight * outcome.probability
     }));
   }
@@ -2942,8 +2985,8 @@ const scoreTurnCandidate = (
       (candidate) => candidate.actionId === buildActionId(action)
     );
 
-    if (action.kind === "draw-face-up") {
-      stepState = withAdditionalCards(stepState, [action.color]);
+    if (action.kind === "draw-face-up" || action.kind === "draw-blind") {
+      stepState = withApproximatePostDrawState(stepState, action);
     }
 
     return { recommendation, currentEvaluation };
