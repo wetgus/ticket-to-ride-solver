@@ -139,13 +139,16 @@ const estimateDeploymentPressure = (
       cardToTrainOverhang * (claimedRouteCount <= 1 ? 2.15 : 1.8) +
       Math.max(0, cardToTrainOverhang - 2) * 1.95;
   }
+  if (claimedRouteCount >= 2 && knownHandSize > 16) {
+    oversizedHandPenalty += (knownHandSize - 16) * 0.65;
+  }
   if (claimedRouteCount >= 2 && knownHandSize >= publicPlayer.trainsRemaining - 2) {
     oversizedHandPenalty +=
       (knownHandSize - (publicPlayer.trainsRemaining - 2) + 1) *
       1.45;
   }
-  if (readyClaimCount > 0 && knownHandSize > 20 && claimedRouteCount >= 1) {
-    oversizedHandPenalty += (knownHandSize - 20) * (readyLongClaimCount > 0 ? 1.05 : 0.72);
+  if (readyClaimCount > 0 && knownHandSize > 18 && claimedRouteCount >= 1) {
+    oversizedHandPenalty += (knownHandSize - 18) * (readyLongClaimCount > 0 ? 1.15 : 0.82);
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -158,7 +161,7 @@ const estimateDeploymentPressure = (
   let readyClaimPressure = 0;
   if (readyLongClaimCount > 0 && (knownHandSize >= 18 || claimedRouteCount >= 2)) {
     readyClaimPressure += claimedRouteCount === 0 ? 2.4 : 4.3;
-  } else if (readyClaimCount > 0 && knownHandSize >= 20) {
+  } else if (readyClaimCount > 0 && knownHandSize >= 18) {
     readyClaimPressure += claimedRouteCount === 0 ? 0.9 : 2.1;
   }
 
@@ -1007,6 +1010,27 @@ const getTopTicketImprovementReasons = (
     );
 };
 
+const getRouteTicketPathCoverage = (
+  currentTicketStates: TicketProgressState[],
+  routeId: RouteId
+): { ticketCount: number; weightedCoverage: number } => {
+  const coveredStates = currentTicketStates.filter(
+    (ticketState) => !ticketState.completed && ticketState.path.some((step) => step.routeId === routeId)
+  );
+
+  const weightedCoverage = coveredStates.reduce((sum, ticketState) => {
+    const pathLength = Math.max(1, ticketState.path.length);
+    const distanceWeight =
+      ticketState.distance <= 4 ? 1.7 : ticketState.distance <= 7 ? 1.25 : 0.9;
+    return sum + distanceWeight / pathLength;
+  }, 0);
+
+  return {
+    ticketCount: coveredStates.length,
+    weightedCoverage
+  };
+};
+
 const getTicketsNeedingColor = (
   board: BoardDefinition,
   gameState: GameState,
@@ -1497,6 +1521,10 @@ const scoreClaimAction = (
     currentTicketStates,
     nextTicketStates
   );
+  const routeTicketCoverage = getRouteTicketPathCoverage(currentTicketStates, route.id);
+  const routeTicketCoverageBonus =
+    routeTicketCoverage.weightedCoverage * 2.4 +
+    routeTicketCoverage.ticketCount * 0.9;
 
   const featureBreakdown: EvaluationFeatures = {
     expectedFinalScore:
@@ -1516,6 +1544,7 @@ const scoreClaimAction = (
       efficiency * 2.2 +
       urgency * 8 +
       endgamePointPush +
+      routeTicketCoverageBonus +
       (route.length >= 5 ? 1.8 : 0) -
       (route.length <= 3 && ticketProgressDelta <= 0 && urgency < 0.3 ? 2.2 : 0),
     ticketValue:
@@ -2943,21 +2972,32 @@ const scoreTurnCandidate = (
   }
   let faceUpThenBlindOpeningAdjustment = 0;
   let faceUpThenBlindOpeningReason: string | undefined;
+  let faceUpThenBlindPolicyAdjustment = 0;
+  let faceUpThenBlindPolicyReason: string | undefined;
   if (firstDrawAction?.kind === "draw-face-up" && secondDrawAction?.kind === "draw-blind") {
     const firstStepEvaluation = chosenActionEvaluations[0]?.currentEvaluation;
     const topBlindOpening = firstStepEvaluation?.alternatives.find(
       (candidate) => candidate.action.kind === "draw-blind"
     );
     const firstStepRecommendation = chosenActionEvaluations[0]?.recommendation;
+    const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
+    const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
+    const remainingVisiblePriority = gameState.publicState.faceUpCards
+      .filter((_, index) => index !== firstIndex)
+      .some((color) => turnDrawTactic.priorityColors.has(color));
+    const allowedMixedPattern =
+      turnDrawTactic.mode === "focus" && firstWasPriority && !remainingVisiblePriority;
+
+    if (!allowedMixedPattern) {
+      faceUpThenBlindPolicyAdjustment -= turnDrawTactic.mode === "value" ? 6.8 : 4.6;
+      faceUpThenBlindPolicyReason =
+        turnDrawTactic.mode === "value"
+          ? "face-up plus blind is strongly discouraged in value mode; if we are still gathering value, double-blind should usually dominate"
+          : "face-up plus blind is discouraged unless the first visible pick exhausted the current priority colors";
+    }
+
     if (topBlindOpening && firstStepRecommendation) {
       const blindGap = topBlindOpening.utilityScore - firstStepRecommendation.utilityScore;
-      const firstWasPriority = turnDrawTactic.priorityColors.has(firstDrawAction.color);
-      const remainingVisiblePriority = (() => {
-        const firstIndex = gameState.publicState.faceUpCards.indexOf(firstDrawAction.color);
-        return gameState.publicState.faceUpCards
-          .filter((_, index) => index !== firstIndex)
-          .some((color) => turnDrawTactic.priorityColors.has(color));
-      })();
       if (turnDrawTactic.mode === "value" && blindGap > -1.6) {
         faceUpThenBlindOpeningAdjustment -=
           (firstWasPriority && !remainingVisiblePriority ? 2.8 : 6.4) +
@@ -3074,6 +3114,7 @@ const scoreTurnCandidate = (
       valueModeDoubleBlindAdjustment +
       focusModeVisiblePriorityAdjustment +
       genericFaceUpThenBlindAdjustment +
+      faceUpThenBlindPolicyAdjustment +
       futureBonus -
       immediateFeatureBlend.riskCost +
       winProxyDelta * 0.18 -
@@ -3098,6 +3139,7 @@ const scoreTurnCandidate = (
       ...(duplicateFaceUpFollowThroughReason ? [duplicateFaceUpFollowThroughReason] : []),
       ...(strongerVisibleFollowUpReason ? [strongerVisibleFollowUpReason] : []),
       ...(faceUpThenBlindOpeningReason ? [faceUpThenBlindOpeningReason] : []),
+      ...(faceUpThenBlindPolicyReason ? [faceUpThenBlindPolicyReason] : []),
       ...(valueModeDoubleBlindReason ? [valueModeDoubleBlindReason] : []),
       ...(focusModeVisiblePriorityReason ? [focusModeVisiblePriorityReason] : []),
       ...(genericFaceUpThenBlindReason ? [genericFaceUpThenBlindReason] : []),
