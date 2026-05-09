@@ -5,6 +5,7 @@ import process from "node:process";
 import {
   USA_BOARD,
   blendHeuristicAndLearnedScores,
+  rankColorPriorities,
   recommendActions,
   scoreActionRecommendationWithModel
 } from "../dist/browser.js";
@@ -104,7 +105,7 @@ const main = async () => {
       .sort((left, right) => right.utilityScore - left.utilityScore);
   }
 
-  const alternatives = rankedAlternatives.slice(0, 12).map((entry) => ({
+  const alternatives = rankedAlternatives.map((entry) => ({
     utilityScore: entry.utilityScore,
     confidence: entry.confidence,
     rationale: entry.rationale,
@@ -112,6 +113,7 @@ const main = async () => {
     actionId: entry.actionId,
     featureBreakdown: entry.featureBreakdown
   }));
+  const colorPriorities = rankColorPriorities(payload.gameState, USA_BOARD);
 
   process.stdout.write(
     JSON.stringify(
@@ -121,7 +123,8 @@ const main = async () => {
         topUtilityScore: alternatives[0]?.utilityScore ?? null,
         topConfidence: alternatives[0]?.confidence ?? null,
         topRationale: alternatives[0]?.rationale ?? [],
-        alternatives
+        alternatives,
+        colorPriorities
       },
       null,
       2

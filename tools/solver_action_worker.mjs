@@ -5,6 +5,7 @@ import readline from "node:readline";
 import {
   USA_BOARD,
   blendHeuristicAndLearnedScores,
+  rankColorPriorities,
   recommendActions,
   scoreActionRecommendationWithModel
 } from "../dist/browser.js";
@@ -101,7 +102,7 @@ const scoreAlternatives = (evaluation, payload) => {
 const handleRecommend = (payload) => {
   const evaluation = recommendActions(payload.gameState, USA_BOARD);
   const rankedAlternatives = scoreAlternatives(evaluation, payload);
-  const alternatives = rankedAlternatives.slice(0, 12).map((entry) => ({
+  const alternatives = rankedAlternatives.map((entry) => ({
     utilityScore: entry.utilityScore,
     confidence: entry.confidence,
     rationale: entry.rationale,
@@ -109,6 +110,7 @@ const handleRecommend = (payload) => {
     actionId: entry.actionId,
     featureBreakdown: entry.featureBreakdown
   }));
+  const colorPriorities = rankColorPriorities(payload.gameState, USA_BOARD);
 
   return {
     topAction: alternatives[0]?.action ?? null,
@@ -116,7 +118,8 @@ const handleRecommend = (payload) => {
     topUtilityScore: alternatives[0]?.utilityScore ?? null,
     topConfidence: alternatives[0]?.confidence ?? null,
     topRationale: alternatives[0]?.rationale ?? [],
-    alternatives
+    alternatives,
+    colorPriorities
   };
 };
 

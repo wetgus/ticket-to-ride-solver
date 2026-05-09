@@ -999,6 +999,8 @@ function renderReplayStepDetail() {
 
   const codexDecision = step.codexDecision;
   const chosenAction = codexDecision?.chosenAction;
+  const alternatives = codexDecision?.alternatives ?? [];
+  const colorPriorities = codexDecision?.colorPriorities ?? [];
   const offeredTicketsLine =
     step.move?.kind === "keep-destination-tickets" && (step.move.offeredTicketIds?.length ?? 0) > 0
       ? `<div><strong>Offered:</strong> ${step.move.offeredTicketIds.map(ticketLabel).join("; ")}</div>`
@@ -1015,6 +1017,47 @@ function renderReplayStepDetail() {
           chosenAction.payment.locomotives === 1 ? "" : "s"
         }</div>`
       : "";
+  const alternativesMarkup = alternatives.length
+    ? `
+      <div><strong>All legal Codex options:</strong></div>
+      <ol class="replay-alternatives-list">
+        ${alternatives
+          .map(
+            (alternative) => `
+              <li>
+                <div><strong>${formatAction(alternative.action ?? { kind: "unknown" })}</strong> - ${Number(
+                  alternative.priorityPercent ?? 0
+                ).toFixed(1)}%</div>
+                <div class="meta-line">utility ${Number(alternative.utilityScore ?? 0).toFixed(2)} | confidence ${Number(
+                  alternative.confidence ?? 0
+                ).toFixed(2)}</div>
+              </li>
+            `
+          )
+          .join("")}
+      </ol>
+    `
+    : "<div class='empty-state'>No ranked Codex alternatives recorded on this step.</div>";
+  const colorPriorityMarkup = colorPriorities.length
+    ? `
+      <div><strong>Color priorities before the move:</strong></div>
+      <ol class="replay-alternatives-list">
+        ${colorPriorities
+          .map(
+            (entry) => `
+              <li>
+                <div><strong>${colorTitle(entry.color)}</strong> - score ${Number(entry.score ?? 0).toFixed(2)}</div>
+                <div class="meta-line">visible ${Number(entry.visibleCount ?? 0)}</div>
+                <ul class="replay-rationale-list">
+                  ${(entry.rationale ?? []).map((line) => `<li>${line}</li>`).join("")}
+                </ul>
+              </li>
+            `
+          )
+          .join("")}
+      </ol>
+    `
+    : "<div class='empty-state'>No color-priority ranking recorded on this step.</div>";
   replayStepDetail.innerHTML = `
       <div class="stack-list">
         <div><strong>Actor:</strong> seat ${step.actorSeat + 1} (${step.actorName})</div>
@@ -1035,7 +1078,9 @@ function renderReplayStepDetail() {
               <div><strong>Reasons:</strong></div>
               <ul class="replay-rationale-list">
                 ${(codexDecision.topRationale ?? []).map((line) => `<li>${line}</li>`).join("")}
-            </ul>
+              </ul>
+              ${colorPriorityMarkup}
+              ${alternativesMarkup}
           `
           : "<div class='empty-state'>No Codex rationale on this step.</div>"
       }

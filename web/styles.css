@@ -457,6 +457,15 @@ select {
   padding-left: 18px;
 }
 
+.replay-alternatives-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.replay-alternatives-list li + li {
+  margin-top: 8px;
+}
+
 .replay-empty {
   padding: 24px;
 }

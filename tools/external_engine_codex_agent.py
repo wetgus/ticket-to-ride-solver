@@ -298,6 +298,7 @@ class CodexSolverAgent:
                 "chosenActionId": chosen_alternative["actionId"] if chosen_alternative else None,
                 "chosenAction": chosen_alternative["action"] if chosen_alternative else None,
                 "alternatives": recommendation.get("alternatives", []),
+                "colorPriorities": recommendation.get("colorPriorities", []),
             }
         )
         self.decision_counter += 1

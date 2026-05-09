@@ -867,6 +867,147 @@ const getDrawTacticProfile = (
   };
 };
 
+const getCommittedTicketPathColors = (
+  currentTicketStates: TicketProgressState[],
+  hand: GameState["ourState"]["hand"]
+): Set<TrainColor> => {
+  const colors = new Set<TrainColor>();
+  const locomotives = hand.locomotive ?? 0;
+
+  for (const ticketState of currentTicketStates) {
+    if (ticketState.completed) {
+      continue;
+    }
+
+    for (const step of ticketState.path) {
+      if (step.color === "gray") {
+        continue;
+      }
+
+      const pureColorCount = hand[step.color] ?? 0;
+      const available = pureColorCount + locomotives;
+      const missing = Math.max(0, step.length - available);
+
+      if (pureColorCount >= 2 || missing <= 2) {
+        colors.add(step.color);
+      }
+    }
+  }
+
+  return colors;
+};
+
+const getColorTicketPlanPressure = (
+  currentTicketStates: TicketProgressState[],
+  hand: GameState["ourState"]["hand"],
+  color: TrainColor
+): number => {
+  if (color === "locomotive") {
+    return 0;
+  }
+
+  const locomotives = hand.locomotive ?? 0;
+  return currentTicketStates.reduce((sum, ticketState) => {
+    if (ticketState.completed) {
+      return sum;
+    }
+
+    const bestStepPressure = ticketState.path.reduce((best, step) => {
+      if (step.color !== color && step.color !== "gray") {
+        return best;
+      }
+
+      const available = (hand[color] ?? 0) + locomotives;
+      const missing = Math.max(0, step.length - available);
+      const pathWeight = 1 / Math.max(1, ticketState.path.length);
+      const distanceWeight =
+        ticketState.distance <= 4 ? 1.7 : ticketState.distance <= 7 ? 1.25 : 0.9;
+      const grayWeight = step.color === "gray" ? 0.82 : 1;
+      const pressure =
+        missing <= 0
+          ? 1.4 * distanceWeight * pathWeight * grayWeight
+          : missing === 1
+            ? 4.8 * distanceWeight * pathWeight * grayWeight
+            : missing === 2
+              ? 2.2 * distanceWeight * pathWeight * grayWeight
+              : 0.45 * distanceWeight * pathWeight * grayWeight;
+
+      return Math.max(best, pressure);
+    }, 0);
+
+    return sum + bestStepPressure;
+  }, 0);
+};
+
+export interface ColorPriorityEstimate {
+  color: TrainColor;
+  score: number;
+  visibleCount: number;
+  rationale: string[];
+}
+
+export const rankColorPriorities = (
+  gameState: GameState,
+  board: BoardDefinition
+): ColorPriorityEstimate[] => {
+  const ticketEvaluation = evaluateTickets(board, gameState);
+  const currentTicketStates = getTicketProgressStates(board, gameState);
+  const committedPathColors = getCommittedTicketPathColors(
+    currentTicketStates,
+    gameState.ourState.hand
+  );
+  const publicPlayer = getPlayerPublicState(gameState);
+  const drawTactic = getDrawTacticProfile(
+    ticketEvaluation.pathDemand,
+    gameState.ourState.hand,
+    publicPlayer.claimedRouteIds.length
+  );
+
+  return TRAIN_COLORS.map((color) => {
+    const neededWeight = getNeededColorWeight(
+      color,
+      ticketEvaluation.pathDemand,
+      gameState.ourState.hand
+    );
+    const ticketPlanPressure = getColorTicketPlanPressure(
+      currentTicketStates,
+      gameState.ourState.hand,
+      color
+    );
+    const visibleCount = gameState.publicState.faceUpCards.filter(
+      (candidate) => candidate === color
+    ).length;
+    const committedBonus = committedPathColors.has(color) ? 1.8 : 0;
+    const visibleBonus = visibleCount * (color === "locomotive" ? 0.55 : 0.85);
+    const score =
+      neededWeight * (color === "locomotive" ? 0.9 : 1.15) +
+      ticketPlanPressure * (color === "locomotive" ? 0.65 : 1.55) +
+      committedBonus +
+      visibleBonus;
+    const rationale = [
+      neededWeight > 0
+        ? `unmet route-color demand ${neededWeight.toFixed(1)}`
+        : "little direct unmet route-color demand",
+      ticketPlanPressure > 0
+        ? `ticket-path pressure ${ticketPlanPressure.toFixed(1)}`
+        : "low immediate ticket-path pressure",
+      committedPathColors.has(color)
+        ? "already invested in this color on active ticket paths"
+        : "not yet a committed ticket-path color",
+      visibleCount > 0
+        ? `${visibleCount} visible in the pool right now`
+        : "not currently visible in the pool"
+    ];
+
+    return {
+      color,
+      score,
+      visibleCount,
+      rationale
+    };
+  }).sort((left, right) => right.score - left.score);
+};
+
 const estimateClaimPaymentOpportunityCost = (
   board: BoardDefinition,
   gameState: GameState,
@@ -1801,15 +1942,15 @@ const scoreDrawFaceUpAction = (
     nearReadyClaims === 0 &&
     helpedTickets.length <= 1
       ? drawTactic.mode === "value"
-        ? 12.4
-        : 9.8
+        ? 17.8
+        : 14.2
       : isLocomotive &&
           publicPlayer.claimedRouteIds.length <= 1 &&
           knownHandSize < 26 &&
           nearReadyClaims === 0
         ? drawTactic.mode === "value"
-          ? 6.2
-          : 4.8
+          ? 10.4
+          : 7.6
         : 0;
   const lateLocomotiveTax =
     isLocomotive &&

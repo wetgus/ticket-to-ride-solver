@@ -1,6 +1,7 @@
 import argparse
 import copy
 import json
+import math
 import os
 import random
 import statistics
@@ -137,6 +138,22 @@ def extract_codex_decision(agent) -> Dict | None:
             break
 
     top_rationale = chosen.get("rationale", []) if chosen else latest.get("alternatives", [{}])[0].get("rationale", [])
+    alternatives = latest.get("alternatives", [])
+
+    if alternatives:
+        top_utility = max(float(alternative.get("utilityScore", 0.0)) for alternative in alternatives)
+        weighted = []
+        for alternative in alternatives:
+            shifted = max(-40.0, float(alternative.get("utilityScore", 0.0)) - top_utility)
+            weighted.append(math.exp(shifted / 3.5))
+        total_weight = sum(weighted) or 1.0
+        enriched_alternatives = []
+        for alternative, weight in zip(alternatives, weighted):
+            enriched = dict(alternative)
+            enriched["priorityPercent"] = weight * 100.0 / total_weight
+            enriched_alternatives.append(enriched)
+    else:
+        enriched_alternatives = []
 
     return {
         "turnIndex": latest.get("turnIndex"),
@@ -144,7 +161,8 @@ def extract_codex_decision(agent) -> Dict | None:
         "chosenActionId": latest.get("chosenActionId"),
         "chosenAction": latest.get("chosenAction"),
         "topRationale": top_rationale,
-        "alternatives": latest.get("alternatives", [])[:5],
+        "alternatives": enriched_alternatives,
+        "colorPriorities": latest.get("colorPriorities", []),
         "knownHand": latest.get("knownHand", {}),
         "knownTicketIds": latest.get("knownTicketIds", []),
     }
