@@ -73,6 +73,49 @@ const TRAIN_DECK_COUNTS: Record<TrainColor, number> = {
 
 const BLIND_DRAW_OUTCOME_LIMIT = 4;
 
+export interface PolicyWeights {
+  drawPenaltyScale: number;
+  claimBonusScale: number;
+  openingBlindBonusScale: number;
+  openingFaceUpTaxScale: number;
+  earlyLocomotiveTaxScale: number;
+  nonPriorityVisibleTaxScale: number;
+  sameTurnVisibleFollowThroughBonusScale: number;
+  sameTurnVisibleFollowThroughTaxScale: number;
+  ticketColorDemandScale: number;
+  ticketPathColorScale: number;
+  offTicketClaimPenaltyScale: number;
+  colorPriorityDemandScale: number;
+  colorPriorityPathScale: number;
+  colorPriorityCommittedScale: number;
+  colorPriorityVisibleScale: number;
+}
+
+export const DEFAULT_POLICY_WEIGHTS: PolicyWeights = {
+  drawPenaltyScale: 1,
+  claimBonusScale: 1,
+  openingBlindBonusScale: 1,
+  openingFaceUpTaxScale: 1,
+  earlyLocomotiveTaxScale: 1,
+  nonPriorityVisibleTaxScale: 1,
+  sameTurnVisibleFollowThroughBonusScale: 1,
+  sameTurnVisibleFollowThroughTaxScale: 1,
+  ticketColorDemandScale: 1,
+  ticketPathColorScale: 1,
+  offTicketClaimPenaltyScale: 1,
+  colorPriorityDemandScale: 1,
+  colorPriorityPathScale: 1,
+  colorPriorityCommittedScale: 1,
+  colorPriorityVisibleScale: 1
+};
+
+const resolvePolicyWeights = (
+  weights?: Partial<PolicyWeights> | null
+): PolicyWeights => ({
+  ...DEFAULT_POLICY_WEIGHTS,
+  ...(weights ?? {})
+});
+
 const getPlayerPublicState = (gameState: GameState) => {
   const player = gameState.publicState.players.find(
     (candidate) => candidate.playerId === gameState.ourState.playerId
@@ -101,7 +144,8 @@ const getKnownHandSize = (gameState: GameState): number =>
 
 const estimateDeploymentPressure = (
   board: BoardDefinition,
-  gameState: GameState
+  gameState: GameState,
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): DeploymentPressureEstimate => {
   const knownHandSize = getKnownHandSize(gameState);
   const publicPlayer = getPlayerPublicState(gameState);
@@ -181,9 +225,12 @@ const estimateDeploymentPressure = (
     signals.push("a long route is already claimable, so continuing to draw is expensive");
   }
 
-  const drawPenalty = oversizedHandPenalty + stackPenalty + readyClaimPressure;
+  const drawPenalty =
+    (oversizedHandPenalty + stackPenalty + readyClaimPressure) *
+    policyWeights.drawPenaltyScale;
   const claimBonus =
-    oversizedHandPenalty * 0.45 + stackPenalty * 0.42 + readyClaimPressure * 0.75;
+    (oversizedHandPenalty * 0.45 + stackPenalty * 0.42 + readyClaimPressure * 0.75) *
+    policyWeights.claimBonusScale;
 
   return {
     drawPenalty,
@@ -948,8 +995,10 @@ export interface ColorPriorityEstimate {
 
 export const rankColorPriorities = (
   gameState: GameState,
-  board: BoardDefinition
+  board: BoardDefinition,
+  weights?: Partial<PolicyWeights> | null
 ): ColorPriorityEstimate[] => {
+  const policyWeights = resolvePolicyWeights(weights);
   const ticketEvaluation = evaluateTickets(board, gameState);
   const currentTicketStates = getTicketProgressStates(board, gameState);
   const committedPathColors = getCommittedTicketPathColors(
@@ -980,10 +1029,14 @@ export const rankColorPriorities = (
     const committedBonus = committedPathColors.has(color) ? 1.8 : 0;
     const visibleBonus = visibleCount * (color === "locomotive" ? 0.55 : 0.85);
     const score =
-      neededWeight * (color === "locomotive" ? 0.9 : 1.15) +
-      ticketPlanPressure * (color === "locomotive" ? 0.65 : 1.55) +
-      committedBonus +
-      visibleBonus;
+      neededWeight *
+        (color === "locomotive" ? 0.9 : 1.15) *
+        policyWeights.colorPriorityDemandScale +
+      ticketPlanPressure *
+        (color === "locomotive" ? 0.65 : 1.55) *
+        policyWeights.colorPriorityPathScale +
+      committedBonus * policyWeights.colorPriorityCommittedScale +
+      visibleBonus * policyWeights.colorPriorityVisibleScale;
     const rationale = [
       neededWeight > 0
         ? `unmet route-color demand ${neededWeight.toFixed(1)}`
@@ -1448,7 +1501,8 @@ const estimateExpectedPositionWinChanceAfterActions = (
 const estimateExpectedClaimUtilityAfterLimitedRollout = (
   gameState: GameState,
   board: BoardDefinition,
-  actions: GameAction[]
+  actions: GameAction[],
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): number => {
   let branches: WeightedHandState[] = [{ state: gameState, weight: 1 }];
 
@@ -1459,9 +1513,10 @@ const estimateExpectedClaimUtilityAfterLimitedRollout = (
   }
 
   return branches.reduce((sum, branch) => {
-    const nextActionEvaluation = recommendActions(branch.state, board);
+    const nextActionEvaluation = recommendActions(branch.state, board, policyWeights);
     const topImmediate = nextActionEvaluation.topRecommendation?.utilityScore ?? 0;
-    const bestClaim = getBestClaimRecommendation(board, branch.state)?.utilityScore ?? 0;
+    const bestClaim =
+      getBestClaimRecommendation(board, branch.state, policyWeights)?.utilityScore ?? 0;
     return sum + Math.max(topImmediate * 0.7, bestClaim) * branch.weight;
   }, 0);
 };
@@ -1504,7 +1559,8 @@ export const getBlindDrawInsight = (
 
 const getBestClaimRecommendation = (
   board: BoardDefinition,
-  gameState: GameState
+  gameState: GameState,
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): ActionRecommendation | undefined => {
   const routesByParallelGroup = indexRoutesByParallelGroup(board.routes);
   const legalClaimActions = getLegalClaimRouteActions(
@@ -1519,7 +1575,9 @@ const getBestClaimRecommendation = (
 
   const routeUrgency = getRouteUrgency(board, gameState);
   return keepBestClaimRecommendationPerRoute(
-    legalClaimActions.map((action) => scoreClaimAction(board, gameState, action, routeUrgency))
+    legalClaimActions.map((action) =>
+      scoreClaimAction(board, gameState, action, routeUrgency, policyWeights)
+    )
   )
     .sort((left, right) => right.utilityScore - left.utilityScore)[0];
 };
@@ -1577,7 +1635,8 @@ const scoreClaimAction = (
   board: BoardDefinition,
   gameState: GameState,
   action: ClaimRouteAction,
-  routeUrgency: RouteUrgencyEstimate[]
+  routeUrgency: RouteUrgencyEstimate[],
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): ActionRecommendation => {
   const route = board.routes.find((candidate) => candidate.id === action.routeId);
 
@@ -1602,7 +1661,7 @@ const scoreClaimAction = (
     routeUrgency.find((estimate) => estimate.routeId === route.id)?.loseBeforeNextTurnProbability ??
     0;
   const endgameClock = estimateEndgameClock(gameState);
-  const deploymentPressure = estimateDeploymentPressure(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState, policyWeights);
   const nextRouteUrgency = getRouteUrgency(board, applied);
   const currentDetourExposure = estimateTicketDetourExposure(board, gameState, routeUrgency);
   const nextDetourExposure = estimateTicketDetourExposure(board, applied, nextRouteUrgency);
@@ -1674,7 +1733,7 @@ const scoreClaimAction = (
     riskCost:
       locomotiveSpendPenalty +
       Math.max(0, -ticketProgressDelta * 0.3) +
-      paymentOpportunity.penalty,
+      paymentOpportunity.penalty * policyWeights.offTicketClaimPenaltyScale,
     blockExposure: urgency * 5,
     trainsRemainingPressure:
       gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2,
@@ -1767,7 +1826,8 @@ const estimateTicketStandaloneValue = (
 const scoreDrawTicketsAction = (
   board: BoardDefinition,
   gameState: GameState,
-  action: DrawTicketsAction
+  action: DrawTicketsAction,
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): ActionRecommendation => {
   const currentTickets = getOurTickets(board, gameState);
   const completedTickets = countCompletedTickets(board, gameState);
@@ -1784,7 +1844,7 @@ const scoreDrawTicketsAction = (
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
-  const deploymentPressure = estimateDeploymentPressure(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState, policyWeights);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
@@ -1878,10 +1938,11 @@ const scoreDrawFaceUpAction = (
   board: BoardDefinition,
   gameState: GameState,
   action: DrawFaceUpAction,
-  colorDemand: Map<TrainColor, number>
+  colorDemand: Map<TrainColor, number>,
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): ActionRecommendation => {
   const nextState = withAdditionalCards(gameState, [action.color]);
-  const nextClaimRecommendation = getBestClaimRecommendation(board, nextState);
+  const nextClaimRecommendation = getBestClaimRecommendation(board, nextState, policyWeights);
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const neededWeight = getNeededColorWeight(
     action.color,
@@ -1892,11 +1953,17 @@ const scoreDrawFaceUpAction = (
   const isLocomotive = action.color === "locomotive";
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
-  const deploymentPressure = estimateDeploymentPressure(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState, policyWeights);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
     currentRouteUrgency
+  );
+  const currentTicketStates = getTicketProgressStates(board, gameState);
+  const ticketPlanPressure = getColorTicketPlanPressure(
+    currentTicketStates,
+    gameState.ourState.hand,
+    action.color
   );
   const helpedTickets = getTicketsNeedingColor(board, gameState, action.color);
   const knownHandSize = getKnownHandSize(gameState);
@@ -1927,13 +1994,13 @@ const scoreDrawFaceUpAction = (
     !isPriorityColor &&
     neededWeight < 2.4 &&
     helpedTickets.length <= 1
-      ? 3.6
+      ? 3.6 * policyWeights.openingFaceUpTaxScale
       : !isLocomotive &&
           publicPlayer.claimedRouteIds.length === 0 &&
           drawTactic.mode === "value" &&
           knownHandSize < 18 &&
           nearReadyClaims === 0
-        ? 1.8
+        ? 1.8 * policyWeights.openingFaceUpTaxScale
         : 0;
   const earlyLocomotiveTax =
     isLocomotive &&
@@ -1942,15 +2009,15 @@ const scoreDrawFaceUpAction = (
     nearReadyClaims === 0 &&
     helpedTickets.length <= 1
       ? drawTactic.mode === "value"
-        ? 17.8
-        : 14.2
+        ? 17.8 * policyWeights.earlyLocomotiveTaxScale
+        : 14.2 * policyWeights.earlyLocomotiveTaxScale
       : isLocomotive &&
           publicPlayer.claimedRouteIds.length <= 1 &&
           knownHandSize < 26 &&
           nearReadyClaims === 0
         ? drawTactic.mode === "value"
-          ? 10.4
-          : 7.6
+          ? 10.4 * policyWeights.earlyLocomotiveTaxScale
+          : 7.6 * policyWeights.earlyLocomotiveTaxScale
         : 0;
   const lateLocomotiveTax =
     isLocomotive &&
@@ -1963,54 +2030,62 @@ const scoreDrawFaceUpAction = (
     !isPriorityColor &&
     drawTactic.mode === "focus"
       ? neededWeight <= 0.5
-        ? 5.4
-        : 3.2
+        ? 5.4 * policyWeights.nonPriorityVisibleTaxScale
+        : 3.2 * policyWeights.nonPriorityVisibleTaxScale
       : !isLocomotive &&
           !isPriorityColor &&
           drawTactic.mode === "value" &&
           knownHandSize > Math.min(22, trainsRemaining - 1)
-        ? 2.1
+        ? 2.1 * policyWeights.nonPriorityVisibleTaxScale
         : 0;
   const followThroughVisibleBonus =
     gameState.publicState.phase === "drawing-cards" &&
     currentTurnFirstDrawSource === "face-up" &&
     currentTurnFirstDrawColor === action.color
-      ? 7.6
+      ? 7.6 * policyWeights.sameTurnVisibleFollowThroughBonusScale
       : gameState.publicState.phase === "drawing-cards" &&
           currentTurnFirstDrawSource === "face-up" &&
           isPriorityColor
-        ? 3.4
+        ? 3.4 * policyWeights.sameTurnVisibleFollowThroughBonusScale
         : 0;
   const featureBreakdown: EvaluationFeatures = {
     ...createBlankFeatures(),
     expectedFinalScore:
       getPlayerPublicState(gameState).score +
-      neededWeight * 0.8 +
+      neededWeight * 0.8 * policyWeights.ticketColorDemandScale +
       (nextClaimRecommendation?.featureBreakdown.expectedFinalScore ?? 0) * 0.08,
     winProbabilityEstimate: Math.min(
       0.85,
       0.35 +
-        neededWeight * 0.03 +
+        neededWeight * 0.03 * policyWeights.ticketColorDemandScale +
         nearReadyClaims * 0.015 +
         (isLocomotive ? 0.12 : 0) +
         (nextClaimRecommendation?.utilityScore ?? 0) * 0.002 +
         winProxyDelta * 0.01
     ),
     scoreDiffEstimate:
-      neededWeight * 0.6 +
+      neededWeight * 0.6 * policyWeights.ticketColorDemandScale +
       nearReadyClaims * 0.5 +
       (nextClaimRecommendation?.utilityScore ?? 0) * 0.12,
     routeValue:
       nearReadyClaims * 0.8 +
       followThroughVisibleBonus * 0.26 +
-      (nextClaimRecommendation?.utilityScore ?? 0) * 0.18,
+      (nextClaimRecommendation?.utilityScore ?? 0) * 0.18 +
+      ticketPlanPressure * 0.32 * policyWeights.ticketPathColorScale,
     ticketValue:
-      neededWeight * (isPriorityColor ? 1.7 : 1.25) + followThroughVisibleBonus,
+      neededWeight *
+        (isPriorityColor ? 1.7 : 1.25) *
+        policyWeights.ticketColorDemandScale +
+      followThroughVisibleBonus +
+      ticketPlanPressure * 0.9 * policyWeights.ticketPathColorScale,
     tempoValue: isLocomotive ? 2.6 : 1.1,
     flexibilityValue:
       isLocomotive
         ? 5.5
-        : neededWeight * 0.7 + 1.5 + (isPriorityColor ? 0.55 : 0),
+        :
+          neededWeight * 0.7 * policyWeights.ticketColorDemandScale +
+          1.5 +
+          (isPriorityColor ? 0.55 : 0),
     riskCost:
       (isLocomotive ? 0.8 : 0.3) +
       openingFaceUpTax +
@@ -2098,14 +2173,15 @@ const scoreDrawBlindAction = (
   board: BoardDefinition,
   gameState: GameState,
   action: DrawBlindAction,
-  colorDemand: Map<TrainColor, number>
+  colorDemand: Map<TrainColor, number>,
+  policyWeights: PolicyWeights = DEFAULT_POLICY_WEIGHTS
 ): ActionRecommendation => {
   const totalDemand = [...colorDemand.values()].reduce((sum, value) => sum + value, 0);
   const blindExpectation = estimateExpectedNextClaimValue(board, gameState);
   const urgentClaimPressure = getImmediateUrgentClaimPressure(board, gameState);
   const endgameClock = estimateEndgameClock(gameState);
   const currentRouteUrgency = getRouteUrgency(board, gameState);
-  const deploymentPressure = estimateDeploymentPressure(board, gameState);
+  const deploymentPressure = estimateDeploymentPressure(board, gameState, policyWeights);
   const currentDetourExposure = estimateTicketDetourExposure(
     board,
     gameState,
@@ -2137,12 +2213,12 @@ const scoreDrawBlindAction = (
     knownHandSize < 20 &&
     deploymentPressure.readyLongClaimCount === 0
       ? knownHandSize < 16
-        ? 3.2
-        : 2.0
+        ? 3.2 * policyWeights.openingBlindBonusScale
+        : 2.0 * policyWeights.openingBlindBonusScale
       : publicPlayer.claimedRouteIds.length <= 1 &&
           knownHandSize < 20 &&
           deploymentPressure.readyClaimCount === 0
-        ? 1.2
+        ? 1.2 * policyWeights.openingBlindBonusScale
         : 0;
   const tacticBlindBonus =
     drawTactic.mode === "value"
@@ -2160,11 +2236,11 @@ const scoreDrawBlindAction = (
     currentTurnFirstDrawSource === "face-up" &&
     currentTurnFirstDrawColor &&
     gameState.publicState.faceUpCards.some((color) => color === currentTurnFirstDrawColor)
-      ? 18
+      ? 18 * policyWeights.sameTurnVisibleFollowThroughTaxScale
       : gameState.publicState.phase === "drawing-cards" &&
           currentTurnFirstDrawSource === "face-up" &&
           visiblePriorityColors.size > 0
-        ? 12
+        ? 12 * policyWeights.sameTurnVisibleFollowThroughTaxScale
         : 0;
   const expectedWinProxyAfterBlind = estimateExpectedPositionWinChanceAfterActions(
     board,
@@ -2402,8 +2478,10 @@ const getLegalTicketDrawActions = (
 
 export const recommendActions = (
   gameState: GameState,
-  board: BoardDefinition
+  board: BoardDefinition,
+  weights?: Partial<PolicyWeights> | null
 ): PositionEvaluation => {
+  const policyWeights = resolvePolicyWeights(weights);
   if (
     gameState.publicState.phase === "resolving-ticket-keep" &&
     gameState.pendingTicketChoice?.playerId === gameState.ourState.playerId
@@ -2492,9 +2570,9 @@ export const recommendActions = (
   const legalTicketDrawActions = getLegalTicketDrawActions(gameState);
   const ticketEvaluation = evaluateTickets(board, gameState);
   const routeUrgency = getRouteUrgency(board, gameState);
-  const claimRecommendations = keepBestClaimRecommendationPerRoute(
+    const claimRecommendations = keepBestClaimRecommendationPerRoute(
     legalClaimActions.map((action) =>
-      scoreClaimAction(board, gameState, action, routeUrgency)
+      scoreClaimAction(board, gameState, action, routeUrgency, policyWeights)
     )
   );
 
@@ -2502,10 +2580,24 @@ export const recommendActions = (
     ...claimRecommendations,
     ...legalDrawActions.map((action) =>
       action.kind === "draw-face-up"
-        ? scoreDrawFaceUpAction(board, gameState, action, ticketEvaluation.pathDemand)
-        : scoreDrawBlindAction(board, gameState, action, ticketEvaluation.pathDemand)
+        ? scoreDrawFaceUpAction(
+            board,
+            gameState,
+            action,
+            ticketEvaluation.pathDemand,
+            policyWeights
+          )
+        : scoreDrawBlindAction(
+            board,
+            gameState,
+            action,
+            ticketEvaluation.pathDemand,
+            policyWeights
+          )
     ),
-    ...legalTicketDrawActions.map((action) => scoreDrawTicketsAction(board, gameState, action))
+    ...legalTicketDrawActions.map((action) =>
+      scoreDrawTicketsAction(board, gameState, action, policyWeights)
+    )
   ].sort((left, right) => right.utilityScore - left.utilityScore);
 
   return {

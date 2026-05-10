@@ -235,12 +235,14 @@ class CodexSolverAgent:
         node_executable: str = "node",
         debug: bool = False,
         policy_model_path: Optional[str] = None,
+        policy_weights: Optional[Dict] = None,
         heuristic_weight: float = 0.55,
         learned_weight: float = 0.45,
     ):
         self.node_executable = node_executable
         self.debug = debug
         self.policy_model_path = policy_model_path
+        self.policy_weights = policy_weights
         self.heuristic_weight = heuristic_weight
         self.learned_weight = learned_weight
         self.trace_steps = []
@@ -507,6 +509,8 @@ class CodexSolverAgent:
             payload["policyModelPath"] = self.policy_model_path
             payload["heuristicWeight"] = self.heuristic_weight
             payload["learnedWeight"] = self.learned_weight
+        if self.policy_weights:
+            payload["policyWeights"] = self.policy_weights
 
         return payload
 

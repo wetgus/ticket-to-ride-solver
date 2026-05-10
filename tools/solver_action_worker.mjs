@@ -100,7 +100,11 @@ const scoreAlternatives = (evaluation, payload) => {
 };
 
 const handleRecommend = (payload) => {
-  const evaluation = recommendActions(payload.gameState, USA_BOARD);
+  const evaluation = recommendActions(
+    payload.gameState,
+    USA_BOARD,
+    payload.policyWeights ?? null
+  );
   const rankedAlternatives = scoreAlternatives(evaluation, payload);
   const alternatives = rankedAlternatives.map((entry) => ({
     utilityScore: entry.utilityScore,
@@ -110,7 +114,11 @@ const handleRecommend = (payload) => {
     actionId: entry.actionId,
     featureBreakdown: entry.featureBreakdown
   }));
-  const colorPriorities = rankColorPriorities(payload.gameState, USA_BOARD);
+  const colorPriorities = rankColorPriorities(
+    payload.gameState,
+    USA_BOARD,
+    payload.policyWeights ?? null
+  );
 
   return {
     topAction: alternatives[0]?.action ?? null,

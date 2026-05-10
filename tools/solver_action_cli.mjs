@@ -56,7 +56,11 @@ const main = async () => {
   }
 
   const payload = JSON.parse(raw);
-  const evaluation = recommendActions(payload.gameState, USA_BOARD);
+  const evaluation = recommendActions(
+    payload.gameState,
+    USA_BOARD,
+    payload.policyWeights ?? null
+  );
   let rankedAlternatives = [...evaluation.alternatives];
 
   if (payload.policyModelPath) {
@@ -113,7 +117,11 @@ const main = async () => {
     actionId: entry.actionId,
     featureBreakdown: entry.featureBreakdown
   }));
-  const colorPriorities = rankColorPriorities(payload.gameState, USA_BOARD);
+  const colorPriorities = rankColorPriorities(
+    payload.gameState,
+    USA_BOARD,
+    payload.policyWeights ?? null
+  );
 
   process.stdout.write(
     JSON.stringify(

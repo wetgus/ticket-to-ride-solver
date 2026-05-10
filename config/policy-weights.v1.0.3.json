@@ -1,0 +1,17 @@
+{
+  "drawPenaltyScale": 1,
+  "claimBonusScale": 1,
+  "openingBlindBonusScale": 1,
+  "openingFaceUpTaxScale": 1,
+  "earlyLocomotiveTaxScale": 1,
+  "nonPriorityVisibleTaxScale": 1,
+  "sameTurnVisibleFollowThroughBonusScale": 1,
+  "sameTurnVisibleFollowThroughTaxScale": 1,
+  "ticketColorDemandScale": 1,
+  "ticketPathColorScale": 1,
+  "offTicketClaimPenaltyScale": 1,
+  "colorPriorityDemandScale": 1,
+  "colorPriorityPathScale": 1,
+  "colorPriorityCommittedScale": 1,
+  "colorPriorityVisibleScale": 1
+}

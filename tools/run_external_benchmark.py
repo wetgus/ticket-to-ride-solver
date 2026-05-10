@@ -289,14 +289,33 @@ def make_game(player_count: int):
     game.setup()
     return game
 
+def load_policy_weights(policy_weights_path):
+    if not policy_weights_path:
+        return None
 
-def instantiate_agents(specs, policy_model_path=None, heuristic_weight=0.55, learned_weight=0.45):
+    resolved_path = (
+        policy_weights_path
+        if os.path.isabs(policy_weights_path)
+        else os.path.join(ROOT_DIR, policy_weights_path)
+    )
+    with open(resolved_path, "r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def instantiate_agents(
+    specs,
+    policy_model_path=None,
+    policy_weights=None,
+    heuristic_weight=0.55,
+    learned_weight=0.45,
+):
     agents = []
     for name in specs:
         if name == "codex":
             agents.append(
                 CodexSolverAgent(
                     policy_model_path=policy_model_path,
+                    policy_weights=policy_weights,
                     heuristic_weight=heuristic_weight,
                     learned_weight=learned_weight,
                 )
@@ -497,6 +516,7 @@ def run_matchup(
     games,
     seed_base,
     policy_model_path=None,
+    policy_weights=None,
     heuristic_weight=0.55,
     learned_weight=0.45,
     training_output_path=None,
@@ -523,6 +543,7 @@ def run_matchup(
         agents = instantiate_agents(
             agent_names,
             policy_model_path=policy_model_path,
+            policy_weights=policy_weights,
             heuristic_weight=heuristic_weight,
             learned_weight=learned_weight,
         )
@@ -698,6 +719,7 @@ def main():
     )
     parser.add_argument("--seed-base", type=int, default=1000)
     parser.add_argument("--policy-model", default=None, help="Optional learned reranker model JSON path.")
+    parser.add_argument("--policy-weights-json", default=None, help="Optional policy weights JSON path.")
     parser.add_argument("--heuristic-weight", type=float, default=0.55)
     parser.add_argument("--learned-weight", type=float, default=0.45)
     parser.add_argument(
@@ -744,6 +766,7 @@ def main():
         if args.export_replays_json
         else None
     )
+    policy_weights = load_policy_weights(args.policy_weights_json)
 
     initialize_output_file(training_output_path, args.append_output)
     initialize_output_file(failed_games_output_path, args.append_output)
@@ -755,6 +778,7 @@ def main():
         "lineup": args.lineup,
         "gamesPerSeatRotation": args.games,
         "policyModel": args.policy_model,
+        "policyWeightsJson": args.policy_weights_json,
         "heuristicWeight": args.heuristic_weight,
         "learnedWeight": args.learned_weight,
         "status": "running",
@@ -805,6 +829,7 @@ def main():
             args.games,
             args.seed_base + len(summaries) * 100,
             policy_model_path=args.policy_model,
+            policy_weights=policy_weights,
             heuristic_weight=args.heuristic_weight,
             learned_weight=args.learned_weight,
             training_output_path=training_output_path,
@@ -858,6 +883,7 @@ def main():
         "aggregateGameCount": aggregate_codex_summary["gameCount"],
         "aggregateTrainingRowCount": sum(summary["trainingRowCount"] for summary in summaries),
         "policyModel": args.policy_model,
+        "policyWeightsJson": args.policy_weights_json,
         "heuristicWeight": args.heuristic_weight,
         "learnedWeight": args.learned_weight,
         "failedGamesOutputPath": failed_games_output_path,
