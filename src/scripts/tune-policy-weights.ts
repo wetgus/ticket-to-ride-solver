@@ -67,7 +67,15 @@ const BOUNDED_WEIGHT_KEYS: Array<keyof PolicyWeights> = [
   "colorPriorityDemandScale",
   "colorPriorityPathScale",
   "colorPriorityCommittedScale",
-  "colorPriorityVisibleScale"
+  "colorPriorityVisibleScale",
+  "ticketPathRedundancyScale",
+  "ticketPathEfficiencyScale",
+  "ticketPathBlockRiskScale",
+  "ticketPathDrawChanceScale",
+  "ticketPathReuseScale",
+  "selfTrainPressureScale",
+  "opponentTrainPressureScale",
+  "opponentTrainHandGapScale"
 ];
 
 const clamp = (value: number, min: number, max: number): number =>

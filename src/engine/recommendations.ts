@@ -48,6 +48,14 @@ interface TicketProgressState {
   completed: boolean;
 }
 
+interface TicketPathStrategicProfile {
+  ticketId: string;
+  alternativePathCount: number;
+  averagePointsPerTurn: number;
+  blockRisk: number;
+  routeReuseScore: number;
+}
+
 const NON_LOCOMOTIVE_COLORS: Array<Exclude<TrainColor, "locomotive">> = [
   "red",
   "blue",
@@ -89,6 +97,14 @@ export interface PolicyWeights {
   colorPriorityPathScale: number;
   colorPriorityCommittedScale: number;
   colorPriorityVisibleScale: number;
+  ticketPathRedundancyScale: number;
+  ticketPathEfficiencyScale: number;
+  ticketPathBlockRiskScale: number;
+  ticketPathDrawChanceScale: number;
+  ticketPathReuseScale: number;
+  selfTrainPressureScale: number;
+  opponentTrainPressureScale: number;
+  opponentTrainHandGapScale: number;
 }
 
 export const DEFAULT_POLICY_WEIGHTS: PolicyWeights = {
@@ -106,7 +122,15 @@ export const DEFAULT_POLICY_WEIGHTS: PolicyWeights = {
   colorPriorityDemandScale: 1,
   colorPriorityPathScale: 1,
   colorPriorityCommittedScale: 1,
-  colorPriorityVisibleScale: 1
+  colorPriorityVisibleScale: 1,
+  ticketPathRedundancyScale: 1,
+  ticketPathEfficiencyScale: 1,
+  ticketPathBlockRiskScale: 1,
+  ticketPathDrawChanceScale: 1,
+  ticketPathReuseScale: 1,
+  selfTrainPressureScale: 1,
+  opponentTrainPressureScale: 1,
+  opponentTrainHandGapScale: 1
 };
 
 const resolvePolicyWeights = (
@@ -161,6 +185,7 @@ const estimateDeploymentPressure = (
     return (route?.length ?? 0) >= 5;
   }).length;
   const cardToTrainOverhang = Math.max(0, knownHandSize - publicPlayer.trainsRemaining);
+  const tempoSignals = getPlayerTempoSignals(gameState);
 
   let oversizedHandPenalty = 0;
   if (knownHandSize > 32) {
@@ -190,6 +215,22 @@ const estimateDeploymentPressure = (
   }
   if (readyClaimCount > 0 && knownHandSize > 20 && claimedRouteCount >= 1) {
     oversizedHandPenalty += (knownHandSize - 20) * (readyLongClaimCount > 0 ? 1.05 : 0.72);
+  }
+  if (tempoSignals.minOpponentTrainsRemaining <= 12 && claimedRouteCount >= 1) {
+    oversizedHandPenalty +=
+      (12 - tempoSignals.minOpponentTrainsRemaining) *
+      0.42 *
+      policyWeights.opponentTrainPressureScale;
+  }
+  if (tempoSignals.maxOpponentHandToTrainGap >= 2) {
+    oversizedHandPenalty +=
+      (tempoSignals.maxOpponentHandToTrainGap - 1) *
+      0.55 *
+      policyWeights.opponentTrainHandGapScale;
+  }
+  if (publicPlayer.trainsRemaining <= 15) {
+    oversizedHandPenalty +=
+      (16 - publicPlayer.trainsRemaining) * 0.25 * policyWeights.selfTrainPressureScale;
   }
 
   const locomotiveCount = gameState.ourState.hand.locomotive ?? 0;
@@ -541,6 +582,21 @@ const evaluateTicketPath = (
   publicState: PublicGameState,
   playerId: string,
   ticket: TicketDefinition
+): TicketPathEvaluation =>
+  evaluateTicketPathWithRouteFilter(
+    board,
+    publicState,
+    playerId,
+    ticket,
+    new Set<RouteId>()
+  );
+
+const evaluateTicketPathWithRouteFilter = (
+  board: BoardDefinition,
+  publicState: PublicGameState,
+  playerId: string,
+  ticket: TicketDefinition,
+  bannedRouteIds: Set<RouteId>
 ): TicketPathEvaluation => {
   if (
     areCitiesConnected(
@@ -554,7 +610,9 @@ const evaluateTicketPath = (
     return { distance: 0, path: [] };
   }
 
-  const availableRoutes = getAvailableRoutes(board, publicState, playerId);
+  const availableRoutes = getAvailableRoutes(board, publicState, playerId).filter(
+    (route) => !bannedRouteIds.has(route.routeId)
+  );
   const adjacency = buildCityGraph(availableRoutes);
   const distances = new Map<string, number>([[ticket.fromCity, 0]]);
   const predecessors = new Map<string, { previousCity: string; route: PathStep }>();
@@ -606,6 +664,44 @@ const evaluateTicketPath = (
   };
 };
 
+const countAlternativeTicketPaths = (
+  board: BoardDefinition,
+  publicState: PublicGameState,
+  playerId: string,
+  ticket: TicketDefinition,
+  bestPath: PathStep[],
+  bestDistance: number
+): number => {
+  if (bestDistance === Number.POSITIVE_INFINITY) {
+    return 0;
+  }
+
+  if (bestPath.length === 0) {
+    return 1;
+  }
+
+  const uniqueSignatures = new Set<string>([bestPath.map((step) => step.routeId).join("|")]);
+
+  for (const step of bestPath) {
+    const alternative = evaluateTicketPathWithRouteFilter(
+      board,
+      publicState,
+      playerId,
+      ticket,
+      new Set<RouteId>([step.routeId])
+    );
+    if (
+      alternative.distance !== Number.POSITIVE_INFINITY &&
+      alternative.distance <= bestDistance + 5 &&
+      alternative.path.length > 0
+    ) {
+      uniqueSignatures.add(alternative.path.map((candidate) => candidate.routeId).join("|"));
+    }
+  }
+
+  return uniqueSignatures.size;
+};
+
 const getTicketProgressStates = (
   board: BoardDefinition,
   gameState: GameState
@@ -646,7 +742,16 @@ const evaluateTickets = (
       ticket
     );
     const completed = pathEvaluation.distance === 0;
-    const viablePathCount = pathEvaluation.distance === Number.POSITIVE_INFINITY ? 0 : 1;
+    const viablePathCount = completed
+      ? 1
+      : countAlternativeTicketPaths(
+          board,
+          gameState.publicState,
+          gameState.ourState.playerId,
+          ticket,
+          pathEvaluation.path,
+          pathEvaluation.distance
+        );
     const completionProbability = completed
       ? 1
       : pathEvaluation.distance === Number.POSITIVE_INFINITY
@@ -986,6 +1091,175 @@ const getColorTicketPlanPressure = (
   }, 0);
 };
 
+const getPlayerTempoSignals = (gameState: GameState) => {
+  const ourPlayer = getPlayerPublicState(gameState);
+  const opponents = gameState.publicState.players.filter(
+    (player) => player.playerId !== gameState.ourState.playerId
+  );
+  const minOpponentTrainsRemaining = opponents.reduce(
+    (best, player) => Math.min(best, player.trainsRemaining),
+    Number.POSITIVE_INFINITY
+  );
+  const maxOpponentHandToTrainGap = opponents.reduce(
+    (best, player) => Math.max(best, player.handCount - player.trainsRemaining),
+    Number.NEGATIVE_INFINITY
+  );
+
+  return {
+    ourTrainsRemaining: ourPlayer.trainsRemaining,
+    minOpponentTrainsRemaining:
+      minOpponentTrainsRemaining === Number.POSITIVE_INFINITY ? 45 : minOpponentTrainsRemaining,
+    maxOpponentHandToTrainGap:
+      maxOpponentHandToTrainGap === Number.NEGATIVE_INFINITY ? 0 : maxOpponentHandToTrainGap
+  };
+};
+
+const buildStrategicTicketProfiles = (
+  board: BoardDefinition,
+  gameState: GameState,
+  currentTicketStates: TicketProgressState[]
+): Map<string, TicketPathStrategicProfile> => {
+  const routesById = indexRoutesById(board.routes);
+  const routeUrgency = getRouteUrgency(board, gameState);
+  const urgencyByRouteId = new Map(
+    routeUrgency.map((estimate) => [estimate.routeId, estimate.loseBeforeNextTurnProbability])
+  );
+  const routeUseCounts = new Map<RouteId, number>();
+
+  for (const ticketState of currentTicketStates) {
+    if (ticketState.completed) {
+      continue;
+    }
+    for (const step of ticketState.path) {
+      routeUseCounts.set(step.routeId, (routeUseCounts.get(step.routeId) ?? 0) + 1);
+    }
+  }
+
+  const profiles = new Map<string, TicketPathStrategicProfile>();
+  for (const ticketState of currentTicketStates) {
+    if (ticketState.completed || ticketState.path.length === 0) {
+      profiles.set(ticketState.ticket.id, {
+        ticketId: ticketState.ticket.id,
+        alternativePathCount: 1,
+        averagePointsPerTurn: 0,
+        blockRisk: 0,
+        routeReuseScore: 0
+      });
+      continue;
+    }
+
+    const alternativePathCount = countAlternativeTicketPaths(
+      board,
+      gameState.publicState,
+      gameState.ourState.playerId,
+      ticketState.ticket,
+      ticketState.path,
+      ticketState.distance
+    );
+    const totalPathPoints = ticketState.path.reduce((sum, step) => {
+      const route = routesById.get(step.routeId);
+      return sum + (route?.points ?? 0);
+    }, 0);
+    const averagePointsPerTurn = totalPathPoints / Math.max(1, ticketState.path.length);
+    const blockRisk =
+      ticketState.path.reduce(
+        (sum, step) => sum + (urgencyByRouteId.get(step.routeId) ?? 0),
+        0
+      ) / Math.max(1, ticketState.path.length);
+    const routeReuseScore =
+      ticketState.path.reduce(
+        (sum, step) => sum + Math.max(0, (routeUseCounts.get(step.routeId) ?? 1) - 1),
+        0
+      ) / Math.max(1, ticketState.path.length);
+
+    profiles.set(ticketState.ticket.id, {
+      ticketId: ticketState.ticket.id,
+      alternativePathCount,
+      averagePointsPerTurn,
+      blockRisk,
+      routeReuseScore
+    });
+  }
+
+  return profiles;
+};
+
+const estimateColorAcquisitionChance = (
+  gameState: GameState,
+  color: TrainColor
+): number => {
+  const visibleCount = gameState.publicState.faceUpCards.filter(
+    (candidate) => candidate === color
+  ).length;
+  const blindProbability =
+    getEstimatedBlindDrawDistribution(gameState, TRAIN_COLORS.length).find(
+      (candidate) => candidate.color === color
+    )?.probability ?? 0;
+  const chance = 1 - Math.pow(1 - blindProbability, 2);
+  return Math.min(1, visibleCount * 0.22 + chance);
+};
+
+const getColorStrategicPressure = (
+  board: BoardDefinition,
+  gameState: GameState,
+  currentTicketStates: TicketProgressState[],
+  color: TrainColor,
+  policyWeights: PolicyWeights
+) => {
+  if (color === "locomotive") {
+    return {
+      redundancyPressure: 0,
+      efficiencyPressure: 0,
+      blockRiskPressure: 0,
+      drawChancePressure: 0,
+      reusePressure: 0
+    };
+  }
+
+  const profiles = buildStrategicTicketProfiles(board, gameState, currentTicketStates);
+  const acquisitionChance = estimateColorAcquisitionChance(gameState, color);
+  let redundancyPressure = 0;
+  let efficiencyPressure = 0;
+  let blockRiskPressure = 0;
+  let drawChancePressure = 0;
+  let reusePressure = 0;
+
+  for (const ticketState of currentTicketStates) {
+    if (ticketState.completed) {
+      continue;
+    }
+    const profile = profiles.get(ticketState.ticket.id);
+    if (!profile) {
+      continue;
+    }
+
+    const matchingSteps = ticketState.path.filter(
+      (step) => step.color === color || step.color === "gray"
+    );
+    if (matchingSteps.length === 0) {
+      continue;
+    }
+
+    const share = matchingSteps.length / Math.max(1, ticketState.path.length);
+    const scarcity = 1 / Math.max(1, profile.alternativePathCount);
+    redundancyPressure += share * scarcity * policyWeights.ticketPathRedundancyScale;
+    efficiencyPressure +=
+      share * (profile.averagePointsPerTurn / 10) * policyWeights.ticketPathEfficiencyScale;
+    blockRiskPressure += share * profile.blockRisk * policyWeights.ticketPathBlockRiskScale;
+    drawChancePressure +=
+      share * acquisitionChance * policyWeights.ticketPathDrawChanceScale;
+    reusePressure += share * profile.routeReuseScore * policyWeights.ticketPathReuseScale;
+  }
+
+  return {
+    redundancyPressure,
+    efficiencyPressure,
+    blockRiskPressure,
+    drawChancePressure,
+    reusePressure
+  };
+};
+
 export interface ColorPriorityEstimate {
   color: TrainColor;
   score: number;
@@ -1023,6 +1297,13 @@ export const rankColorPriorities = (
       gameState.ourState.hand,
       color
     );
+    const strategicPressure = getColorStrategicPressure(
+      board,
+      gameState,
+      currentTicketStates,
+      color,
+      policyWeights
+    );
     const visibleCount = gameState.publicState.faceUpCards.filter(
       (candidate) => candidate === color
     ).length;
@@ -1035,6 +1316,11 @@ export const rankColorPriorities = (
       ticketPlanPressure *
         (color === "locomotive" ? 0.65 : 1.55) *
         policyWeights.colorPriorityPathScale +
+      strategicPressure.redundancyPressure +
+      strategicPressure.efficiencyPressure +
+      strategicPressure.blockRiskPressure +
+      strategicPressure.drawChancePressure +
+      strategicPressure.reusePressure +
       committedBonus * policyWeights.colorPriorityCommittedScale +
       visibleBonus * policyWeights.colorPriorityVisibleScale;
     const rationale = [
@@ -1044,6 +1330,12 @@ export const rankColorPriorities = (
       ticketPlanPressure > 0
         ? `ticket-path pressure ${ticketPlanPressure.toFixed(1)}`
         : "low immediate ticket-path pressure",
+      strategicPressure.redundancyPressure > 0
+        ? `path redundancy pressure ${strategicPressure.redundancyPressure.toFixed(2)}`
+        : "path redundancy is not adding urgency",
+      strategicPressure.blockRiskPressure > 0
+        ? `block risk pressure ${strategicPressure.blockRiskPressure.toFixed(2)}`
+        : "block risk is modest for this color",
       committedPathColors.has(color)
         ? "already invested in this color on active ticket paths"
         : "not yet a committed ticket-path color",
@@ -1645,6 +1937,13 @@ const scoreClaimAction = (
   }
 
   const currentTicketStates = getTicketProgressStates(board, gameState);
+  const strategicProfiles = buildStrategicTicketProfiles(board, gameState, currentTicketStates);
+  const routePathUses = currentTicketStates.reduce((map, ticketState) => {
+    for (const step of ticketState.path) {
+      map.set(step.routeId, (map.get(step.routeId) ?? 0) + 1);
+    }
+    return map;
+  }, new Map<RouteId, number>());
   const currentGap = getCurrentTicketGap(board, gameState);
   const currentCompletedTickets = countCompletedTickets(board, gameState);
   const currentLongestRoute = getLongestRouteForState(board, gameState);
@@ -1677,6 +1976,7 @@ const scoreClaimAction = (
   const locomotiveSpendPenalty = action.payment.locomotives * 0.9;
   const trainsBefore = gameState.ourState.trainsRemaining;
   const trainsAfter = applied.ourState.trainsRemaining;
+  const tempoSignals = getPlayerTempoSignals(gameState);
   const endgamePointPush =
     trainsBefore <= 8
       ? route.points * (0.18 + (8 - trainsBefore) * 0.07) +
@@ -1697,6 +1997,28 @@ const scoreClaimAction = (
     currentTicketStates,
     nextTicketStates
   );
+  const supportingProfiles = currentTicketStates
+    .filter((ticketState) => ticketState.path.some((step) => step.routeId === route.id))
+    .map((ticketState) => strategicProfiles.get(ticketState.ticket.id))
+    .filter((profile): profile is TicketPathStrategicProfile => Boolean(profile));
+  const routeAlternativeScarcity =
+    supportingProfiles.length > 0
+      ? supportingProfiles.reduce(
+          (sum, profile) => sum + 1 / Math.max(1, profile.alternativePathCount),
+          0
+        ) / supportingProfiles.length
+      : 0;
+  const routeReuseBonus = Math.max(0, (routePathUses.get(route.id) ?? 1) - 1);
+  const routeAveragePointsPerTurn =
+    supportingProfiles.length > 0
+      ? supportingProfiles.reduce((sum, profile) => sum + profile.averagePointsPerTurn, 0) /
+        supportingProfiles.length
+      : 0;
+  const routeBlockRisk =
+    supportingProfiles.length > 0
+      ? supportingProfiles.reduce((sum, profile) => sum + profile.blockRisk, 0) /
+        supportingProfiles.length
+      : 0;
 
   const featureBreakdown: EvaluationFeatures = {
     expectedFinalScore:
@@ -1715,17 +2037,23 @@ const scoreClaimAction = (
       route.points +
       efficiency * 2.2 +
       urgency * 8 +
+      routeAveragePointsPerTurn * 0.18 * policyWeights.ticketPathEfficiencyScale +
+      routeReuseBonus * 0.8 * policyWeights.ticketPathReuseScale +
       endgamePointPush +
       (route.length >= 5 ? 1.8 : 0) -
       (route.length <= 3 && ticketProgressDelta <= 0 && urgency < 0.3 ? 2.2 : 0),
     ticketValue:
       ticketProgressDelta * 1.9 +
       completionDelta * 9 +
+      routeAlternativeScarcity * 3.2 * policyWeights.ticketPathRedundancyScale +
       detourPenaltyImprovement * 0.45,
     tempoValue:
       (route.length >= 5 ? 3.5 : route.length >= 3 ? 2 : 0.8) +
       deploymentPressure.claimBonus +
       endgameClock.immediateTriggerRisk * 2.2 +
+      Math.max(0, 12 - tempoSignals.minOpponentTrainsRemaining) *
+        0.22 *
+        policyWeights.opponentTrainPressureScale +
       (route.length >= Math.max(1, gameState.ourState.trainsRemaining - 2) ? 2.8 : 0) +
       finishWindowBonus +
       exactFinishBonus,
@@ -1736,7 +2064,8 @@ const scoreClaimAction = (
       paymentOpportunity.penalty * policyWeights.offTicketClaimPenaltyScale,
     blockExposure: urgency * 5,
     trainsRemainingPressure:
-      gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2,
+      (gameState.ourState.trainsRemaining <= 12 ? route.length * 0.9 : route.length * 0.2) +
+      Math.max(0, 15 - trainsBefore) * 0.15 * policyWeights.selfTrainPressureScale,
     opponentClockPressure: estimateActionClockPressureImpact(
       endgameClock,
       "claim-route",
@@ -1744,6 +2073,7 @@ const scoreClaimAction = (
     ),
     bottleneckUrgency:
       urgency * (route.length >= 5 ? 6.5 : 4.2) +
+      routeBlockRisk * 1.8 * policyWeights.ticketPathBlockRiskScale +
       (gameState.annotations.bottleneckRouteIds.includes(route.id) ? 2.8 : 0),
     ticketDetourPenalty: detourPenaltyImprovement
   };
@@ -1965,6 +2295,13 @@ const scoreDrawFaceUpAction = (
     gameState.ourState.hand,
     action.color
   );
+  const strategicPressure = getColorStrategicPressure(
+    board,
+    gameState,
+    currentTicketStates,
+    action.color,
+    policyWeights
+  );
   const helpedTickets = getTicketsNeedingColor(board, gameState, action.color);
   const knownHandSize = getKnownHandSize(gameState);
   const publicPlayer = getPlayerPublicState(gameState);
@@ -2071,13 +2408,17 @@ const scoreDrawFaceUpAction = (
       nearReadyClaims * 0.8 +
       followThroughVisibleBonus * 0.26 +
       (nextClaimRecommendation?.utilityScore ?? 0) * 0.18 +
-      ticketPlanPressure * 0.32 * policyWeights.ticketPathColorScale,
+      ticketPlanPressure * 0.32 * policyWeights.ticketPathColorScale +
+      strategicPressure.efficiencyPressure +
+      strategicPressure.reusePressure * 0.6,
     ticketValue:
       neededWeight *
         (isPriorityColor ? 1.7 : 1.25) *
         policyWeights.ticketColorDemandScale +
       followThroughVisibleBonus +
-      ticketPlanPressure * 0.9 * policyWeights.ticketPathColorScale,
+      ticketPlanPressure * 0.9 * policyWeights.ticketPathColorScale +
+      strategicPressure.redundancyPressure +
+      strategicPressure.drawChancePressure,
     tempoValue: isLocomotive ? 2.6 : 1.1,
     flexibilityValue:
       isLocomotive
@@ -2097,7 +2438,8 @@ const scoreDrawFaceUpAction = (
       Math.max(0, urgentClaimPressure.penalty - (nextClaimRecommendation?.utilityScore ?? 0)) *
         0.12 +
       endgameClock.immediateTriggerRisk * 2.4,
-    blockExposure: urgentClaimPressure.penalty * 0.08,
+    blockExposure:
+      urgentClaimPressure.penalty * 0.08 + strategicPressure.blockRiskPressure * 0.7,
     trainsRemainingPressure: -endgameClock.nearTermTriggerRisk * 1.2,
     opponentClockPressure: estimateActionClockPressureImpact(endgameClock, "draw-face-up"),
     bottleneckUrgency: -urgentClaimPressure.penalty * (isLocomotive ? 0.22 : 0.3),
@@ -2119,6 +2461,12 @@ const scoreDrawFaceUpAction = (
       ? "takes a wildcard that stays live across many plans"
       : `adds ${action.color} toward currently shortest ticket paths`,
     ...helpedTickets.map((ticketLabel) => `supports ${ticketLabel}`),
+    strategicPressure.redundancyPressure > 0
+      ? `few remaining path alternatives make ${action.color} more strategic`
+      : "path redundancy does not materially change this color's value",
+    strategicPressure.drawChancePressure > 0
+      ? `remaining deck and pool state still make ${action.color} realistically acquirable`
+      : "remaining deck state does not especially favor this color",
     nearReadyClaims > 0
       ? `opens or strengthens ${nearReadyClaims} near-ready claim options`
       : "is mostly a setup draw rather than an immediate claim enabler",

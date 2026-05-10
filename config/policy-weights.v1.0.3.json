@@ -13,5 +13,13 @@
   "colorPriorityDemandScale": 1,
   "colorPriorityPathScale": 1,
   "colorPriorityCommittedScale": 1,
-  "colorPriorityVisibleScale": 1
+  "colorPriorityVisibleScale": 1,
+  "ticketPathRedundancyScale": 1,
+  "ticketPathEfficiencyScale": 1,
+  "ticketPathBlockRiskScale": 1,
+  "ticketPathDrawChanceScale": 1,
+  "ticketPathReuseScale": 1,
+  "selfTrainPressureScale": 1,
+  "opponentTrainPressureScale": 1,
+  "opponentTrainHandGapScale": 1
 }
