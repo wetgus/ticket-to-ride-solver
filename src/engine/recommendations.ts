@@ -81,6 +81,21 @@ const TRAIN_DECK_COUNTS: Record<TrainColor, number> = {
 
 const BLIND_DRAW_OUTCOME_LIMIT = 4;
 
+const ticketProgressStateCache = new WeakMap<GameState, TicketProgressState[]>();
+const ticketEvaluationCache = new WeakMap<
+  GameState,
+  {
+    tickets: TicketCompletionEstimate[];
+    totalExpectedTicketValue: number;
+    pathDemand: Map<TrainColor, number>;
+  }
+>();
+const routeUrgencyCache = new WeakMap<GameState, RouteUrgencyEstimate[]>();
+const strategicProfileCache = new WeakMap<
+  GameState,
+  Map<string, TicketPathStrategicProfile>
+>();
+
 export interface PolicyWeights {
   drawPenaltyScale: number;
   claimBonusScale: number;
@@ -705,8 +720,13 @@ const countAlternativeTicketPaths = (
 const getTicketProgressStates = (
   board: BoardDefinition,
   gameState: GameState
-): TicketProgressState[] =>
-  getOurTickets(board, gameState).map((ticket) => {
+): TicketProgressState[] => {
+  const cached = ticketProgressStateCache.get(gameState);
+  if (cached) {
+    return cached;
+  }
+
+  const computed = getOurTickets(board, gameState).map((ticket) => {
     const pathEvaluation = evaluateTicketPath(
       board,
       gameState.publicState,
@@ -721,6 +741,9 @@ const getTicketProgressStates = (
       completed: pathEvaluation.distance === 0
     };
   });
+  ticketProgressStateCache.set(gameState, computed);
+  return computed;
+};
 
 const evaluateTickets = (
   board: BoardDefinition,
@@ -730,6 +753,10 @@ const evaluateTickets = (
   totalExpectedTicketValue: number;
   pathDemand: Map<TrainColor, number>;
 } => {
+  const cached = ticketEvaluationCache.get(gameState);
+  if (cached) {
+    return cached;
+  }
   const routesById = indexRoutesById(board.routes);
   const activeTickets = getOurTickets(board, gameState);
   const pathDemand = new Map<TrainColor, number>();
@@ -781,17 +808,23 @@ const evaluateTickets = (
     };
   });
 
-  return {
+  const computed = {
     tickets,
     totalExpectedTicketValue: tickets.reduce((sum, ticket) => sum + ticket.expectedValue, 0),
     pathDemand
   };
+  ticketEvaluationCache.set(gameState, computed);
+  return computed;
 };
 
 const getRouteUrgency = (
   board: BoardDefinition,
   gameState: GameState
 ): RouteUrgencyEstimate[] => {
+  const cached = routeUrgencyCache.get(gameState);
+  if (cached) {
+    return cached;
+  }
   const tickets = getOurTickets(board, gameState);
   const urgentRoutes = new Map<RouteId, RouteUrgencyEstimate>();
   const routesById = indexRoutesById(board.routes);
@@ -843,9 +876,11 @@ const getRouteUrgency = (
     }
   }
 
-  return [...urgentRoutes.values()].sort(
+  const computed = [...urgentRoutes.values()].sort(
     (left, right) => right.loseBeforeNextTurnProbability - left.loseBeforeNextTurnProbability
   );
+  routeUrgencyCache.set(gameState, computed);
+  return computed;
 };
 
 const estimateTicketDetourExposure = (
@@ -1119,6 +1154,10 @@ const buildStrategicTicketProfiles = (
   gameState: GameState,
   currentTicketStates: TicketProgressState[]
 ): Map<string, TicketPathStrategicProfile> => {
+  const cached = strategicProfileCache.get(gameState);
+  if (cached) {
+    return cached;
+  }
   const routesById = indexRoutesById(board.routes);
   const routeUrgency = getRouteUrgency(board, gameState);
   const urgencyByRouteId = new Map(
@@ -1181,6 +1220,7 @@ const buildStrategicTicketProfiles = (
     });
   }
 
+  strategicProfileCache.set(gameState, profiles);
   return profiles;
 };
 

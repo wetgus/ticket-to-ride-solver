@@ -524,6 +524,7 @@ def run_matchup(
     progress_callback=None,
     lineup_index=0,
     collect_replays=False,
+    collect_training_rows=True,
 ):
     codex_scores = []
     codex_places = []
@@ -637,10 +638,11 @@ def run_matchup(
                 "finalScores": final_scores,
             }
         )
-        new_training_rows = materialize_training_rows(game_id, game, agent_names, agents, placements)
-        training_row_count += len(new_training_rows)
-        if training_output_path:
-            append_jsonl_rows(training_output_path, new_training_rows)
+        if collect_training_rows:
+            new_training_rows = materialize_training_rows(game_id, game, agent_names, agents, placements)
+            training_row_count += len(new_training_rows)
+            if training_output_path:
+                append_jsonl_rows(training_output_path, new_training_rows)
 
         if progress_callback:
             progress_callback(
@@ -752,6 +754,11 @@ def main():
         action="store_true",
         help="Append to JSONL outputs instead of truncating them first.",
     )
+    parser.add_argument(
+        "--skip-training-corpus",
+        action="store_true",
+        help="Do not materialize or write benchmark-derived training rows. Useful for faster validation runs.",
+    )
     args = parser.parse_args()
 
     if "codex" not in args.lineup:
@@ -768,7 +775,8 @@ def main():
     )
     policy_weights = load_policy_weights(args.policy_weights_json)
 
-    initialize_output_file(training_output_path, args.append_output)
+    if not args.skip_training_corpus:
+        initialize_output_file(training_output_path, args.append_output)
     initialize_output_file(failed_games_output_path, args.append_output)
 
     started_at = time.time()
@@ -832,11 +840,12 @@ def main():
             policy_weights=policy_weights,
             heuristic_weight=args.heuristic_weight,
             learned_weight=args.learned_weight,
-            training_output_path=training_output_path,
+            training_output_path=training_output_path if not args.skip_training_corpus else None,
             failed_games_output_path=failed_games_output_path,
             progress_callback=update_progress,
             lineup_index=lineup_index,
             collect_replays=bool(replay_output_path),
+            collect_training_rows=not args.skip_training_corpus,
         )
         summaries.append(summary)
         print(
