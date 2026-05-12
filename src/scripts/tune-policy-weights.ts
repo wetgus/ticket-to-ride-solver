@@ -105,7 +105,7 @@ const parseArgs = (): TuningOptions => {
   const defaultOutputDir = path.resolve(cwd, "artifacts", "policy-weight-tuning");
   const baseWeightsPath = path.resolve(
     cwd,
-    options.get("--base-weights") ?? "config/policy-weights.v1.0.3.json"
+    options.get("--base-weights") ?? "config/policy-weights.v1.0.4.json"
   );
   const outputDir = path.resolve(cwd, options.get("--output-dir") ?? defaultOutputDir);
   const pythonPath =
