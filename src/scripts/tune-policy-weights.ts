@@ -105,13 +105,13 @@ const parseArgs = (): TuningOptions => {
   const defaultOutputDir = path.resolve(cwd, "artifacts", "policy-weight-tuning");
   const baseWeightsPath = path.resolve(
     cwd,
-    options.get("--base-weights") ?? "config/policy-weights.v1.0.4.json"
+    options.get("--base-weights") ?? "config/policy-weights.v1.0.5.json"
   );
   const outputDir = path.resolve(cwd, options.get("--output-dir") ?? defaultOutputDir);
   const pythonPath =
     options.get("--python") ??
     (fs.existsSync(DEFAULT_PYTHON_WINDOWS) ? DEFAULT_PYTHON_WINDOWS : "python");
-  const games = Number.parseInt(options.get("--games") ?? "4", 10);
+  const games = Number.parseInt(options.get("--games") ?? "6", 10);
   const iterations = Number.parseInt(options.get("--iterations") ?? "8", 10);
   const seedBase = Number.parseInt(options.get("--seed-base") ?? "5000", 10);
   const rotations = Number.parseInt(options.get("--rotations") ?? "1", 10);
