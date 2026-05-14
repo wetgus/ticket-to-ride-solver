@@ -236,6 +236,7 @@ class CodexSolverAgent:
         debug: bool = False,
         policy_model_path: Optional[str] = None,
         policy_weights: Optional[Dict] = None,
+        forced_action_prefix: Optional[List[Dict]] = None,
         heuristic_weight: float = 0.55,
         learned_weight: float = 0.45,
     ):
@@ -243,6 +244,7 @@ class CodexSolverAgent:
         self.debug = debug
         self.policy_model_path = policy_model_path
         self.policy_weights = policy_weights
+        self.forced_action_prefix = list(forced_action_prefix or [])
         self.heuristic_weight = heuristic_weight
         self.learned_weight = learned_weight
         self.trace_steps = []
@@ -263,6 +265,26 @@ class CodexSolverAgent:
         payload = self._build_payload(game, pnum)
         recommendation = self._request_solver_recommendation(payload)
         possible_moves = game.get_possible_moves(pnum)
+
+        if self.decision_counter < len(self.forced_action_prefix):
+            forced_action = self.forced_action_prefix[self.decision_counter]
+            forced_move = self._match_external_move(game, pnum, possible_moves, forced_action)
+            if forced_move is not None:
+                chosen_alternative = None
+                for alternative in recommendation.get("alternatives", []):
+                    if alternative.get("actionId") == forced_action.get("actionId"):
+                        chosen_alternative = alternative
+                        break
+                    if alternative.get("action") == forced_action:
+                        chosen_alternative = alternative
+                        break
+                self._record_turn_draw_context(forced_action)
+                self._record_trace_step(payload, pnum, recommendation, chosen_alternative)
+                return forced_move
+            raise RuntimeError(
+                "Forced Codex action prefix became illegal at decision "
+                f"{self.decision_counter}: {json.dumps(forced_action, ensure_ascii=True)}"
+            )
 
         for alternative in recommendation.get("alternatives", []):
             matched = self._match_external_move(game, pnum, possible_moves, alternative.get("action"))

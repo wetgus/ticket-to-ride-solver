@@ -306,6 +306,7 @@ def instantiate_agents(
     specs,
     policy_model_path=None,
     policy_weights=None,
+    forced_action_prefix=None,
     heuristic_weight=0.55,
     learned_weight=0.45,
 ):
@@ -316,6 +317,7 @@ def instantiate_agents(
                 CodexSolverAgent(
                     policy_model_path=policy_model_path,
                     policy_weights=policy_weights,
+                    forced_action_prefix=forced_action_prefix,
                     heuristic_weight=heuristic_weight,
                     learned_weight=learned_weight,
                 )
