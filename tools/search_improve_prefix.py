@@ -38,7 +38,7 @@ def load_initial_prefix(initial_prefix_json: Optional[str], initial_prefix_inlin
             if os.path.isabs(initial_prefix_json)
             else os.path.join(ROOT_DIR, initial_prefix_json)
         )
-        with open(resolved, "r", encoding="utf-8") as handle:
+        with open(resolved, "r", encoding="utf-8-sig") as handle:
             payload = json.load(handle)
     elif initial_prefix_inline:
         payload = json.loads(initial_prefix_inline)
