@@ -55,6 +55,25 @@ def select_branch_actions(trace_step: Dict, branch_factor: int) -> List[Dict]:
     return actions
 
 
+def annotate_forced_decisions(
+    trace_steps: List[Dict],
+    forced_prefix: List[Dict],
+    start_index: int,
+) -> List[Dict]:
+    annotated: List[Dict] = []
+    for offset, action in enumerate(forced_prefix):
+        decision_index = start_index + offset
+        trace_step = trace_steps[decision_index] if decision_index < len(trace_steps) else None
+        annotated.append(
+            {
+                "decisionIndex": decision_index,
+                "phase": trace_step.get("phase") if trace_step else None,
+                "action": copy.deepcopy(action),
+            }
+        )
+    return annotated
+
+
 def extract_codex_result(game, lineup: List[str]) -> Tuple[int, int]:
     ordered = sorted(
         [(index, player.points) for index, player in enumerate(game.players)],
@@ -155,6 +174,11 @@ def search_seed(
             "seed": seed,
             "prefixLength": len(prefix),
             "forcedPrefix": copy.deepcopy(prefix),
+            "forcedDecisions": annotate_forced_decisions(
+                rollout["traceSteps"],
+                prefix,
+                skip_codex_decisions,
+            ),
             "score": rollout["score"],
             "place": rollout["place"],
             "objective": rollout["objective"],
@@ -234,6 +258,11 @@ def search_seed(
         "best": {
             "forcedActionStartIndex": skip_codex_decisions,
             "forcedPrefix": best_record["forcedPrefix"],
+            "forcedDecisions": annotate_forced_decisions(
+                best_rollout["traceSteps"],
+                best_record["forcedPrefix"],
+                skip_codex_decisions,
+            ),
             "score": best_rollout["score"],
             "place": best_rollout["place"],
             "objective": best_rollout["objective"],
