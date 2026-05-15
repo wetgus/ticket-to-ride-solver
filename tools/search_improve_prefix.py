@@ -28,6 +28,28 @@ def append_jsonl(path: str, row: Dict) -> None:
         handle.write(json.dumps(row) + "\n")
 
 
+def load_initial_prefix(initial_prefix_json: Optional[str], initial_prefix_inline: Optional[str]) -> List[Dict]:
+    if initial_prefix_json and initial_prefix_inline:
+        raise SystemExit("Use either --initial-prefix-json or --initial-prefix-inline, not both.")
+
+    if initial_prefix_json:
+        resolved = (
+            initial_prefix_json
+            if os.path.isabs(initial_prefix_json)
+            else os.path.join(ROOT_DIR, initial_prefix_json)
+        )
+        with open(resolved, "r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    elif initial_prefix_inline:
+        payload = json.loads(initial_prefix_inline)
+    else:
+        return []
+
+    if not isinstance(payload, list):
+        raise SystemExit("Initial prefix payload must be a JSON array of action objects.")
+    return payload
+
+
 def prefix_key(prefix: List[Dict]) -> str:
     return json.dumps(prefix, sort_keys=True, separators=(",", ":"))
 
@@ -144,6 +166,7 @@ def search_seed(
     beam_width: int,
     branch_factor: int,
     skip_codex_decisions: int,
+    initial_prefix: List[Dict],
     policy_model_path: Optional[str],
     policy_weights: Optional[Dict],
     heuristic_weight: float,
@@ -151,7 +174,7 @@ def search_seed(
     results_jsonl_path: Optional[str],
 ) -> Dict:
     cache: Dict[str, Dict] = {}
-    frontier: List[List[Dict]] = [[]]
+    frontier: List[List[Dict]] = [copy.deepcopy(initial_prefix)]
     visited: List[Dict] = []
 
     def evaluate(prefix: List[Dict]) -> Dict:
@@ -192,7 +215,7 @@ def search_seed(
             append_jsonl(results_jsonl_path, record)
         return cache[key]
 
-    evaluate([])
+    evaluate(copy.deepcopy(initial_prefix))
 
     for depth_index in range(depth):
         branch_pool: List[Tuple[List[Dict], Dict]] = []
@@ -257,6 +280,7 @@ def search_seed(
         "seed": seed,
         "best": {
             "forcedActionStartIndex": skip_codex_decisions,
+            "initialPrefixLength": len(initial_prefix),
             "forcedPrefix": best_record["forcedPrefix"],
             "forcedDecisions": annotate_forced_decisions(
                 best_rollout["traceSteps"],
@@ -290,6 +314,16 @@ def main() -> None:
         default=1,
         help="How many initial Codex decisions to leave to baseline before branching. Use 1 to skip the opening ticket keep.",
     )
+    parser.add_argument(
+        "--initial-prefix-json",
+        default=None,
+        help="Optional JSON file containing a fixed forced action prefix to start from.",
+    )
+    parser.add_argument(
+        "--initial-prefix-inline",
+        default=None,
+        help="Optional inline JSON array containing a fixed forced action prefix to start from.",
+    )
     parser.add_argument("--policy-model", default=None)
     parser.add_argument("--policy-weights-json", default="config/policy-weights.v1.0.5.json")
     parser.add_argument("--heuristic-weight", type=float, default=0.55)
@@ -317,6 +351,7 @@ def main() -> None:
         os.remove(output_jsonl)
 
     policy_weights = load_policy_weights(args.policy_weights_json)
+    initial_prefix = load_initial_prefix(args.initial_prefix_json, args.initial_prefix_inline)
     estimated_per_seed = estimate_rollouts_per_seed(args.depth, args.beam_width, args.branch_factor)
     estimated_total = estimated_per_seed * args.games
 
@@ -327,6 +362,7 @@ def main() -> None:
         f"branch_factor={args.branch_factor}",
         f"depth={args.depth}",
         f"skip_codex_decisions={args.skip_codex_decisions}",
+        f"initial_prefix_length={len(initial_prefix)}",
         f"estimated_rollouts_per_seed={estimated_per_seed}",
         f"estimated_total_rollouts={estimated_total}",
     )
@@ -344,6 +380,7 @@ def main() -> None:
             beam_width=args.beam_width,
             branch_factor=args.branch_factor,
             skip_codex_decisions=args.skip_codex_decisions,
+            initial_prefix=initial_prefix,
             policy_model_path=args.policy_model,
             policy_weights=policy_weights,
             heuristic_weight=args.heuristic_weight,
@@ -376,6 +413,8 @@ def main() -> None:
             "branchFactor": args.branch_factor,
             "depth": args.depth,
             "skipCodexDecisions": args.skip_codex_decisions,
+            "initialPrefixJson": args.initial_prefix_json,
+            "initialPrefixLength": len(initial_prefix),
             "policyModel": args.policy_model,
             "policyWeightsJson": args.policy_weights_json,
             "heuristicWeight": args.heuristic_weight,
