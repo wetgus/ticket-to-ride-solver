@@ -237,6 +237,7 @@ class CodexSolverAgent:
         policy_model_path: Optional[str] = None,
         policy_weights: Optional[Dict] = None,
         forced_action_prefix: Optional[List[Dict]] = None,
+        forced_action_start_index: int = 0,
         heuristic_weight: float = 0.55,
         learned_weight: float = 0.45,
     ):
@@ -245,6 +246,7 @@ class CodexSolverAgent:
         self.policy_model_path = policy_model_path
         self.policy_weights = policy_weights
         self.forced_action_prefix = list(forced_action_prefix or [])
+        self.forced_action_start_index = max(0, int(forced_action_start_index))
         self.heuristic_weight = heuristic_weight
         self.learned_weight = learned_weight
         self.trace_steps = []
@@ -266,8 +268,9 @@ class CodexSolverAgent:
         recommendation = self._request_solver_recommendation(payload)
         possible_moves = game.get_possible_moves(pnum)
 
-        if self.decision_counter < len(self.forced_action_prefix):
-            forced_action = self.forced_action_prefix[self.decision_counter]
+        forced_prefix_offset = self.decision_counter - self.forced_action_start_index
+        if 0 <= forced_prefix_offset < len(self.forced_action_prefix):
+            forced_action = self.forced_action_prefix[forced_prefix_offset]
             forced_move = self._match_external_move(game, pnum, possible_moves, forced_action)
             if forced_move is not None:
                 chosen_alternative = None

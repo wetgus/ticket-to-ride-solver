@@ -307,6 +307,7 @@ def instantiate_agents(
     policy_model_path=None,
     policy_weights=None,
     forced_action_prefix=None,
+    forced_action_start_index=0,
     heuristic_weight=0.55,
     learned_weight=0.45,
 ):
@@ -318,6 +319,7 @@ def instantiate_agents(
                     policy_model_path=policy_model_path,
                     policy_weights=policy_weights,
                     forced_action_prefix=forced_action_prefix,
+                    forced_action_start_index=forced_action_start_index,
                     heuristic_weight=heuristic_weight,
                     learned_weight=learned_weight,
                 )

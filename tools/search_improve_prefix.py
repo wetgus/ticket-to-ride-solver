@@ -72,6 +72,7 @@ def run_prefix_rollout(
     seed: int,
     lineup: List[str],
     forced_prefix: List[Dict],
+    forced_action_start_index: int,
     policy_model_path: Optional[str],
     policy_weights: Optional[Dict],
     heuristic_weight: float,
@@ -85,6 +86,7 @@ def run_prefix_rollout(
         policy_model_path=policy_model_path,
         policy_weights=policy_weights,
         forced_action_prefix=forced_prefix,
+        forced_action_start_index=forced_action_start_index,
         heuristic_weight=heuristic_weight,
         learned_weight=learned_weight,
     )
@@ -122,6 +124,7 @@ def search_seed(
     depth: int,
     beam_width: int,
     branch_factor: int,
+    skip_codex_decisions: int,
     policy_model_path: Optional[str],
     policy_weights: Optional[Dict],
     heuristic_weight: float,
@@ -141,6 +144,7 @@ def search_seed(
             seed=seed,
             lineup=lineup,
             forced_prefix=prefix,
+            forced_action_start_index=skip_codex_decisions,
             policy_model_path=policy_model_path,
             policy_weights=policy_weights,
             heuristic_weight=heuristic_weight,
@@ -171,10 +175,11 @@ def search_seed(
         for prefix in frontier:
             node = evaluate(prefix)
             trace_steps = node["rollout"]["traceSteps"]
-            if len(trace_steps) <= len(prefix):
+            target_decision_index = skip_codex_decisions + len(prefix)
+            if len(trace_steps) <= target_decision_index:
                 continue
 
-            branch_actions = select_branch_actions(trace_steps[len(prefix)], branch_factor)
+            branch_actions = select_branch_actions(trace_steps[target_decision_index], branch_factor)
             for action in branch_actions:
                 child_prefix = copy.deepcopy(prefix)
                 child_prefix.append(action)
@@ -206,6 +211,7 @@ def search_seed(
         seed=seed,
         lineup=lineup,
         forced_prefix=best_record["forcedPrefix"],
+        forced_action_start_index=skip_codex_decisions,
         policy_model_path=policy_model_path,
         policy_weights=policy_weights,
         heuristic_weight=heuristic_weight,
@@ -226,6 +232,7 @@ def search_seed(
     return {
         "seed": seed,
         "best": {
+            "forcedActionStartIndex": skip_codex_decisions,
             "forcedPrefix": best_record["forcedPrefix"],
             "score": best_rollout["score"],
             "place": best_rollout["place"],
@@ -248,6 +255,12 @@ def main() -> None:
     parser.add_argument("--beam-width", type=int, default=4, help="How many best prefixes survive each depth.")
     parser.add_argument("--branch-factor", type=int, default=4, help="How many actions to branch from each node.")
     parser.add_argument("--depth", type=int, default=3, help="How many Codex decisions to force before rollout.")
+    parser.add_argument(
+        "--skip-codex-decisions",
+        type=int,
+        default=1,
+        help="How many initial Codex decisions to leave to baseline before branching. Use 1 to skip the opening ticket keep.",
+    )
     parser.add_argument("--policy-model", default=None)
     parser.add_argument("--policy-weights-json", default="config/policy-weights.v1.0.5.json")
     parser.add_argument("--heuristic-weight", type=float, default=0.55)
@@ -284,6 +297,7 @@ def main() -> None:
         f"beam_width={args.beam_width}",
         f"branch_factor={args.branch_factor}",
         f"depth={args.depth}",
+        f"skip_codex_decisions={args.skip_codex_decisions}",
         f"estimated_rollouts_per_seed={estimated_per_seed}",
         f"estimated_total_rollouts={estimated_total}",
     )
@@ -300,6 +314,7 @@ def main() -> None:
             depth=args.depth,
             beam_width=args.beam_width,
             branch_factor=args.branch_factor,
+            skip_codex_decisions=args.skip_codex_decisions,
             policy_model_path=args.policy_model,
             policy_weights=policy_weights,
             heuristic_weight=args.heuristic_weight,
@@ -331,6 +346,7 @@ def main() -> None:
             "beamWidth": args.beam_width,
             "branchFactor": args.branch_factor,
             "depth": args.depth,
+            "skipCodexDecisions": args.skip_codex_decisions,
             "policyModel": args.policy_model,
             "policyWeightsJson": args.policy_weights_json,
             "heuristicWeight": args.heuristic_weight,
