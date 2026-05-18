@@ -84,9 +84,13 @@ def load_preference_rows(
     preferences_path: str,
     initial_keeps: Dict[int, Dict],
     pair_limit: Optional[int] = None,
+    min_confidence_weight: float = 0.0,
 ) -> List[Dict]:
     rows: List[Dict] = []
     for row in iter_jsonl(preferences_path):
+        confidence_weight = float(row.get("confidenceWeight", 1.0))
+        if confidence_weight < min_confidence_weight:
+            continue
         seed = int(row["seed"])
         initial_keep = initial_keeps.get(seed)
         if not initial_keep:
@@ -169,6 +173,8 @@ def score_preference_rows(
     lineup: List[str],
     policy_weights: Dict,
     state_limit: Optional[int] = None,
+    accuracy_weight: float = 1000.0,
+    margin_weight: float = 1.0,
 ) -> Dict:
     state_cache: Dict[Tuple[int, str], Dict] = {}
     unique_state_count = 0
@@ -216,7 +222,7 @@ def score_preference_rows(
 
     weighted_accuracy = weighted_correct / weighted_votes if weighted_votes > 0 else 0.0
     average_signed_margin = signed_margin_sum / weighted_votes if weighted_votes > 0 else 0.0
-    objective = weighted_accuracy * 100.0 + average_signed_margin * 4.0
+    objective = weighted_accuracy * accuracy_weight + average_signed_margin * margin_weight
     return {
         "weightedAccuracy": weighted_accuracy,
         "averageSignedMargin": average_signed_margin,
@@ -249,6 +255,14 @@ def main() -> None:
     parser.add_argument("--pair-limit", type=int, default=None)
     parser.add_argument("--state-limit", type=int, default=None)
     parser.add_argument("--lineup", nargs="+", default=["codex", "osa", "lra", "path"])
+    parser.add_argument(
+        "--objective-mode",
+        choices=["accuracy-first", "balanced", "margin-first"],
+        default="accuracy-first",
+    )
+    parser.add_argument("--accuracy-weight", type=float, default=None)
+    parser.add_argument("--margin-weight", type=float, default=None)
+    parser.add_argument("--min-confidence-weight", type=float, default=0.0)
     args = parser.parse_args()
 
     output_dir = resolve_path(args.output_dir)
@@ -257,9 +271,25 @@ def main() -> None:
     if os.path.exists(results_path):
         os.remove(results_path)
 
+    mode_defaults = {
+        "accuracy-first": (1000.0, 1.0),
+        "balanced": (100.0, 4.0),
+        "margin-first": (25.0, 8.0),
+    }
+    default_accuracy_weight, default_margin_weight = mode_defaults[args.objective_mode]
+    accuracy_weight = (
+        args.accuracy_weight if args.accuracy_weight is not None else default_accuracy_weight
+    )
+    margin_weight = args.margin_weight if args.margin_weight is not None else default_margin_weight
+
     base_weights = load_policy_weights(args.base_weights)
     initial_keeps = extract_initial_keeps(args.best_replays_json)
-    preference_rows = load_preference_rows(args.preferences_jsonl, initial_keeps, pair_limit=args.pair_limit)
+    preference_rows = load_preference_rows(
+        args.preferences_jsonl,
+        initial_keeps,
+        pair_limit=args.pair_limit,
+        min_confidence_weight=args.min_confidence_weight,
+    )
 
     candidate_keys = [
         "drawPenaltyScale",
@@ -295,6 +325,8 @@ def main() -> None:
             lineup=args.lineup,
             policy_weights=weights,
             state_limit=args.state_limit,
+            accuracy_weight=accuracy_weight,
+            margin_weight=margin_weight,
         )
         row = {
             "runIndex": run_index,
@@ -329,6 +361,10 @@ def main() -> None:
             "pairLimit": args.pair_limit,
             "stateLimit": args.state_limit,
             "lineup": args.lineup,
+            "objectiveMode": args.objective_mode,
+            "accuracyWeight": accuracy_weight,
+            "marginWeight": margin_weight,
+            "minConfidenceWeight": args.min_confidence_weight,
         },
         "best": best,
     }
