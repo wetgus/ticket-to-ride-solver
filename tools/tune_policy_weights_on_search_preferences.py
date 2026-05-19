@@ -11,6 +11,7 @@ from run_external_benchmark import (
     instantiate_agents,
     load_policy_weights,
     make_game,
+    run_matchup,
 )
 
 
@@ -242,6 +243,61 @@ def mutate_weights(base_weights: Dict, rng: random.Random, candidate_keys: List[
     return mutated
 
 
+def compute_benchmark_objective(
+    benchmark_summary: Dict,
+    baseline_benchmark_summary: Dict,
+    winrate_weight: float,
+    score_weight: float,
+    place_weight: float,
+) -> Dict:
+    winrate_delta = float(benchmark_summary["codexWinRate"]) - float(baseline_benchmark_summary["codexWinRate"])
+    score_delta = float(benchmark_summary["codexAverageScore"]) - float(
+        baseline_benchmark_summary["codexAverageScore"]
+    )
+    place_delta = float(benchmark_summary["codexAveragePlace"]) - float(
+        baseline_benchmark_summary["codexAveragePlace"]
+    )
+    objective = (
+        winrate_delta * winrate_weight
+        + score_delta * score_weight
+        - place_delta * place_weight
+    )
+    return {
+        "objective": objective,
+        "winRateDelta": winrate_delta,
+        "scoreDelta": score_delta,
+        "placeDelta": place_delta,
+    }
+
+
+def evaluate_benchmark(
+    lineup: List[str],
+    games: int,
+    seed_base: int,
+    policy_weights: Dict,
+    heuristic_weight: float,
+    learned_weight: float,
+) -> Dict:
+    summary = run_matchup(
+        lineup,
+        games,
+        seed_base,
+        policy_weights=policy_weights,
+        heuristic_weight=heuristic_weight,
+        learned_weight=learned_weight,
+        collect_training_rows=False,
+    )
+    return {
+        "games": games,
+        "seedBase": seed_base,
+        "codexWinRate": summary["codexWinRate"],
+        "codexAverageScore": summary["codexAverageScore"],
+        "codexAveragePlace": summary["codexAveragePlace"],
+        "codexPlacementCounts": summary["codexPlacementCounts"],
+        "elapsedSeconds": summary["elapsedSeconds"],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Tune heuristic policy weights against search-derived pairwise preferences."
@@ -263,6 +319,24 @@ def main() -> None:
     parser.add_argument("--accuracy-weight", type=float, default=None)
     parser.add_argument("--margin-weight", type=float, default=None)
     parser.add_argument("--min-confidence-weight", type=float, default=0.0)
+    parser.add_argument("--heuristic-weight", type=float, default=0.55)
+    parser.add_argument("--learned-weight", type=float, default=0.45)
+    parser.add_argument("--benchmark-games", type=int, default=0)
+    parser.add_argument("--benchmark-seed-base", type=int, default=48000)
+    parser.add_argument(
+        "--benchmark-eval-mode",
+        choices=["promising", "all"],
+        default="promising",
+    )
+    parser.add_argument(
+        "--benchmark-trigger-delta",
+        type=float,
+        default=0.0,
+        help="Evaluate benchmark only when preference objective beats the current best by at least this amount.",
+    )
+    parser.add_argument("--benchmark-winrate-weight", type=float, default=100.0)
+    parser.add_argument("--benchmark-score-weight", type=float, default=1.0)
+    parser.add_argument("--benchmark-place-weight", type=float, default=25.0)
     args = parser.parse_args()
 
     output_dir = resolve_path(args.output_dir)
@@ -318,6 +392,23 @@ def main() -> None:
 
     rng = random.Random(args.seed)
     best = None
+    baseline_benchmark = None
+    if args.benchmark_games > 0:
+        baseline_benchmark = evaluate_benchmark(
+            lineup=args.lineup,
+            games=args.benchmark_games,
+            seed_base=args.benchmark_seed_base,
+            policy_weights=base_weights,
+            heuristic_weight=args.heuristic_weight,
+            learned_weight=args.learned_weight,
+        )
+        print(
+            "baseline benchmark "
+            f"win_rate={baseline_benchmark['codexWinRate']:.3f} "
+            f"avg_score={baseline_benchmark['codexAverageScore']:.2f} "
+            f"avg_place={baseline_benchmark['codexAveragePlace']:.2f} "
+            f"elapsed={baseline_benchmark['elapsedSeconds']:.2f}s"
+        )
     for run_index in range(args.iterations):
         weights = dict(base_weights) if run_index == 0 else mutate_weights(base_weights, rng, candidate_keys)
         metrics = score_preference_rows(
@@ -333,18 +424,66 @@ def main() -> None:
             "weights": weights,
             "metrics": metrics,
         }
+        benchmark_metrics = None
+        benchmark_delta = None
+        hybrid_objective = metrics["objective"]
+        should_evaluate_benchmark = False
+        if baseline_benchmark is not None:
+            if args.benchmark_eval_mode == "all":
+                should_evaluate_benchmark = True
+            else:
+                best_pref_objective = best["metrics"]["objective"] if best is not None else float("-inf")
+                should_evaluate_benchmark = metrics["objective"] >= (
+                    best_pref_objective + args.benchmark_trigger_delta
+                )
+        if should_evaluate_benchmark and baseline_benchmark is not None:
+            benchmark_metrics = evaluate_benchmark(
+                lineup=args.lineup,
+                games=args.benchmark_games,
+                seed_base=args.benchmark_seed_base,
+                policy_weights=weights,
+                heuristic_weight=args.heuristic_weight,
+                learned_weight=args.learned_weight,
+            )
+            benchmark_delta = compute_benchmark_objective(
+                benchmark_summary=benchmark_metrics,
+                baseline_benchmark_summary=baseline_benchmark,
+                winrate_weight=args.benchmark_winrate_weight,
+                score_weight=args.benchmark_score_weight,
+                place_weight=args.benchmark_place_weight,
+            )
+            hybrid_objective += benchmark_delta["objective"]
+            row["benchmark"] = benchmark_metrics
+            row["benchmarkDelta"] = benchmark_delta
+        row["metrics"]["hybridObjective"] = hybrid_objective
         append_jsonl(results_path, row)
-        print(
+        message = (
             f"run={run_index} objective={metrics['objective']:.3f} "
             f"accuracy={metrics['weightedAccuracy']:.3f} "
             f"margin={metrics['averageSignedMargin']:.3f} "
             f"pairs={metrics['resolvedPairCount']} states={metrics['uniqueStateCount']}"
         )
-        if best is None or metrics["objective"] > best["metrics"]["objective"]:
+        if benchmark_delta is not None:
+            message += (
+                f" bench_win={benchmark_metrics['codexWinRate']:.3f}"
+                f" bench_score={benchmark_metrics['codexAverageScore']:.2f}"
+                f" bench_place={benchmark_metrics['codexAveragePlace']:.2f}"
+                f" hybrid={hybrid_objective:.3f}"
+            )
+        print(message)
+        selection_score = hybrid_objective if baseline_benchmark is not None else metrics["objective"]
+        best_selection_score = (
+            best["metrics"].get("hybridObjective", best["metrics"]["objective"])
+            if best is not None
+            else float("-inf")
+        )
+        if best is None or selection_score > best_selection_score:
             best = row
+            best["metrics"]["selectionObjective"] = selection_score
             print(
                 f"new best -> run={run_index} objective={metrics['objective']:.3f} "
-                f"accuracy={metrics['weightedAccuracy']:.3f}"
+                f"accuracy={metrics['weightedAccuracy']:.3f} "
+                f"selection={selection_score:.3f}"
             )
 
     if best is None:
@@ -365,7 +504,17 @@ def main() -> None:
             "accuracyWeight": accuracy_weight,
             "marginWeight": margin_weight,
             "minConfidenceWeight": args.min_confidence_weight,
+            "heuristicWeight": args.heuristic_weight,
+            "learnedWeight": args.learned_weight,
+            "benchmarkGames": args.benchmark_games,
+            "benchmarkSeedBase": args.benchmark_seed_base,
+            "benchmarkEvalMode": args.benchmark_eval_mode,
+            "benchmarkTriggerDelta": args.benchmark_trigger_delta,
+            "benchmarkWinrateWeight": args.benchmark_winrate_weight,
+            "benchmarkScoreWeight": args.benchmark_score_weight,
+            "benchmarkPlaceWeight": args.benchmark_place_weight,
         },
+        "baselineBenchmark": baseline_benchmark,
         "best": best,
     }
     write_json(os.path.join(output_dir, "best-weights.json"), best["weights"])
