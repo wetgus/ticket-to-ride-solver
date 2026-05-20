@@ -270,6 +270,31 @@ def compute_benchmark_objective(
     }
 
 
+def aggregate_benchmark_summaries(summaries: List[Dict]) -> Dict:
+    if not summaries:
+        raise RuntimeError("Expected at least one benchmark summary to aggregate.")
+
+    games = sum(int(summary["games"]) for summary in summaries)
+    weighted_win_rate = sum(float(summary["codexWinRate"]) * int(summary["games"]) for summary in summaries)
+    weighted_score = sum(float(summary["codexAverageScore"]) * int(summary["games"]) for summary in summaries)
+    weighted_place = sum(float(summary["codexAveragePlace"]) * int(summary["games"]) for summary in summaries)
+    placement_counts = {str(place): 0 for place in range(1, 5)}
+    for summary in summaries:
+        for place, count in summary["codexPlacementCounts"].items():
+            placement_counts[str(place)] += int(count)
+
+    return {
+        "games": games,
+        "batchCount": len(summaries),
+        "batches": summaries,
+        "codexWinRate": weighted_win_rate / games if games > 0 else 0.0,
+        "codexAverageScore": weighted_score / games if games > 0 else 0.0,
+        "codexAveragePlace": weighted_place / games if games > 0 else 0.0,
+        "codexPlacementCounts": placement_counts,
+        "elapsedSeconds": sum(float(summary["elapsedSeconds"]) for summary in summaries),
+    }
+
+
 def evaluate_benchmark(
     lineup: List[str],
     games: int,
@@ -298,6 +323,32 @@ def evaluate_benchmark(
     }
 
 
+def evaluate_benchmark_batches(
+    lineup: List[str],
+    games: int,
+    seed_base: int,
+    batch_count: int,
+    seed_step: int,
+    policy_weights: Dict,
+    heuristic_weight: float,
+    learned_weight: float,
+) -> Dict:
+    batch_summaries = []
+    for batch_index in range(batch_count):
+        batch_seed_base = seed_base + batch_index * seed_step
+        batch_summaries.append(
+            evaluate_benchmark(
+                lineup=lineup,
+                games=games,
+                seed_base=batch_seed_base,
+                policy_weights=policy_weights,
+                heuristic_weight=heuristic_weight,
+                learned_weight=learned_weight,
+            )
+        )
+    return aggregate_benchmark_summaries(batch_summaries)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Tune heuristic policy weights against search-derived pairwise preferences."
@@ -323,6 +374,8 @@ def main() -> None:
     parser.add_argument("--learned-weight", type=float, default=0.45)
     parser.add_argument("--benchmark-games", type=int, default=0)
     parser.add_argument("--benchmark-seed-base", type=int, default=48000)
+    parser.add_argument("--benchmark-batches", type=int, default=1)
+    parser.add_argument("--benchmark-seed-step", type=int, default=1000)
     parser.add_argument(
         "--benchmark-eval-mode",
         choices=["promising", "all"],
@@ -337,6 +390,9 @@ def main() -> None:
     parser.add_argument("--benchmark-winrate-weight", type=float, default=100.0)
     parser.add_argument("--benchmark-score-weight", type=float, default=1.0)
     parser.add_argument("--benchmark-place-weight", type=float, default=25.0)
+    parser.add_argument("--benchmark-min-winrate-delta", type=float, default=0.0)
+    parser.add_argument("--benchmark-min-score-delta", type=float, default=0.0)
+    parser.add_argument("--benchmark-max-place-delta", type=float, default=0.0)
     args = parser.parse_args()
 
     output_dir = resolve_path(args.output_dir)
@@ -394,10 +450,12 @@ def main() -> None:
     best = None
     baseline_benchmark = None
     if args.benchmark_games > 0:
-        baseline_benchmark = evaluate_benchmark(
+        baseline_benchmark = evaluate_benchmark_batches(
             lineup=args.lineup,
             games=args.benchmark_games,
             seed_base=args.benchmark_seed_base,
+            batch_count=args.benchmark_batches,
+            seed_step=args.benchmark_seed_step,
             policy_weights=base_weights,
             heuristic_weight=args.heuristic_weight,
             learned_weight=args.learned_weight,
@@ -407,6 +465,7 @@ def main() -> None:
             f"win_rate={baseline_benchmark['codexWinRate']:.3f} "
             f"avg_score={baseline_benchmark['codexAverageScore']:.2f} "
             f"avg_place={baseline_benchmark['codexAveragePlace']:.2f} "
+            f"batches={baseline_benchmark['batchCount']} "
             f"elapsed={baseline_benchmark['elapsedSeconds']:.2f}s"
         )
     for run_index in range(args.iterations):
@@ -426,6 +485,7 @@ def main() -> None:
         }
         benchmark_metrics = None
         benchmark_delta = None
+        benchmark_pass = None
         hybrid_objective = metrics["objective"]
         should_evaluate_benchmark = False
         if baseline_benchmark is not None:
@@ -437,10 +497,12 @@ def main() -> None:
                     best_pref_objective + args.benchmark_trigger_delta
                 )
         if should_evaluate_benchmark and baseline_benchmark is not None:
-            benchmark_metrics = evaluate_benchmark(
+            benchmark_metrics = evaluate_benchmark_batches(
                 lineup=args.lineup,
                 games=args.benchmark_games,
                 seed_base=args.benchmark_seed_base,
+                batch_count=args.benchmark_batches,
+                seed_step=args.benchmark_seed_step,
                 policy_weights=weights,
                 heuristic_weight=args.heuristic_weight,
                 learned_weight=args.learned_weight,
@@ -452,9 +514,15 @@ def main() -> None:
                 score_weight=args.benchmark_score_weight,
                 place_weight=args.benchmark_place_weight,
             )
+            benchmark_pass = (
+                benchmark_delta["winRateDelta"] >= args.benchmark_min_winrate_delta
+                and benchmark_delta["scoreDelta"] >= args.benchmark_min_score_delta
+                and benchmark_delta["placeDelta"] <= args.benchmark_max_place_delta
+            )
             hybrid_objective += benchmark_delta["objective"]
             row["benchmark"] = benchmark_metrics
             row["benchmarkDelta"] = benchmark_delta
+            row["benchmarkPass"] = benchmark_pass
         row["metrics"]["hybridObjective"] = hybrid_objective
         append_jsonl(results_path, row)
         message = (
@@ -468,10 +536,17 @@ def main() -> None:
                 f" bench_win={benchmark_metrics['codexWinRate']:.3f}"
                 f" bench_score={benchmark_metrics['codexAverageScore']:.2f}"
                 f" bench_place={benchmark_metrics['codexAveragePlace']:.2f}"
+                f" bench_pass={str(bool(benchmark_pass)).lower()}"
                 f" hybrid={hybrid_objective:.3f}"
             )
         print(message)
-        selection_score = hybrid_objective if baseline_benchmark is not None else metrics["objective"]
+        if baseline_benchmark is not None:
+            if benchmark_delta is None or not benchmark_pass:
+                selection_score = float("-inf")
+            else:
+                selection_score = hybrid_objective
+        else:
+            selection_score = metrics["objective"]
         best_selection_score = (
             best["metrics"].get("hybridObjective", best["metrics"]["objective"])
             if best is not None
@@ -508,11 +583,16 @@ def main() -> None:
             "learnedWeight": args.learned_weight,
             "benchmarkGames": args.benchmark_games,
             "benchmarkSeedBase": args.benchmark_seed_base,
+            "benchmarkBatches": args.benchmark_batches,
+            "benchmarkSeedStep": args.benchmark_seed_step,
             "benchmarkEvalMode": args.benchmark_eval_mode,
             "benchmarkTriggerDelta": args.benchmark_trigger_delta,
             "benchmarkWinrateWeight": args.benchmark_winrate_weight,
             "benchmarkScoreWeight": args.benchmark_score_weight,
             "benchmarkPlaceWeight": args.benchmark_place_weight,
+            "benchmarkMinWinrateDelta": args.benchmark_min_winrate_delta,
+            "benchmarkMinScoreDelta": args.benchmark_min_score_delta,
+            "benchmarkMaxPlaceDelta": args.benchmark_max_place_delta,
         },
         "baselineBenchmark": baseline_benchmark,
         "best": best,
