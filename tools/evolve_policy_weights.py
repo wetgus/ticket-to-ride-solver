@@ -48,6 +48,10 @@ def append_jsonl(path: str, row: Dict) -> None:
         handle.write(json.dumps(row) + "\n")
 
 
+def weights_key(weights: Dict) -> str:
+    return json.dumps(weights, sort_keys=True, separators=(",", ":"))
+
+
 def crossover_weights(parent_a: Dict, parent_b: Dict, rng: random.Random, candidate_keys: List[str]) -> Dict:
     child = dict(parent_a)
     swap_count = rng.randint(2, min(6, len(candidate_keys)))
@@ -101,49 +105,62 @@ def evaluate_candidate(
     benchmark_min_winrate_delta: float,
     benchmark_min_score_delta: float,
     benchmark_max_place_delta: float,
+    include_benchmark: bool,
+    preference_cache: Dict[str, Dict],
+    benchmark_cache: Dict[str, Dict],
 ) -> Dict:
-    metrics = score_preference_rows(
-        preference_rows=preference_rows,
-        lineup=lineup,
-        policy_weights=weights,
-        state_limit=state_limit,
-        accuracy_weight=accuracy_weight,
-        margin_weight=margin_weight,
-    )
+    key = weights_key(weights)
+    if key not in preference_cache:
+        preference_cache[key] = score_preference_rows(
+            preference_rows=preference_rows,
+            lineup=lineup,
+            policy_weights=weights,
+            state_limit=state_limit,
+            accuracy_weight=accuracy_weight,
+            margin_weight=margin_weight,
+        )
+    metrics = dict(preference_cache[key])
     row = {
         "weights": weights,
         "metrics": metrics,
     }
 
     selection_objective = metrics["objective"]
-    if baseline_benchmark is not None and benchmark_games > 0:
-        benchmark = evaluate_benchmark_batches(
-            lineup=lineup,
-            games=benchmark_games,
-            seed_base=benchmark_seed_base,
-            batch_count=benchmark_batches,
-            seed_step=benchmark_seed_step,
-            policy_weights=weights,
-            heuristic_weight=heuristic_weight,
-            learned_weight=learned_weight,
-        )
-        benchmark_delta = compute_benchmark_objective(
-            benchmark_summary=benchmark,
-            baseline_benchmark_summary=baseline_benchmark,
-            winrate_weight=benchmark_winrate_weight,
-            score_weight=benchmark_score_weight,
-            place_weight=benchmark_place_weight,
-        )
-        benchmark_pass = (
-            benchmark_delta["winRateDelta"] >= benchmark_min_winrate_delta
-            and benchmark_delta["scoreDelta"] >= benchmark_min_score_delta
-            and benchmark_delta["placeDelta"] <= benchmark_max_place_delta
-        )
-        row["benchmark"] = benchmark
-        row["benchmarkDelta"] = benchmark_delta
-        row["benchmarkPass"] = benchmark_pass
-        if benchmark_pass:
-            selection_objective = metrics["objective"] + benchmark_delta["objective"]
+    if include_benchmark and baseline_benchmark is not None and benchmark_games > 0:
+        if key not in benchmark_cache:
+            benchmark = evaluate_benchmark_batches(
+                lineup=lineup,
+                games=benchmark_games,
+                seed_base=benchmark_seed_base,
+                batch_count=benchmark_batches,
+                seed_step=benchmark_seed_step,
+                policy_weights=weights,
+                heuristic_weight=heuristic_weight,
+                learned_weight=learned_weight,
+            )
+            benchmark_delta = compute_benchmark_objective(
+                benchmark_summary=benchmark,
+                baseline_benchmark_summary=baseline_benchmark,
+                winrate_weight=benchmark_winrate_weight,
+                score_weight=benchmark_score_weight,
+                place_weight=benchmark_place_weight,
+            )
+            benchmark_pass = (
+                benchmark_delta["winRateDelta"] >= benchmark_min_winrate_delta
+                and benchmark_delta["scoreDelta"] >= benchmark_min_score_delta
+                and benchmark_delta["placeDelta"] <= benchmark_max_place_delta
+            )
+            benchmark_cache[key] = {
+                "benchmark": benchmark,
+                "benchmarkDelta": benchmark_delta,
+                "benchmarkPass": benchmark_pass,
+            }
+        cached = benchmark_cache[key]
+        row["benchmark"] = cached["benchmark"]
+        row["benchmarkDelta"] = cached["benchmarkDelta"]
+        row["benchmarkPass"] = cached["benchmarkPass"]
+        if cached["benchmarkPass"]:
+            selection_objective = metrics["objective"] + cached["benchmarkDelta"]["objective"]
         else:
             selection_objective = float("-inf")
 
@@ -203,6 +220,8 @@ def main() -> None:
     parser.add_argument("--benchmark-min-winrate-delta", type=float, default=0.05)
     parser.add_argument("--benchmark-min-score-delta", type=float, default=0.5)
     parser.add_argument("--benchmark-max-place-delta", type=float, default=-0.01)
+    parser.add_argument("--benchmark-top-k", type=int, default=4)
+    parser.add_argument("--benchmark-pref-threshold", type=float, default=0.5)
     args = parser.parse_args()
 
     output_dir = resolve_path(args.output_dir)
@@ -221,6 +240,8 @@ def main() -> None:
     )
     candidate_keys = [key for key in DEFAULT_CANDIDATE_KEYS if key in base_weights]
     rng = random.Random(args.seed)
+    preference_cache: Dict[str, Dict] = {}
+    benchmark_cache: Dict[str, Dict] = {}
 
     baseline_benchmark = evaluate_benchmark_batches(
         lineup=args.lineup,
@@ -255,7 +276,7 @@ def main() -> None:
     best_overall = None
     generation_summaries = []
     for generation_index in range(args.generations):
-        population_rows = []
+        preference_only_rows = []
         for member_index, weights in enumerate(population_weights):
             row = evaluate_candidate(
                 weights=weights,
@@ -277,18 +298,72 @@ def main() -> None:
                 benchmark_min_winrate_delta=args.benchmark_min_winrate_delta,
                 benchmark_min_score_delta=args.benchmark_min_score_delta,
                 benchmark_max_place_delta=args.benchmark_max_place_delta,
+                include_benchmark=False,
+                preference_cache=preference_cache,
+                benchmark_cache=benchmark_cache,
             )
             row["generation"] = generation_index
             row["memberIndex"] = member_index
-            append_jsonl(results_path, row)
-            population_rows.append(row)
-            print(
-                f"gen={generation_index} member={member_index} "
-                f"selection={row['metrics']['selectionObjective']:.3f} "
-                f"pref={row['metrics']['objective']:.3f} "
-                f"acc={row['metrics']['weightedAccuracy']:.3f} "
-                f"margin={row['metrics']['averageSignedMargin']:.3f}"
+            preference_only_rows.append(row)
+
+        preference_only_rows.sort(key=lambda row: row["metrics"]["objective"], reverse=True)
+        best_preference_objective = preference_only_rows[0]["metrics"]["objective"]
+        shortlist = []
+        for row in preference_only_rows:
+            if len(shortlist) < args.benchmark_top_k:
+                shortlist.append(row)
+                continue
+            if row["metrics"]["objective"] >= best_preference_objective - args.benchmark_pref_threshold:
+                shortlist.append(row)
+        shortlist_keys = {
+            weights_key(row["weights"]) for row in shortlist
+        }
+
+        population_rows = []
+        for row in preference_only_rows:
+            evaluated = evaluate_candidate(
+                weights=row["weights"],
+                preference_rows=preference_rows,
+                lineup=args.lineup,
+                state_limit=args.state_limit,
+                accuracy_weight=args.accuracy_weight,
+                margin_weight=args.margin_weight,
+                baseline_benchmark=baseline_benchmark,
+                benchmark_games=args.benchmark_games,
+                benchmark_seed_base=args.benchmark_seed_base,
+                benchmark_batches=args.benchmark_batches,
+                benchmark_seed_step=args.benchmark_seed_step,
+                heuristic_weight=args.heuristic_weight,
+                learned_weight=args.learned_weight,
+                benchmark_winrate_weight=args.benchmark_winrate_weight,
+                benchmark_score_weight=args.benchmark_score_weight,
+                benchmark_place_weight=args.benchmark_place_weight,
+                benchmark_min_winrate_delta=args.benchmark_min_winrate_delta,
+                benchmark_min_score_delta=args.benchmark_min_score_delta,
+                benchmark_max_place_delta=args.benchmark_max_place_delta,
+                include_benchmark=weights_key(row["weights"]) in shortlist_keys,
+                preference_cache=preference_cache,
+                benchmark_cache=benchmark_cache,
             )
+            evaluated["generation"] = row["generation"]
+            evaluated["memberIndex"] = row["memberIndex"]
+            append_jsonl(results_path, evaluated)
+            population_rows.append(evaluated)
+            message = (
+                f"gen={generation_index} member={evaluated['memberIndex']} "
+                f"selection={evaluated['metrics']['selectionObjective']:.3f} "
+                f"pref={evaluated['metrics']['objective']:.3f} "
+                f"acc={evaluated['metrics']['weightedAccuracy']:.3f} "
+                f"margin={evaluated['metrics']['averageSignedMargin']:.3f}"
+            )
+            if "benchmark" in evaluated:
+                message += (
+                    f" bench_win={evaluated['benchmark']['codexWinRate']:.3f}"
+                    f" bench_score={evaluated['benchmark']['codexAverageScore']:.2f}"
+                    f" bench_place={evaluated['benchmark']['codexAveragePlace']:.2f}"
+                    f" bench_pass={str(bool(evaluated.get('benchmarkPass'))).lower()}"
+                )
+            print(message)
 
         population_rows.sort(key=lambda row: row["metrics"]["selectionObjective"], reverse=True)
         if best_overall is None or (
@@ -362,6 +437,8 @@ def main() -> None:
             "benchmarkMinWinrateDelta": args.benchmark_min_winrate_delta,
             "benchmarkMinScoreDelta": args.benchmark_min_score_delta,
             "benchmarkMaxPlaceDelta": args.benchmark_max_place_delta,
+            "benchmarkTopK": args.benchmark_top_k,
+            "benchmarkPrefThreshold": args.benchmark_pref_threshold,
         },
         "baselineBenchmark": baseline_benchmark,
         "generationSummaries": generation_summaries,
